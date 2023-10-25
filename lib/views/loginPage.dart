@@ -61,11 +61,8 @@ class LoginPage extends StatelessWidget {
                       height: 10,
                     ),
                     TextFormField(
+                      textAlign: TextAlign.center,
                       decoration: InputDecoration(
-                          prefix: Icon(
-                            Icons.person,
-                            color: Colors.grey,
-                          ),
                           isDense: true,
                           focusedBorder: OutlineInputBorder(
                               borderSide: BorderSide(color: Colors.grey),
@@ -78,13 +75,9 @@ class LoginPage extends StatelessWidget {
                       height: 20,
                     ),
                     TextFormField(
+                      textAlign: TextAlign.center,
                       obscureText: true,
                       decoration: InputDecoration(
-                          prefixIconColor: Colors.grey,
-                          prefix: Icon(
-                            Icons.key,
-                            color: Colors.grey,
-                          ),
                           isDense: true,
                           focusedBorder: OutlineInputBorder(
                               borderSide: BorderSide(color: Colors.grey),

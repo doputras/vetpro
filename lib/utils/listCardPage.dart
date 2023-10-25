@@ -3,7 +3,18 @@ import 'package:flutter/material.dart';
 import '../constan/constan.dart';
 
 class ListCardPage extends StatelessWidget {
-  const ListCardPage({super.key});
+  String text1;
+  String text2;
+  String text3;
+  String flag;
+  Color color;
+  ListCardPage(
+      {required this.color,
+      required this.flag,
+      required this.text1,
+      required this.text2,
+      required this.text3,
+      super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -11,7 +22,7 @@ class ListCardPage extends StatelessWidget {
         margin: EdgeInsets.only(top: 10, left: 15, right: 15),
         height: 90,
         decoration: BoxDecoration(
-            color: Colors.white, borderRadius: BorderRadius.circular(30)),
+            color: color, borderRadius: BorderRadius.circular(30)),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -22,23 +33,50 @@ class ListCardPage extends StatelessWidget {
               decoration: BoxDecoration(
                   color: threeColor, borderRadius: BorderRadius.circular(20)),
               child: Image.asset(
-                'assets/domba.png',
+                (flag == '3') ? 'assets/invoice.png' : 'assets/domba.png',
                 scale: 1.3,
               ),
             ),
             Container(
-              margin: EdgeInsets.only(top: 20, left: 10),
+              margin: EdgeInsets.only(top: 15),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Domba'),
-                  Text('16 October 2023'),
-                  Text('Drh Buhori Muslim')
+                  Text(
+                    text1,
+                    style: TextStyle(
+                        fontSize: (flag == '3') ? 18 : 16,
+                        color: (flag == '1' || flag == '3')
+                            ? (flag == '3')
+                                ? Color.fromARGB(255, 48, 73, 119)
+                                : Colors.black
+                            : Colors.white,
+                        fontWeight: FontWeight.bold),
+                  ),
+                  Text(
+                    text2,
+                    style: TextStyle(
+                        color: (flag == '1') || flag == '3'
+                            ? Colors.black
+                            : Colors.white),
+                  ),
+                  Text(
+                    text3,
+                    style: TextStyle(
+                        color: (flag == '1' || flag == '3')
+                            ? Colors.black
+                            : Colors.white),
+                  )
                 ],
               ),
             ),
             Container(
+                height: 60,
+                width: 60,
+                decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(20)),
                 margin: EdgeInsets.only(right: 20),
                 child: Image.asset('assets/file.png'))
           ],

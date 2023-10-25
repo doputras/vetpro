@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:vetpro/constan/constan.dart';
 import 'package:vetpro/utils/listCardPage.dart';
 import 'package:vetpro/utils/tabMenuPage.dart';
+import 'package:vetpro/views/dombaInpectionPage.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -59,32 +61,35 @@ class HomePage extends StatelessWidget {
                             shrinkWrap: true,
                             crossAxisCount: 3,
                             children: <Widget>[
-                              Container(
-                                margin: EdgeInsets.only(left: 15, right: 15),
-                                child: Column(
-                                  children: [
-                                    Container(
-                                      height: 65,
-                                      decoration: BoxDecoration(
-                                          color: Colors.white,
-                                          borderRadius:
-                                              BorderRadius.circular(15)),
-                                      child: Center(
-                                        child: Padding(
-                                          padding: EdgeInsets.all(8.0),
-                                          child: Image.asset(
-                                            'assets/domba.png',
+                              GestureDetector(
+                                onTap: () => Get.to(DombaInpectionPage()),
+                                child: Container(
+                                  margin: EdgeInsets.only(left: 15, right: 15),
+                                  child: Column(
+                                    children: [
+                                      Container(
+                                        height: 65,
+                                        decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            borderRadius:
+                                                BorderRadius.circular(15)),
+                                        child: Center(
+                                          child: Padding(
+                                            padding: EdgeInsets.all(8.0),
+                                            child: Image.asset(
+                                              'assets/domba.png',
+                                            ),
                                           ),
                                         ),
                                       ),
-                                    ),
-                                    Text(
-                                      'Domba',
-                                      style: TextStyle(
-                                          fontSize: 10,
-                                          fontWeight: FontWeight.bold),
-                                    )
-                                  ],
+                                      Text(
+                                        'Domba',
+                                        style: TextStyle(
+                                            fontSize: 10,
+                                            fontWeight: FontWeight.bold),
+                                      )
+                                    ],
+                                  ),
                                 ),
                               ),
                               Container(
@@ -243,7 +248,13 @@ class HomePage extends StatelessWidget {
                                         fontWeight: FontWeight.bold),
                                   ),
                                 ),
-                                ListCardPage(),
+                                ListCardPage(
+                                  color: Colors.white,
+                                  flag: '1',
+                                  text1: 'Domba',
+                                  text2: '16 October 2023',
+                                  text3: 'Drs. Buhori Muslim',
+                                ),
                               ],
                             ),
                           )
@@ -252,6 +263,8 @@ class HomePage extends StatelessWidget {
             ),
           ),
         ),
-        bottomNavigationBar: TabMenuPage());
+        bottomNavigationBar: TabMenuPage(
+          menu: '1',
+        ));
   }
 }
