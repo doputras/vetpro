@@ -4,6 +4,8 @@ import 'package:vetpro/utils/listCardPage.dart';
 import 'package:vetpro/utils/tabMenuPage.dart';
 import 'package:vetpro/views/addInvoicePage.dart';
 
+import 'detailDombaInpectionPage.dart';
+
 class InvoicePage extends StatelessWidget {
   const InvoicePage({super.key});
 
@@ -31,17 +33,24 @@ class InvoicePage extends StatelessWidget {
               ),
             ),
             ListCardPage(
-                color: const Color.fromARGB(255, 223, 220, 220),
-                flag: '3',
-                text1: 'Drh. Buhori Muslim',
-                text2: 'Telkom University',
-                text3: '16 September 2023'),
+              color: const Color.fromARGB(255, 223, 220, 220),
+              flag: '3',
+              text1: 'Drh. Buhori Muslim',
+              text2: 'Telkom University',
+              text3: '16 September 2023',
+              widget: InkWell(
+                  onTap: () => Get.to(DetailDombaInpectionPage()),
+                  child: Image.asset('assets/file.png')),
+            ),
             ListCardPage(
                 color: const Color.fromARGB(255, 223, 220, 220),
                 flag: '3',
                 text1: 'Drh. Buhori Muslim',
                 text2: 'Telkom University',
-                text3: '16 September 2023'),
+                text3: '16 September 2023',
+                widget: InkWell(
+                    onTap: () => Get.to(DetailDombaInpectionPage()),
+                    child: Image.asset('assets/file.png'))),
             Container(
               margin: EdgeInsets.only(left: 20, right: 20, top: 10),
               child: Row(
@@ -62,25 +71,37 @@ class InvoicePage extends StatelessWidget {
                 flag: '3',
                 text1: 'Drh. Buhori Muslim',
                 text2: 'Telkom University',
-                text3: '16 September 2023'),
+                text3: '16 September 2023',
+                widget: InkWell(
+                    onTap: () => Get.to(DetailDombaInpectionPage()),
+                    child: Image.asset('assets/file.png'))),
             ListCardPage(
                 color: Color.fromARGB(255, 116, 204, 119),
                 flag: '3',
                 text1: 'Drh. Buhori Muslim',
                 text2: 'Telkom University',
-                text3: '16 September 2023'),
+                text3: '16 September 2023',
+                widget: InkWell(
+                    onTap: () => Get.to(DetailDombaInpectionPage()),
+                    child: Image.asset('assets/file.png'))),
             ListCardPage(
                 color: Color.fromARGB(255, 116, 204, 119),
                 flag: '3',
                 text1: 'Drh. Buhori Muslim',
                 text2: 'Telkom University',
-                text3: '16 September 2023'),
+                text3: '16 September 2023',
+                widget: InkWell(
+                    onTap: () => Get.to(DetailDombaInpectionPage()),
+                    child: Image.asset('assets/file.png'))),
             ListCardPage(
                 color: Color.fromARGB(255, 116, 204, 119),
                 flag: '3',
                 text1: 'Drh. Buhori Muslim',
                 text2: 'Telkom University',
-                text3: '16 September 2023'),
+                text3: '16 September 2023',
+                widget: InkWell(
+                    onTap: () => Get.to(DetailDombaInpectionPage()),
+                    child: Image.asset('assets/file.png'))),
           ],
         )),
       ),

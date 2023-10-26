@@ -1,8 +1,37 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:vetpro/constan/constan.dart';
 
-class DombaInpectionPage extends StatelessWidget {
+class DombaInpectionPage extends StatefulWidget {
   const DombaInpectionPage({super.key});
+
+  @override
+  State<DombaInpectionPage> createState() => _DombaInpectionPageState();
+}
+
+class _DombaInpectionPageState extends State<DombaInpectionPage> {
+  final ImagePicker _picker = ImagePicker();
+  XFile? pickedFile;
+  File? tempFile;
+  Uint8List? bytes;
+
+  getCamera() async {
+    try {
+      pickedFile = (await _picker.pickImage(
+          source: ImageSource.camera,
+          maxHeight: 800.0,
+          maxWidth: 460.0,
+          imageQuality: 100))!;
+      setState(() {
+        tempFile = File(pickedFile!.path);
+        bytes = tempFile!.readAsBytesSync();
+      });
+    } catch (e) {
+      print(e);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -236,23 +265,29 @@ class DombaInpectionPage extends StatelessWidget {
                             fontWeight: FontWeight.bold, fontSize: 14),
                       ),
                     ),
-                    Container(
-                      margin: EdgeInsets.only(
-                          left: 30, top: 15, right: 30, bottom: 30),
-                      child: TextFormField(
-                        maxLines: 2,
-                        decoration: InputDecoration(
-                            filled: true,
-                            fillColor: Colors.white,
-                            isDense: true,
-                            focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.grey),
-                                borderRadius: BorderRadius.circular(30)),
-                            border: OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.grey),
-                                borderRadius: BorderRadius.circular(30))),
-                      ),
-                    ),
+                    (tempFile != null)
+                        ? Container(
+                            margin: EdgeInsets.all(20),
+                            child: Image.file(File(pickedFile!.path)))
+                        : Container(
+                            margin: EdgeInsets.only(
+                                left: 30, top: 15, right: 30, bottom: 30),
+                            child: TextFormField(
+                              maxLines: 2,
+                              decoration: InputDecoration(
+                                  filled: true,
+                                  fillColor: Colors.white,
+                                  isDense: true,
+                                  focusedBorder: OutlineInputBorder(
+                                      borderSide:
+                                          BorderSide(color: Colors.grey),
+                                      borderRadius: BorderRadius.circular(30)),
+                                  border: OutlineInputBorder(
+                                      borderSide:
+                                          BorderSide(color: Colors.grey),
+                                      borderRadius: BorderRadius.circular(30))),
+                            ),
+                          ),
                     Container(
                       height: 100,
                       padding: EdgeInsets.all(10),
@@ -263,22 +298,25 @@ class DombaInpectionPage extends StatelessWidget {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Container(
-                            height: 100,
-                            width: 100,
-                            decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(20)),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Icon(
-                                  Icons.image,
-                                  size: 35,
-                                ),
-                                Text('Tambah Foto')
-                              ],
+                          InkWell(
+                            onTap: () => getCamera(),
+                            child: Container(
+                              height: 100,
+                              width: 100,
+                              decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(20)),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    Icons.image,
+                                    size: 35,
+                                  ),
+                                  Text('Tambah Foto')
+                                ],
+                              ),
                             ),
                           ),
                           Container(

@@ -6,6 +6,8 @@ import 'package:vetpro/controller/calendarController.dart';
 import 'package:vetpro/utils/listCardPage.dart';
 import 'package:vetpro/utils/tabMenuPage.dart';
 
+import 'detailDombaInpectionPage.dart';
+
 class ShcedulePage extends StatelessWidget {
   const ShcedulePage({super.key});
 
@@ -59,19 +61,28 @@ class ShcedulePage extends StatelessWidget {
                 flag: '2',
                 text1: 'Domba',
                 text2: 'Telkom University',
-                text3: 'Drh. Buhori Muslim'),
+                text3: 'Drh. Buhori Muslim',
+                widget: InkWell(
+                    onTap: () => Get.to(DetailDombaInpectionPage()),
+                    child: Image.asset('assets/file.png'))),
             ListCardPage(
                 color: secondColor,
                 flag: '2',
                 text1: 'Domba',
                 text2: 'Telkom University',
-                text3: 'Drh. Buhori Muslim'),
+                text3: 'Drh. Buhori Muslim',
+                widget: InkWell(
+                    onTap: () => Get.to(DetailDombaInpectionPage()),
+                    child: Image.asset('assets/file.png'))),
             ListCardPage(
                 color: secondColor,
                 flag: '2',
                 text1: 'Domba',
                 text2: 'Telkom University',
-                text3: 'Drh. Buhori Muslim'),
+                text3: 'Drh. Buhori Muslim',
+                widget: InkWell(
+                    onTap: () => Get.to(DetailDombaInpectionPage()),
+                    child: Image.asset('assets/file.png'))),
             Container(
               margin: EdgeInsets.only(left: 20, top: 15),
               child: Text(
@@ -91,13 +102,19 @@ class ShcedulePage extends StatelessWidget {
                 flag: '2',
                 text1: 'Domba',
                 text2: 'Telkom University',
-                text3: 'Drh. Buhori Muslim'),
+                text3: 'Drh. Buhori Muslim',
+                widget: InkWell(
+                    onTap: () => Get.to(DetailDombaInpectionPage()),
+                    child: Image.asset('assets/file.png'))),
             ListCardPage(
                 color: secondColor,
                 flag: '2',
                 text1: 'Domba',
                 text2: 'Telkom University',
-                text3: 'Drh. Buhori Muslim'),
+                text3: 'Drh. Buhori Muslim',
+                widget: InkWell(
+                    onTap: () => Get.to(DetailDombaInpectionPage()),
+                    child: Image.asset('assets/file.png'))),
             Container(
               margin: EdgeInsets.only(left: 20, top: 15),
               child: Text(
@@ -110,13 +127,19 @@ class ShcedulePage extends StatelessWidget {
                 flag: '2',
                 text1: 'Domba',
                 text2: 'Telkom University',
-                text3: 'Drh. Buhori Muslim'),
+                text3: 'Drh. Buhori Muslim',
+                widget: InkWell(
+                    onTap: () => Get.to(DetailDombaInpectionPage()),
+                    child: Image.asset('assets/file.png'))),
             ListCardPage(
                 color: secondColor,
                 flag: '2',
                 text1: 'Domba',
                 text2: 'Telkom University',
-                text3: 'Drh. Buhori Muslim'),
+                text3: 'Drh. Buhori Muslim',
+                widget: InkWell(
+                    onTap: () => Get.to(DetailDombaInpectionPage()),
+                    child: Image.asset('assets/file.png'))),
           ],
         )),
       ),

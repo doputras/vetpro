@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../constan/constan.dart';
 
 class ListCardPage extends StatelessWidget {
+  Widget widget;
   String text1;
   String text2;
   String text3;
@@ -14,6 +15,7 @@ class ListCardPage extends StatelessWidget {
       required this.text1,
       required this.text2,
       required this.text3,
+      required this.widget,
       super.key});
 
   @override
@@ -78,7 +80,7 @@ class ListCardPage extends StatelessWidget {
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(20)),
                 margin: EdgeInsets.only(right: 20),
-                child: Image.asset('assets/file.png'))
+                child: widget),
           ],
         ));
   }

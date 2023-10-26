@@ -51,25 +51,15 @@ class HistoryPage extends StatelessWidget {
                             fontSize: 18, fontWeight: FontWeight.bold),
                       ),
                     ),
-                    InkWell(
-                      onTap: () => Get.to(DetailDombaInpectionPage()),
-                      child: ListCardPage(
-                        color: secondColor,
-                        flag: '2',
-                        text1: 'Domba',
-                        text2: 'Telkom University',
-                        text3: 'Drh buhori Muslim',
-                      ),
-                    ),
-                    InkWell(
-                      onTap: () => Get.to(DetailDombaInpectionPage()),
-                      child: ListCardPage(
-                        color: secondColor,
-                        flag: '2',
-                        text1: 'Domba',
-                        text2: 'Telkom University',
-                        text3: 'Drh buhori Muslim',
-                      ),
+                    ListCardPage(
+                      color: secondColor,
+                      flag: '2',
+                      text1: 'Domba',
+                      text2: 'Telkom University',
+                      text3: 'Drh buhori Muslim',
+                      widget: InkWell(
+                          onTap: () => Get.to(DetailDombaInpectionPage()),
+                          child: Image.asset('assets/file.png')),
                     ),
                     ListCardPage(
                       color: secondColor,
@@ -77,7 +67,20 @@ class HistoryPage extends StatelessWidget {
                       text1: 'Domba',
                       text2: 'Telkom University',
                       text3: 'Drh buhori Muslim',
-                    )
+                      widget: InkWell(
+                          onTap: () => Get.to(DetailDombaInpectionPage()),
+                          child: Image.asset('assets/file.png')),
+                    ),
+                    ListCardPage(
+                      color: secondColor,
+                      flag: '2',
+                      text1: 'Domba',
+                      text2: 'Telkom University',
+                      text3: 'Drh buhori Muslim',
+                      widget: InkWell(
+                          onTap: () => Get.to(DetailDombaInpectionPage()),
+                          child: Image.asset('assets/file.png')),
+                    ),
                   ],
                 ),
               ),
@@ -101,6 +104,9 @@ class HistoryPage extends StatelessWidget {
                       text1: 'Domba',
                       text2: 'Telkom University',
                       text3: 'Drh buhori Muslim',
+                      widget: InkWell(
+                          onTap: () => Get.to(DetailDombaInpectionPage()),
+                          child: Image.asset('assets/file.png')),
                     ),
                     ListCardPage(
                       color: secondColor,
@@ -108,6 +114,9 @@ class HistoryPage extends StatelessWidget {
                       text1: 'Domba',
                       text2: 'Telkom University',
                       text3: 'Drh buhori Muslim',
+                      widget: InkWell(
+                          onTap: () => Get.to(DetailDombaInpectionPage()),
+                          child: Image.asset('assets/file.png')),
                     ),
                     ListCardPage(
                       color: secondColor,
@@ -115,6 +124,9 @@ class HistoryPage extends StatelessWidget {
                       text1: 'Domba',
                       text2: 'Telkom University',
                       text3: 'Drh buhori Muslim',
+                      widget: InkWell(
+                          onTap: () => Get.to(DetailDombaInpectionPage()),
+                          child: Image.asset('assets/file.png')),
                     )
                   ],
                 ),

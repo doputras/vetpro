@@ -5,6 +5,8 @@ import 'package:vetpro/utils/listCardPage.dart';
 import 'package:vetpro/utils/tabMenuPage.dart';
 import 'package:vetpro/views/dombaInpectionPage.dart';
 
+import 'detailDombaInpectionPage.dart';
+
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
@@ -254,6 +256,10 @@ class HomePage extends StatelessWidget {
                                   text1: 'Domba',
                                   text2: '16 October 2023',
                                   text3: 'Drs. Buhori Muslim',
+                                  widget: InkWell(
+                                      onTap: () =>
+                                          Get.to(DetailDombaInpectionPage()),
+                                      child: Image.asset('assets/file.png')),
                                 ),
                               ],
                             ),
