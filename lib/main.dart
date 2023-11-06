@@ -1,40 +1,69 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:vetpro/views/loginPage.dart';
+import 'package:vetpro/bloc/inspection/inspection_bloc.dart';
+import 'package:vetpro/bloc/inspection_invoice/inspection_invoice_bloc.dart';
+import 'package:vetpro/bloc/login/auth_bloc.dart';
+import 'package:vetpro/bloc/logout/logout_bloc.dart';
+import 'package:vetpro/data/datasources/auth_local_datasource.dart';
+import 'package:vetpro/data/datasources/auth_remote_datasource.dart';
+import 'package:vetpro/data/datasources/inspection_remote_datasource.dart';
+import 'package:vetpro/views/auth/login_page.dart';
 
-void main() {
+import 'package:firebase_core/firebase_core.dart';
+import 'package:vetpro/views/home/home_page.dart';
+import 'bloc/list_inspection/list_inspection_bloc.dart';
+import 'firebase_options.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return GetMaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a blue toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-        //
-        // Notice that the counter didn't reset back to zero; the application
-        // state is not lost during the reload. To reset the state, use hot
-        // restart instead.
-        //
-        // This works for code too, not just values: Most code changes can be
-        // tested with just a hot reload.
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => LoginBloc(FirebasAuthDatasource()),
+        ),
+        BlocProvider(
+          create: (context) => LogoutBloc(FirebasAuthDatasource()),
+        ),
+        BlocProvider(
+          create: (context) => InspectionBloc(InspectionRemoteDatasource()),
+        ),
+        BlocProvider(
+          create: (context) => ListInspectionBloc(InspectionRemoteDatasource()),
+        ),
+        BlocProvider(
+          create: (context) => InspectionInvoiceBloc(),
+        ),
+      ],
+      child: GetMaterialApp(
+        debugShowCheckedModeBanner: false,
+        title: 'VetPro',
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+          useMaterial3: true,
+        ),
+        home: FutureBuilder<bool>(
+          future: AuthLocalDatasource().islogin(),
+          builder: (context, snapshot) {
+            if (snapshot.hasData && snapshot.data!) {
+              return const HomePage();
+            } else {
+              return const LoginPage();
+            }
+          },
+        ),
       ),
-      home: LoginPage(),
     );
   }
 }
