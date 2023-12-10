@@ -5,9 +5,14 @@ import 'package:vetpro/common/constants/colors.dart';
 import 'package:vetpro/common/constants/theme.dart';
 import 'package:vetpro/controller/invoice_controller.dart';
 
-class AddInvoicePage extends StatelessWidget {
+class AddInvoicePage extends StatefulWidget {
   const AddInvoicePage({super.key});
 
+  @override
+  State<AddInvoicePage> createState() => _AddInvoicePageState();
+}
+
+class _AddInvoicePageState extends State<AddInvoicePage> {
   @override
   Widget build(BuildContext context) {
     final invoiceC = Get.put(InvoiceController());
@@ -55,6 +60,9 @@ class AddInvoicePage extends StatelessWidget {
                           lastDate: DateTime(2025),
                         ).then((selectedDate) {
                           if (selectedDate != null) {
+                            setState(() {
+                              selectedDate = selectedDate;
+                            });
                             print(selectedDate);
                           }
                         });

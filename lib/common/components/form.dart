@@ -21,6 +21,8 @@ class CustomFormField extends StatelessWidget {
   final bool isShadow;
   final bool isBorder;
   final String? initialValue;
+  final VoidCallback? onTap;
+  final bool? readOnly;
 
   const CustomFormField({
     Key? key,
@@ -40,6 +42,8 @@ class CustomFormField extends StatelessWidget {
     this.isShadow = true,
     this.isBorder = false,
     this.initialValue,
+    this.onTap,
+    this.readOnly = false,
   }) : super(key: key);
 
   @override
@@ -72,6 +76,8 @@ class CustomFormField extends StatelessWidget {
               ),
           ], borderRadius: BorderRadius.circular(30)),
           child: TextFormField(
+            onTap: onTap,
+            readOnly: readOnly!,
             initialValue: initialValue,
             onChanged: onChanged,
             maxLines: maxLine,
