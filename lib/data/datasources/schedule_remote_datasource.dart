@@ -17,18 +17,6 @@ class ScheduleRemoteDatasource {
     );
 
     if (response.statusCode == 200) {
-      // final List<Schedule>? schedules =
-      //     ScheduleResponseModel.fromJson(response.body).data;
-
-      // final DateTime currentDate = DateTime.now();
-
-      // schedules!.removeWhere((schedule) =>
-      //     DateTime.parse(schedule.inspectionDate.toString())
-      //         .isBefore(currentDate));
-
-      // print(currentDate);
-
-      // return Right(ScheduleResponseModel(data: schedules));
       return Right(ScheduleResponseModel.fromJson(response.body));
     } else {
       return const Left('Server error. Contact admin please!');

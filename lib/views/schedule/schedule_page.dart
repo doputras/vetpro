@@ -5,6 +5,7 @@ import 'package:vetpro/common/constants/colors.dart';
 import 'package:vetpro/common/constants/theme.dart';
 import 'package:vetpro/common/extensions/date_format_ext.dart';
 import 'package:vetpro/controller/calendar_controller.dart';
+import 'package:vetpro/data/datasources/schedule_remote_datasource.dart';
 import 'package:vetpro/views/schedule/create_schedule_page.dart';
 import 'package:vetpro/views/schedule/detail_schedule_page.dart';
 import 'package:vetpro/views/schedule/edit_schedule_page.dart';
@@ -12,6 +13,7 @@ import 'package:vetpro/views/schedule/edit_schedule_page.dart';
 import '../../bloc/schedule/schedule_bloc.dart';
 import '../../common/components/list_card_widget.dart';
 import '../../common/components/tab_menu_widget.dart';
+import '../../data/models/schedule_response_model.dart';
 
 class SchedulePage extends StatefulWidget {
   const SchedulePage({super.key});
@@ -21,10 +23,46 @@ class SchedulePage extends StatefulWidget {
 }
 
 class _SchedulePageState extends State<SchedulePage> {
+  Future<void> _autoDeleteSchedules(List<Schedule> schedules) async {
+    final DateTime currentDate = DateTime.now();
+
+    // Find schedules that have inspection dates in the past
+    final List<Schedule> expiredSchedules = schedules
+        .where((schedule) => DateTime.parse(schedule.inspectionDate.toString())
+            .isBefore(currentDate))
+        .toList();
+
+    // Delete past schedules from the list
+    for (final expiredSchedule in expiredSchedules) {
+      if (DateTime.parse(expiredSchedule.inspectionDate.toString())
+              .isBefore(currentDate) &&
+          DateTime.parse(expiredSchedule.inspectionDate.toString()).day !=
+              currentDate.day) {
+        final deleteResponse = await ScheduleRemoteDatasource()
+            .deleteSchedule(expiredSchedule.id!);
+        deleteResponse.fold(
+          (error) => print(
+              'Error deleting schedule with id ${expiredSchedule.id}: $error'),
+          (success) => print(
+              'Schedule with id ${expiredSchedule.id} deleted successfully.'),
+        );
+      }
+    }
+  }
+
+  //filter date
+  List<Schedule> sortByInspectionDate(List<Schedule> schedules) {
+    schedules.sort((a, b) {
+      final DateTime dateA = DateTime.parse(a.inspectionDate.toString());
+      final DateTime dateB = DateTime.parse(b.inspectionDate.toString());
+      return dateB.compareTo(dateA);
+    });
+    return schedules;
+  }
+
   @override
   void initState() {
     context.read<ScheduleBloc>().add(const ScheduleEvent.getSchedule());
-
     super.initState();
   }
 
@@ -102,10 +140,12 @@ class _SchedulePageState extends State<SchedulePage> {
                           );
                         },
                         loadedGet: (model) {
+                          sortByInspectionDate(model.data ?? []);
+                          _autoDeleteSchedules(model.data ?? []);
                           if (model.data!.isEmpty) {
                             return Container(
                               alignment: Alignment.topCenter,
-                              width: MediaQuery.of(context).size.width * 0.5,
+                              width: double.infinity,
                               height: 500,
                               child: Center(
                                 child: Text(
