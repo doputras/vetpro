@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:vetpro/bloc/inspection/inspection_bloc.dart';
 import 'package:vetpro/bloc/inspection_invoice/inspection_invoice_bloc.dart';
 import 'package:vetpro/bloc/login/auth_bloc.dart';
 import 'package:vetpro/bloc/logout/logout_bloc.dart';
+import 'package:vetpro/bloc/schedule/schedule_bloc.dart';
 import 'package:vetpro/data/datasources/auth_local_datasource.dart';
 import 'package:vetpro/data/datasources/auth_remote_datasource.dart';
 import 'package:vetpro/data/datasources/inspection_remote_datasource.dart';
+import 'package:vetpro/data/datasources/schedule_remote_datasource.dart';
 import 'package:vetpro/views/auth/login_page.dart';
 
 import 'package:firebase_core/firebase_core.dart';
@@ -20,7 +23,9 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  runApp(const MyApp());
+  initializeDateFormatting('id_ID', null).then((_) {
+    runApp(const MyApp());
+  });
 }
 
 class MyApp extends StatelessWidget {
@@ -44,6 +49,9 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => InspectionInvoiceBloc(),
+        ),
+        BlocProvider(
+          create: (context) => ScheduleBloc(ScheduleRemoteDatasource()),
         ),
       ],
       child: GetMaterialApp(
