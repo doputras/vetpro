@@ -6,6 +6,7 @@ import '../constants/colors.dart';
 
 class ListCardWidget extends StatelessWidget {
   final VoidCallback? onTap;
+  final VoidCallback? onPressed;
   final Widget widget;
   final String text1;
   final String text2;
@@ -24,6 +25,7 @@ class ListCardWidget extends StatelessWidget {
       required this.widget,
       this.image,
       this.onTap,
+      this.onPressed,
       super.key});
 
   @override
@@ -124,13 +126,16 @@ class ListCardWidget extends StatelessWidget {
                 const Spacer(),
                 Expanded(
                   flex: 2,
-                  child: Container(
-                    height: 60,
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(20)),
-                    child: widget,
+                  child: GestureDetector(
+                    onTap: onPressed,
+                    child: Container(
+                      height: 60,
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(20)),
+                      child: widget,
+                    ),
                   ),
                 ),
               ],
