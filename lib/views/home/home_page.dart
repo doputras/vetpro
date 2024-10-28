@@ -145,7 +145,7 @@ class HomePage extends StatelessWidget {
             });
           },
         ),
-        bottomNavigationBar: TabMenuWidget(
+        bottomNavigationBar: const TabMenuWidget(
           menu: '1',
         ));
   }

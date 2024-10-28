@@ -1,10 +1,7 @@
-import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:vetpro/bloc/inspection_invoice/inspection_invoice_bloc.dart';
 import 'package:vetpro/common/constants/theme.dart';
 import 'package:vetpro/data/models/inspection_model.dart';
 
@@ -100,9 +97,9 @@ class _InvoicePageState extends State<InvoicePage> {
                             return ListCardWidget(
                               color: const Color.fromARGB(255, 223, 220, 220),
                               flag: '3',
-                              text1: inspection.inspector!,
+                              text1: inspection.inspector,
                               text2: "unpaid",
-                              text3: inspection.createdAt!,
+                              text3: inspection.animal,
                               widget: InkWell(
                                   onTap: () => Get.to(const AddInvoicePage()),
                                   child: Image.asset('assets/file.png')),

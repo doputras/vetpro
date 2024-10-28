@@ -99,7 +99,7 @@ class _AnimalInpectionPageState extends State<AnimalInpectionPage> {
               controller: reviewController,
               title: 'Hasil pemeriksaan hewan',
               fillColor: Colors.white,
-              maxLine: 6,
+              maxLine: 3,
             ),
             const SizedBox(
               height: 11,
@@ -108,7 +108,7 @@ class _AnimalInpectionPageState extends State<AnimalInpectionPage> {
               controller: animalController,
               title: 'Hewan',
               fillColor: Colors.white,
-              maxLine: 2,
+              maxLine: 1,
             ),
             // ChooseAnimalWidget(
             //   title: 'Pilih hewan',
@@ -123,7 +123,7 @@ class _AnimalInpectionPageState extends State<AnimalInpectionPage> {
               controller: createdAtController,
               title: 'Tanggal pemeriksaan',
               fillColor: Colors.white,
-              maxLine: 2,
+              maxLine: 1,
             ),
             const SizedBox(
               height: 11,
@@ -177,14 +177,14 @@ class _AnimalInpectionPageState extends State<AnimalInpectionPage> {
               controller: locationController,
               title: 'Lokasi',
               fillColor: Colors.white,
-              maxLine: 2,
+              maxLine: 1,
             ),
             const SizedBox(
               height: 11,
             ),
             CustomFormField(
               controller: inspectorController,
-              title: 'Nama Pemeriksaan',
+              title: 'Nama Pemeriksa',
               fillColor: Colors.white,
               maxLine: 2,
             ),
@@ -272,9 +272,7 @@ class _AnimalInpectionPageState extends State<AnimalInpectionPage> {
                         return InkWell(
                           onTap: () {
                             final dataModel = InspectionModel(
-                              animal: selectedItem ??
-                                  otherItem ??
-                                  animalController.text,
+                              animal: animalController.text,
                               cageTreatment: cageController.text,
                               environmentalCare: scopeController.text,
                               feeding: eatController.text,
@@ -283,7 +281,7 @@ class _AnimalInpectionPageState extends State<AnimalInpectionPage> {
                               medicalTreatment: medicalController.text,
                               suggestion: suggestionController.text,
                               result: reviewController.text,
-                              createdAt: createdAtController.text,
+                              date: createdAtController.text,
                             );
                             context
                                 .read<InspectionBloc>()

@@ -35,7 +35,7 @@ class DetailAnimalInpectionPage extends StatelessWidget {
               top: 20,
             ),
             child: Text(
-              inspectionModel.createdAt!,
+              inspectionModel.animal,
               style: blackTextStyle.copyWith(
                 fontSize: 18,
                 fontWeight: bold,
@@ -95,7 +95,7 @@ class DetailAnimalInpectionPage extends StatelessWidget {
                   ),
                   CustomFormField(
                     title: 'Pemberian makan',
-                    initialValue: inspectionModel.feeding!,
+                    initialValue: inspectionModel.feeding,
                     fillColor: Colors.white,
                     maxLine: 2,
                   ),
@@ -130,7 +130,7 @@ class DetailAnimalInpectionPage extends StatelessWidget {
                     height: 11,
                   ),
                   CustomFormField(
-                    title: inspectionModel.inspector!,
+                    title: inspectionModel.inspector,
                     initialValue: 'Dr. joe',
                     fillColor: Colors.white,
                     maxLine: 2,

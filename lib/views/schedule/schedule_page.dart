@@ -163,7 +163,7 @@ class ShcedulePage extends StatelessWidget {
           ),
         ],
       ),
-      bottomNavigationBar: TabMenuWidget(menu: '3'),
+      bottomNavigationBar: const TabMenuWidget(menu: '3'),
     );
   }
 }

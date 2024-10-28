@@ -104,7 +104,7 @@ class _HistoryPageState extends State<HistoryPage> {
                                   height: 10,
                                 ),
                                 Text(
-                                  inspection.createdAt!,
+                                  inspection.animal,
                                   style: blackTextStyle.copyWith(
                                     fontSize: 18,
                                     fontWeight: bold,
@@ -113,9 +113,9 @@ class _HistoryPageState extends State<HistoryPage> {
                                 ListCardWidget(
                                   color: secondaryColor,
                                   flag: '2',
-                                  text1: inspection.animal!,
+                                  text1: inspection.animal,
                                   text2: 'Telkom University',
-                                  text3: inspection.inspector!,
+                                  text3: inspection.inspector,
                                   image: 'assets/domba.png',
                                   widget: InkWell(
                                       onTap: () =>
