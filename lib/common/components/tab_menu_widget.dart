@@ -56,7 +56,7 @@ class TabMenuWidget extends StatelessWidget {
                 ),
               ),
               InkWell(
-                onTap: () => Get.to(const ShcedulePage()),
+                onTap: () => Get.to(const SchedulePage()),
                 child: Container(
                   margin: const EdgeInsets.all(8),
                   child: Column(
