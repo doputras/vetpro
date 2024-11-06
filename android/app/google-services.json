@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "21792207236",
-    "project_id": "vetpro-95350",
-    "storage_bucket": "vetpro-95350.appspot.com"
+    "project_number": "17077142592",
+    "project_id": "vetp-9624a",
+    "storage_bucket": "vetp-9624a.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:21792207236:android:5cfc586180ce7741212dd1",
+        "mobilesdk_app_id": "1:17077142592:android:0493ddcc9da0fe71170ba5",
         "android_client_info": {
           "package_name": "com.example.vetpro"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyAZhQAeTM1zsyZIDLoC2jmXup1sOkLUXzg"
+          "current_key": "AIzaSyADvbeKURwk9-tTXZD2eP-y7ulZV2wh2O4"
         }
       ],
       "services": {

@@ -1,29 +1,23 @@
 import 'package:flutter/material.dart';
-
 import 'package:vetpro/common/components/form.dart';
-
 import '../../../common/constants/colors.dart';
 
 class ChooseAnimalWidget extends StatefulWidget {
   final String title;
-  String? selectedAnimal;
-  String? otherAnimal;
-  //final TextEditingController? controller;
-  ChooseAnimalWidget({
-    Key? key,
+
+  const ChooseAnimalWidget({
+    super.key,
     required this.title,
-    this.selectedAnimal,
-    this.otherAnimal,
-    //this.controller,
-  }) : super(key: key);
+  });
 
   @override
-  _ChooseAnimalWidgetState createState() => _ChooseAnimalWidgetState();
+  ChooseAnimalWidgetState createState() => ChooseAnimalWidgetState();
 }
 
-class _ChooseAnimalWidgetState extends State<ChooseAnimalWidget> {
-  // String selectedAnimal = 'Domba';
-  // String otherAnimal = '';
+class ChooseAnimalWidgetState extends State<ChooseAnimalWidget> {
+  String? selectedAnimal;
+  String? otherAnimal;
+
   final animals = [
     'Domba',
     'Rusa',
@@ -54,23 +48,24 @@ class _ChooseAnimalWidgetState extends State<ChooseAnimalWidget> {
           height: 80,
           alignment: Alignment.centerLeft,
           decoration: BoxDecoration(
-              color: Colors.white,
-              boxShadow: [
-                BoxShadow(
-                  color: greyColor.withOpacity(0.8), // shadow color
-                  spreadRadius: -1, // shadow width
-                  blurRadius: 4, // level shadow
-                  offset: const Offset(0, 6), // Offset shadow (x, y)
-                ),
-              ],
-              borderRadius: BorderRadius.circular(30)),
+            color: Colors.white,
+            boxShadow: [
+              BoxShadow(
+                color: greyColor.withOpacity(0.8), // shadow color
+                spreadRadius: -1, // shadow width
+                blurRadius: 4, // shadow blur level
+                offset: const Offset(0, 6), // Offset shadow (x, y)
+              ),
+            ],
+            borderRadius: BorderRadius.circular(30),
+          ),
           child: DropdownButtonFormField<String>(
-            value: widget.selectedAnimal,
+            value: selectedAnimal,
             onChanged: (String? newValue) {
               setState(() {
-                widget.selectedAnimal = newValue!;
-                if (widget.selectedAnimal != 'Lainnya') {
-                  widget.otherAnimal = '';
+                selectedAnimal = newValue;
+                if (selectedAnimal != 'Lainnya') {
+                  otherAnimal = '';
                 }
               });
             },
@@ -104,7 +99,7 @@ class _ChooseAnimalWidgetState extends State<ChooseAnimalWidget> {
           ),
         ),
 
-        if (widget.selectedAnimal == 'Lainnya')
+        if (selectedAnimal == 'Lainnya')
           Column(
             children: [
               const SizedBox(
@@ -113,28 +108,15 @@ class _ChooseAnimalWidgetState extends State<ChooseAnimalWidget> {
               CustomFormField(
                 onChanged: (value) {
                   setState(() {
-                    widget.otherAnimal = value;
+                    otherAnimal = value;
                   });
                 },
                 title: 'Tulis nama hewan',
                 fillColor: Colors.white,
                 maxLine: 2,
-                //controller: widget.controller,
               ),
             ],
           ),
-        // ElevatedButton(
-        //   onPressed: () {
-        //     if (selectedAnimal == 'Lainnya') {
-        //       // Use otherAnimal variable for the input
-        //       print('Hewan baru: $otherAnimal');
-        //     } else {
-        //       // Use selectedAnimal variable for the input
-        //       print('Hewan dipilih: $selectedAnimal');
-        //     }
-        //   },
-        //   child: const Text('Submit'),
-        // ),
       ],
     );
   }

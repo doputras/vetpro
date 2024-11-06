@@ -10,9 +10,9 @@ import '../../common/constants/theme.dart';
 class DetailAnimalInpectionPage extends StatelessWidget {
   final InspectionModel inspectionModel;
   const DetailAnimalInpectionPage({
-    Key? key,
+    super.key,
     required this.inspectionModel,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

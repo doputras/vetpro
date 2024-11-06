@@ -25,7 +25,7 @@ class CustomFormField extends StatelessWidget {
   final bool? readOnly;
 
   const CustomFormField({
-    Key? key,
+    super.key,
     required this.title,
     this.obscureText = false,
     this.controller,
@@ -44,7 +44,7 @@ class CustomFormField extends StatelessWidget {
     this.initialValue,
     this.onTap,
     this.readOnly = false,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

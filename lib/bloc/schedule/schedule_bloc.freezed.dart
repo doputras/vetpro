@@ -12,7 +12,7 @@ part of 'schedule_bloc.dart';
 T _$identity<T>(T value) => value;
 
 final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
+    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
 /// @nodoc
 mixin _$ScheduleEvent {
@@ -24,7 +24,6 @@ mixin _$ScheduleEvent {
     required TResult Function(int id, ScheduleRequestModel model)
         updateSchedule,
     required TResult Function(int id) deleteSchedule,
-    required TResult Function() deleteExpSchedule,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -34,7 +33,6 @@ mixin _$ScheduleEvent {
     TResult? Function(ScheduleRequestModel model)? createSchedule,
     TResult? Function(int id, ScheduleRequestModel model)? updateSchedule,
     TResult? Function(int id)? deleteSchedule,
-    TResult? Function()? deleteExpSchedule,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -44,7 +42,6 @@ mixin _$ScheduleEvent {
     TResult Function(ScheduleRequestModel model)? createSchedule,
     TResult Function(int id, ScheduleRequestModel model)? updateSchedule,
     TResult Function(int id)? deleteSchedule,
-    TResult Function()? deleteExpSchedule,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -55,7 +52,6 @@ mixin _$ScheduleEvent {
     required TResult Function(_CreateSchedule value) createSchedule,
     required TResult Function(_UpdateSchedule value) updateSchedule,
     required TResult Function(_DeleteSchedule value) deleteSchedule,
-    required TResult Function(_DeleteExpSchedule value) deleteExpSchedule,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -65,7 +61,6 @@ mixin _$ScheduleEvent {
     TResult? Function(_CreateSchedule value)? createSchedule,
     TResult? Function(_UpdateSchedule value)? updateSchedule,
     TResult? Function(_DeleteSchedule value)? deleteSchedule,
-    TResult? Function(_DeleteExpSchedule value)? deleteExpSchedule,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -75,7 +70,6 @@ mixin _$ScheduleEvent {
     TResult Function(_CreateSchedule value)? createSchedule,
     TResult Function(_UpdateSchedule value)? updateSchedule,
     TResult Function(_DeleteSchedule value)? deleteSchedule,
-    TResult Function(_DeleteExpSchedule value)? deleteExpSchedule,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -126,7 +120,7 @@ class _$StartedImpl implements _Started {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType && other is _$StartedImpl);
   }
@@ -143,7 +137,6 @@ class _$StartedImpl implements _Started {
     required TResult Function(int id, ScheduleRequestModel model)
         updateSchedule,
     required TResult Function(int id) deleteSchedule,
-    required TResult Function() deleteExpSchedule,
   }) {
     return started();
   }
@@ -156,7 +149,6 @@ class _$StartedImpl implements _Started {
     TResult? Function(ScheduleRequestModel model)? createSchedule,
     TResult? Function(int id, ScheduleRequestModel model)? updateSchedule,
     TResult? Function(int id)? deleteSchedule,
-    TResult? Function()? deleteExpSchedule,
   }) {
     return started?.call();
   }
@@ -169,7 +161,6 @@ class _$StartedImpl implements _Started {
     TResult Function(ScheduleRequestModel model)? createSchedule,
     TResult Function(int id, ScheduleRequestModel model)? updateSchedule,
     TResult Function(int id)? deleteSchedule,
-    TResult Function()? deleteExpSchedule,
     required TResult orElse(),
   }) {
     if (started != null) {
@@ -186,7 +177,6 @@ class _$StartedImpl implements _Started {
     required TResult Function(_CreateSchedule value) createSchedule,
     required TResult Function(_UpdateSchedule value) updateSchedule,
     required TResult Function(_DeleteSchedule value) deleteSchedule,
-    required TResult Function(_DeleteExpSchedule value) deleteExpSchedule,
   }) {
     return started(this);
   }
@@ -199,7 +189,6 @@ class _$StartedImpl implements _Started {
     TResult? Function(_CreateSchedule value)? createSchedule,
     TResult? Function(_UpdateSchedule value)? updateSchedule,
     TResult? Function(_DeleteSchedule value)? deleteSchedule,
-    TResult? Function(_DeleteExpSchedule value)? deleteExpSchedule,
   }) {
     return started?.call(this);
   }
@@ -212,7 +201,6 @@ class _$StartedImpl implements _Started {
     TResult Function(_CreateSchedule value)? createSchedule,
     TResult Function(_UpdateSchedule value)? updateSchedule,
     TResult Function(_DeleteSchedule value)? deleteSchedule,
-    TResult Function(_DeleteExpSchedule value)? deleteExpSchedule,
     required TResult orElse(),
   }) {
     if (started != null) {
@@ -253,7 +241,7 @@ class _$GetScheduleImpl implements _GetSchedule {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType && other is _$GetScheduleImpl);
   }
@@ -270,7 +258,6 @@ class _$GetScheduleImpl implements _GetSchedule {
     required TResult Function(int id, ScheduleRequestModel model)
         updateSchedule,
     required TResult Function(int id) deleteSchedule,
-    required TResult Function() deleteExpSchedule,
   }) {
     return getSchedule();
   }
@@ -283,7 +270,6 @@ class _$GetScheduleImpl implements _GetSchedule {
     TResult? Function(ScheduleRequestModel model)? createSchedule,
     TResult? Function(int id, ScheduleRequestModel model)? updateSchedule,
     TResult? Function(int id)? deleteSchedule,
-    TResult? Function()? deleteExpSchedule,
   }) {
     return getSchedule?.call();
   }
@@ -296,7 +282,6 @@ class _$GetScheduleImpl implements _GetSchedule {
     TResult Function(ScheduleRequestModel model)? createSchedule,
     TResult Function(int id, ScheduleRequestModel model)? updateSchedule,
     TResult Function(int id)? deleteSchedule,
-    TResult Function()? deleteExpSchedule,
     required TResult orElse(),
   }) {
     if (getSchedule != null) {
@@ -313,7 +298,6 @@ class _$GetScheduleImpl implements _GetSchedule {
     required TResult Function(_CreateSchedule value) createSchedule,
     required TResult Function(_UpdateSchedule value) updateSchedule,
     required TResult Function(_DeleteSchedule value) deleteSchedule,
-    required TResult Function(_DeleteExpSchedule value) deleteExpSchedule,
   }) {
     return getSchedule(this);
   }
@@ -326,7 +310,6 @@ class _$GetScheduleImpl implements _GetSchedule {
     TResult? Function(_CreateSchedule value)? createSchedule,
     TResult? Function(_UpdateSchedule value)? updateSchedule,
     TResult? Function(_DeleteSchedule value)? deleteSchedule,
-    TResult? Function(_DeleteExpSchedule value)? deleteExpSchedule,
   }) {
     return getSchedule?.call(this);
   }
@@ -339,7 +322,6 @@ class _$GetScheduleImpl implements _GetSchedule {
     TResult Function(_CreateSchedule value)? createSchedule,
     TResult Function(_UpdateSchedule value)? updateSchedule,
     TResult Function(_DeleteSchedule value)? deleteSchedule,
-    TResult Function(_DeleteExpSchedule value)? deleteExpSchedule,
     required TResult orElse(),
   }) {
     if (getSchedule != null) {
@@ -398,7 +380,7 @@ class _$CreateScheduleImpl implements _CreateSchedule {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$CreateScheduleImpl &&
@@ -424,7 +406,6 @@ class _$CreateScheduleImpl implements _CreateSchedule {
     required TResult Function(int id, ScheduleRequestModel model)
         updateSchedule,
     required TResult Function(int id) deleteSchedule,
-    required TResult Function() deleteExpSchedule,
   }) {
     return createSchedule(model);
   }
@@ -437,7 +418,6 @@ class _$CreateScheduleImpl implements _CreateSchedule {
     TResult? Function(ScheduleRequestModel model)? createSchedule,
     TResult? Function(int id, ScheduleRequestModel model)? updateSchedule,
     TResult? Function(int id)? deleteSchedule,
-    TResult? Function()? deleteExpSchedule,
   }) {
     return createSchedule?.call(model);
   }
@@ -450,7 +430,6 @@ class _$CreateScheduleImpl implements _CreateSchedule {
     TResult Function(ScheduleRequestModel model)? createSchedule,
     TResult Function(int id, ScheduleRequestModel model)? updateSchedule,
     TResult Function(int id)? deleteSchedule,
-    TResult Function()? deleteExpSchedule,
     required TResult orElse(),
   }) {
     if (createSchedule != null) {
@@ -467,7 +446,6 @@ class _$CreateScheduleImpl implements _CreateSchedule {
     required TResult Function(_CreateSchedule value) createSchedule,
     required TResult Function(_UpdateSchedule value) updateSchedule,
     required TResult Function(_DeleteSchedule value) deleteSchedule,
-    required TResult Function(_DeleteExpSchedule value) deleteExpSchedule,
   }) {
     return createSchedule(this);
   }
@@ -480,7 +458,6 @@ class _$CreateScheduleImpl implements _CreateSchedule {
     TResult? Function(_CreateSchedule value)? createSchedule,
     TResult? Function(_UpdateSchedule value)? updateSchedule,
     TResult? Function(_DeleteSchedule value)? deleteSchedule,
-    TResult? Function(_DeleteExpSchedule value)? deleteExpSchedule,
   }) {
     return createSchedule?.call(this);
   }
@@ -493,7 +470,6 @@ class _$CreateScheduleImpl implements _CreateSchedule {
     TResult Function(_CreateSchedule value)? createSchedule,
     TResult Function(_UpdateSchedule value)? updateSchedule,
     TResult Function(_DeleteSchedule value)? deleteSchedule,
-    TResult Function(_DeleteExpSchedule value)? deleteExpSchedule,
     required TResult orElse(),
   }) {
     if (createSchedule != null) {
@@ -565,7 +541,7 @@ class _$UpdateScheduleImpl implements _UpdateSchedule {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$UpdateScheduleImpl &&
@@ -592,7 +568,6 @@ class _$UpdateScheduleImpl implements _UpdateSchedule {
     required TResult Function(int id, ScheduleRequestModel model)
         updateSchedule,
     required TResult Function(int id) deleteSchedule,
-    required TResult Function() deleteExpSchedule,
   }) {
     return updateSchedule(id, model);
   }
@@ -605,7 +580,6 @@ class _$UpdateScheduleImpl implements _UpdateSchedule {
     TResult? Function(ScheduleRequestModel model)? createSchedule,
     TResult? Function(int id, ScheduleRequestModel model)? updateSchedule,
     TResult? Function(int id)? deleteSchedule,
-    TResult? Function()? deleteExpSchedule,
   }) {
     return updateSchedule?.call(id, model);
   }
@@ -618,7 +592,6 @@ class _$UpdateScheduleImpl implements _UpdateSchedule {
     TResult Function(ScheduleRequestModel model)? createSchedule,
     TResult Function(int id, ScheduleRequestModel model)? updateSchedule,
     TResult Function(int id)? deleteSchedule,
-    TResult Function()? deleteExpSchedule,
     required TResult orElse(),
   }) {
     if (updateSchedule != null) {
@@ -635,7 +608,6 @@ class _$UpdateScheduleImpl implements _UpdateSchedule {
     required TResult Function(_CreateSchedule value) createSchedule,
     required TResult Function(_UpdateSchedule value) updateSchedule,
     required TResult Function(_DeleteSchedule value) deleteSchedule,
-    required TResult Function(_DeleteExpSchedule value) deleteExpSchedule,
   }) {
     return updateSchedule(this);
   }
@@ -648,7 +620,6 @@ class _$UpdateScheduleImpl implements _UpdateSchedule {
     TResult? Function(_CreateSchedule value)? createSchedule,
     TResult? Function(_UpdateSchedule value)? updateSchedule,
     TResult? Function(_DeleteSchedule value)? deleteSchedule,
-    TResult? Function(_DeleteExpSchedule value)? deleteExpSchedule,
   }) {
     return updateSchedule?.call(this);
   }
@@ -661,7 +632,6 @@ class _$UpdateScheduleImpl implements _UpdateSchedule {
     TResult Function(_CreateSchedule value)? createSchedule,
     TResult Function(_UpdateSchedule value)? updateSchedule,
     TResult Function(_DeleteSchedule value)? deleteSchedule,
-    TResult Function(_DeleteExpSchedule value)? deleteExpSchedule,
     required TResult orElse(),
   }) {
     if (updateSchedule != null) {
@@ -727,7 +697,7 @@ class _$DeleteScheduleImpl implements _DeleteSchedule {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$DeleteScheduleImpl &&
@@ -753,7 +723,6 @@ class _$DeleteScheduleImpl implements _DeleteSchedule {
     required TResult Function(int id, ScheduleRequestModel model)
         updateSchedule,
     required TResult Function(int id) deleteSchedule,
-    required TResult Function() deleteExpSchedule,
   }) {
     return deleteSchedule(id);
   }
@@ -766,7 +735,6 @@ class _$DeleteScheduleImpl implements _DeleteSchedule {
     TResult? Function(ScheduleRequestModel model)? createSchedule,
     TResult? Function(int id, ScheduleRequestModel model)? updateSchedule,
     TResult? Function(int id)? deleteSchedule,
-    TResult? Function()? deleteExpSchedule,
   }) {
     return deleteSchedule?.call(id);
   }
@@ -779,7 +747,6 @@ class _$DeleteScheduleImpl implements _DeleteSchedule {
     TResult Function(ScheduleRequestModel model)? createSchedule,
     TResult Function(int id, ScheduleRequestModel model)? updateSchedule,
     TResult Function(int id)? deleteSchedule,
-    TResult Function()? deleteExpSchedule,
     required TResult orElse(),
   }) {
     if (deleteSchedule != null) {
@@ -796,7 +763,6 @@ class _$DeleteScheduleImpl implements _DeleteSchedule {
     required TResult Function(_CreateSchedule value) createSchedule,
     required TResult Function(_UpdateSchedule value) updateSchedule,
     required TResult Function(_DeleteSchedule value) deleteSchedule,
-    required TResult Function(_DeleteExpSchedule value) deleteExpSchedule,
   }) {
     return deleteSchedule(this);
   }
@@ -809,7 +775,6 @@ class _$DeleteScheduleImpl implements _DeleteSchedule {
     TResult? Function(_CreateSchedule value)? createSchedule,
     TResult? Function(_UpdateSchedule value)? updateSchedule,
     TResult? Function(_DeleteSchedule value)? deleteSchedule,
-    TResult? Function(_DeleteExpSchedule value)? deleteExpSchedule,
   }) {
     return deleteSchedule?.call(this);
   }
@@ -822,7 +787,6 @@ class _$DeleteScheduleImpl implements _DeleteSchedule {
     TResult Function(_CreateSchedule value)? createSchedule,
     TResult Function(_UpdateSchedule value)? updateSchedule,
     TResult Function(_DeleteSchedule value)? deleteSchedule,
-    TResult Function(_DeleteExpSchedule value)? deleteExpSchedule,
     required TResult orElse(),
   }) {
     if (deleteSchedule != null) {
@@ -839,133 +803,6 @@ abstract class _DeleteSchedule implements ScheduleEvent {
   @JsonKey(ignore: true)
   _$$DeleteScheduleImplCopyWith<_$DeleteScheduleImpl> get copyWith =>
       throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class _$$DeleteExpScheduleImplCopyWith<$Res> {
-  factory _$$DeleteExpScheduleImplCopyWith(_$DeleteExpScheduleImpl value,
-          $Res Function(_$DeleteExpScheduleImpl) then) =
-      __$$DeleteExpScheduleImplCopyWithImpl<$Res>;
-}
-
-/// @nodoc
-class __$$DeleteExpScheduleImplCopyWithImpl<$Res>
-    extends _$ScheduleEventCopyWithImpl<$Res, _$DeleteExpScheduleImpl>
-    implements _$$DeleteExpScheduleImplCopyWith<$Res> {
-  __$$DeleteExpScheduleImplCopyWithImpl(_$DeleteExpScheduleImpl _value,
-      $Res Function(_$DeleteExpScheduleImpl) _then)
-      : super(_value, _then);
-}
-
-/// @nodoc
-
-class _$DeleteExpScheduleImpl implements _DeleteExpSchedule {
-  const _$DeleteExpScheduleImpl();
-
-  @override
-  String toString() {
-    return 'ScheduleEvent.deleteExpSchedule()';
-  }
-
-  @override
-  bool operator ==(dynamic other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is _$DeleteExpScheduleImpl);
-  }
-
-  @override
-  int get hashCode => runtimeType.hashCode;
-
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function() started,
-    required TResult Function() getSchedule,
-    required TResult Function(ScheduleRequestModel model) createSchedule,
-    required TResult Function(int id, ScheduleRequestModel model)
-        updateSchedule,
-    required TResult Function(int id) deleteSchedule,
-    required TResult Function() deleteExpSchedule,
-  }) {
-    return deleteExpSchedule();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? started,
-    TResult? Function()? getSchedule,
-    TResult? Function(ScheduleRequestModel model)? createSchedule,
-    TResult? Function(int id, ScheduleRequestModel model)? updateSchedule,
-    TResult? Function(int id)? deleteSchedule,
-    TResult? Function()? deleteExpSchedule,
-  }) {
-    return deleteExpSchedule?.call();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? started,
-    TResult Function()? getSchedule,
-    TResult Function(ScheduleRequestModel model)? createSchedule,
-    TResult Function(int id, ScheduleRequestModel model)? updateSchedule,
-    TResult Function(int id)? deleteSchedule,
-    TResult Function()? deleteExpSchedule,
-    required TResult orElse(),
-  }) {
-    if (deleteExpSchedule != null) {
-      return deleteExpSchedule();
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(_Started value) started,
-    required TResult Function(_GetSchedule value) getSchedule,
-    required TResult Function(_CreateSchedule value) createSchedule,
-    required TResult Function(_UpdateSchedule value) updateSchedule,
-    required TResult Function(_DeleteSchedule value) deleteSchedule,
-    required TResult Function(_DeleteExpSchedule value) deleteExpSchedule,
-  }) {
-    return deleteExpSchedule(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(_Started value)? started,
-    TResult? Function(_GetSchedule value)? getSchedule,
-    TResult? Function(_CreateSchedule value)? createSchedule,
-    TResult? Function(_UpdateSchedule value)? updateSchedule,
-    TResult? Function(_DeleteSchedule value)? deleteSchedule,
-    TResult? Function(_DeleteExpSchedule value)? deleteExpSchedule,
-  }) {
-    return deleteExpSchedule?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(_Started value)? started,
-    TResult Function(_GetSchedule value)? getSchedule,
-    TResult Function(_CreateSchedule value)? createSchedule,
-    TResult Function(_UpdateSchedule value)? updateSchedule,
-    TResult Function(_DeleteSchedule value)? deleteSchedule,
-    TResult Function(_DeleteExpSchedule value)? deleteExpSchedule,
-    required TResult orElse(),
-  }) {
-    if (deleteExpSchedule != null) {
-      return deleteExpSchedule(this);
-    }
-    return orElse();
-  }
-}
-
-abstract class _DeleteExpSchedule implements ScheduleEvent {
-  const factory _DeleteExpSchedule() = _$DeleteExpScheduleImpl;
 }
 
 /// @nodoc
@@ -1085,7 +922,7 @@ class _$InitialImpl implements _Initial {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType && other is _$InitialImpl);
   }
@@ -1217,7 +1054,7 @@ class _$LoadingImpl implements _Loading {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType && other is _$LoadingImpl);
   }
@@ -1367,7 +1204,7 @@ class _$LoadedGetImpl implements _LoadedGet {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$LoadedGetImpl &&
@@ -1530,7 +1367,7 @@ class _$LoadedCreateImpl implements _LoadedCreate {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$LoadedCreateImpl &&
@@ -1693,7 +1530,7 @@ class _$LoadedUpdateImpl implements _LoadedUpdate {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$LoadedUpdateImpl &&
@@ -1856,7 +1693,7 @@ class _$LoadedDeleteImpl implements _LoadedDelete {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$LoadedDeleteImpl &&
@@ -2019,7 +1856,7 @@ class _$ErrorImpl implements _Error {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$ErrorImpl &&

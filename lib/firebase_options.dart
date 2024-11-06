@@ -17,10 +17,7 @@ import 'package:flutter/foundation.dart'
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
-      throw UnsupportedError(
-        'DefaultFirebaseOptions have not been configured for web - '
-        'you can reconfigure this by running the FlutterFire CLI again.',
-      );
+      return web;
     }
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
@@ -28,15 +25,9 @@ class DefaultFirebaseOptions {
       case TargetPlatform.iOS:
         return ios;
       case TargetPlatform.macOS:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for macos - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return macos;
       case TargetPlatform.windows:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for windows - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return windows;
       case TargetPlatform.linux:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for linux - '
@@ -50,19 +41,49 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyAZhQAeTM1zsyZIDLoC2jmXup1sOkLUXzg',
-    appId: '1:21792207236:android:5cfc586180ce7741212dd1',
-    messagingSenderId: '21792207236',
-    projectId: 'vetpro-95350',
-    storageBucket: 'vetpro-95350.appspot.com',
+    apiKey: 'AIzaSyADvbeKURwk9-tTXZD2eP-y7ulZV2wh2O4',
+    appId: '1:17077142592:android:0493ddcc9da0fe71170ba5',
+    messagingSenderId: '17077142592',
+    projectId: 'vetp-9624a',
+    storageBucket: 'vetp-9624a.firebasestorage.app',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyD35t2pV6FESTzAS1NgR5YhpdJJeAI-9GA',
-    appId: '1:21792207236:ios:0b5c427815176bd0212dd1',
-    messagingSenderId: '21792207236',
-    projectId: 'vetpro-95350',
-    storageBucket: 'vetpro-95350.appspot.com',
+    apiKey: 'AIzaSyBmGM5EycnIAUwfmKQAov-xXEAlC6QIVkA',
+    appId: '1:17077142592:ios:c3bb8699505271b2170ba5',
+    messagingSenderId: '17077142592',
+    projectId: 'vetp-9624a',
+    storageBucket: 'vetp-9624a.firebasestorage.app',
     iosBundleId: 'com.example.vetpro',
   );
+
+  static const FirebaseOptions web = FirebaseOptions(
+    apiKey: 'AIzaSyDiQtl4lut9-wpWTklmWvIqAFzx24QziKE',
+    appId: '1:17077142592:web:1b6def45c0ff2532170ba5',
+    messagingSenderId: '17077142592',
+    projectId: 'vetp-9624a',
+    authDomain: 'vetp-9624a.firebaseapp.com',
+    storageBucket: 'vetp-9624a.firebasestorage.app',
+    measurementId: 'G-DG94DB5R03',
+  );
+
+  static const FirebaseOptions macos = FirebaseOptions(
+    apiKey: 'AIzaSyBmGM5EycnIAUwfmKQAov-xXEAlC6QIVkA',
+    appId: '1:17077142592:ios:c3bb8699505271b2170ba5',
+    messagingSenderId: '17077142592',
+    projectId: 'vetp-9624a',
+    storageBucket: 'vetp-9624a.firebasestorage.app',
+    iosBundleId: 'com.example.vetpro',
+  );
+
+  static const FirebaseOptions windows = FirebaseOptions(
+    apiKey: 'AIzaSyDiQtl4lut9-wpWTklmWvIqAFzx24QziKE',
+    appId: '1:17077142592:web:81990d3105af5983170ba5',
+    messagingSenderId: '17077142592',
+    projectId: 'vetp-9624a',
+    authDomain: 'vetp-9624a.firebaseapp.com',
+    storageBucket: 'vetp-9624a.firebasestorage.app',
+    measurementId: 'G-S9NMKF1K8G',
+  );
+
 }

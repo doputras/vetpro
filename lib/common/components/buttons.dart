@@ -17,7 +17,7 @@ class CustomFilledButton extends StatelessWidget {
   final VoidCallback? onPressed;
 
   const CustomFilledButton({
-    Key? key,
+    super.key,
     required this.title,
     this.width = double.infinity,
     this.height = 55,
@@ -26,7 +26,7 @@ class CustomFilledButton extends StatelessWidget {
     this.buttonColor = secondaryColor,
     this.onPressed,
     this.fontColor = whiteColor,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -68,7 +68,7 @@ class CustomTextButton extends StatelessWidget {
   final Color buttonColor;
   final IconData icon;
   const CustomTextButton({
-    Key? key,
+    super.key,
     required this.title,
     this.subTitle,
     this.width = double.infinity,
@@ -83,7 +83,7 @@ class CustomTextButton extends StatelessWidget {
     this.onPressed,
     this.buttonColor = Colors.transparent,
     this.icon = Icons.arrow_back_rounded,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

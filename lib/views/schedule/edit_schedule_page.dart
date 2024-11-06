@@ -1,5 +1,4 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -16,9 +15,9 @@ import '../../data/models/schedule_request_model.dart';
 class EditSchedulePage extends StatefulWidget {
   final Schedule schedule;
   const EditSchedulePage({
-    Key? key,
+    super.key,
     required this.schedule,
-  }) : super(key: key);
+  });
 
   @override
   State<EditSchedulePage> createState() => _EditSchedulePageState();

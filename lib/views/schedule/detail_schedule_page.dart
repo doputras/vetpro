@@ -1,5 +1,4 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -16,9 +15,9 @@ import '../../common/constants/theme.dart';
 class DetailSchedulePage extends StatelessWidget {
   final Schedule schedule;
   const DetailSchedulePage({
-    Key? key,
+    super.key,
     required this.schedule,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
