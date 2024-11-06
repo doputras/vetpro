@@ -4,7 +4,7 @@ import 'package:dartz/dartz.dart';
 import 'package:vetpro/data/models/inspection_model.dart';
 
 class InspectionRemoteDatasource {
-  final String apiUrl = "http://192.168.100.105:8000/api/inspections";
+  final String apiUrl = "http://10.0.2.2:8000/api/inspections";
 
   Future<Either<String, InspectionModel>> addInspection(InspectionModel data) async {
     try {
