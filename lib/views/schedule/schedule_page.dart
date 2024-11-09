@@ -109,7 +109,7 @@ class _SchedulePageState extends State<SchedulePage> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        'List Schedule',
+                        'Upcoming Schedules',
                         style: blackTextStyle.copyWith(
                             fontSize: 18, fontWeight: bold),
                       ),
@@ -140,8 +140,8 @@ class _SchedulePageState extends State<SchedulePage> {
                         );
                       },
                       loadedGet: (model) {
-                        _autoDeleteSchedules(model.data ?? []);
-                        sortByInspectionDate(model.data ?? []);
+                        _autoDeleteSchedules(model.data);
+                        sortByInspectionDate(model.data);
                         if (model.data!.isEmpty) {
                           return Container(
                             alignment: Alignment.topCenter,

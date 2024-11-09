@@ -20,24 +20,21 @@ mixin _$InspectionEvent {
   TResult when<TResult extends Object?>({
     required TResult Function() started,
     required TResult Function(InspectionModel data) addInspection,
-    required TResult Function() updateInspection,
-    required TResult Function() deleteInspection,
+    required TResult Function() fetchMostRecentInspection,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? started,
     TResult? Function(InspectionModel data)? addInspection,
-    TResult? Function()? updateInspection,
-    TResult? Function()? deleteInspection,
+    TResult? Function()? fetchMostRecentInspection,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? started,
     TResult Function(InspectionModel data)? addInspection,
-    TResult Function()? updateInspection,
-    TResult Function()? deleteInspection,
+    TResult Function()? fetchMostRecentInspection,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -45,24 +42,24 @@ mixin _$InspectionEvent {
   TResult map<TResult extends Object?>({
     required TResult Function(_Started value) started,
     required TResult Function(_AddInspection value) addInspection,
-    required TResult Function(_UpdateInspection value) updateInspection,
-    required TResult Function(_DeleteInspection value) deleteInspection,
+    required TResult Function(_FetchMostRecentInspection value)
+        fetchMostRecentInspection,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(_Started value)? started,
     TResult? Function(_AddInspection value)? addInspection,
-    TResult? Function(_UpdateInspection value)? updateInspection,
-    TResult? Function(_DeleteInspection value)? deleteInspection,
+    TResult? Function(_FetchMostRecentInspection value)?
+        fetchMostRecentInspection,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(_Started value)? started,
     TResult Function(_AddInspection value)? addInspection,
-    TResult Function(_UpdateInspection value)? updateInspection,
-    TResult Function(_DeleteInspection value)? deleteInspection,
+    TResult Function(_FetchMostRecentInspection value)?
+        fetchMostRecentInspection,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -126,8 +123,7 @@ class _$StartedImpl implements _Started {
   TResult when<TResult extends Object?>({
     required TResult Function() started,
     required TResult Function(InspectionModel data) addInspection,
-    required TResult Function() updateInspection,
-    required TResult Function() deleteInspection,
+    required TResult Function() fetchMostRecentInspection,
   }) {
     return started();
   }
@@ -137,8 +133,7 @@ class _$StartedImpl implements _Started {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? started,
     TResult? Function(InspectionModel data)? addInspection,
-    TResult? Function()? updateInspection,
-    TResult? Function()? deleteInspection,
+    TResult? Function()? fetchMostRecentInspection,
   }) {
     return started?.call();
   }
@@ -148,8 +143,7 @@ class _$StartedImpl implements _Started {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? started,
     TResult Function(InspectionModel data)? addInspection,
-    TResult Function()? updateInspection,
-    TResult Function()? deleteInspection,
+    TResult Function()? fetchMostRecentInspection,
     required TResult orElse(),
   }) {
     if (started != null) {
@@ -163,8 +157,8 @@ class _$StartedImpl implements _Started {
   TResult map<TResult extends Object?>({
     required TResult Function(_Started value) started,
     required TResult Function(_AddInspection value) addInspection,
-    required TResult Function(_UpdateInspection value) updateInspection,
-    required TResult Function(_DeleteInspection value) deleteInspection,
+    required TResult Function(_FetchMostRecentInspection value)
+        fetchMostRecentInspection,
   }) {
     return started(this);
   }
@@ -174,8 +168,8 @@ class _$StartedImpl implements _Started {
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(_Started value)? started,
     TResult? Function(_AddInspection value)? addInspection,
-    TResult? Function(_UpdateInspection value)? updateInspection,
-    TResult? Function(_DeleteInspection value)? deleteInspection,
+    TResult? Function(_FetchMostRecentInspection value)?
+        fetchMostRecentInspection,
   }) {
     return started?.call(this);
   }
@@ -185,8 +179,8 @@ class _$StartedImpl implements _Started {
   TResult maybeMap<TResult extends Object?>({
     TResult Function(_Started value)? started,
     TResult Function(_AddInspection value)? addInspection,
-    TResult Function(_UpdateInspection value)? updateInspection,
-    TResult Function(_DeleteInspection value)? deleteInspection,
+    TResult Function(_FetchMostRecentInspection value)?
+        fetchMostRecentInspection,
     required TResult orElse(),
   }) {
     if (started != null) {
@@ -266,8 +260,7 @@ class _$AddInspectionImpl implements _AddInspection {
   TResult when<TResult extends Object?>({
     required TResult Function() started,
     required TResult Function(InspectionModel data) addInspection,
-    required TResult Function() updateInspection,
-    required TResult Function() deleteInspection,
+    required TResult Function() fetchMostRecentInspection,
   }) {
     return addInspection(data);
   }
@@ -277,8 +270,7 @@ class _$AddInspectionImpl implements _AddInspection {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? started,
     TResult? Function(InspectionModel data)? addInspection,
-    TResult? Function()? updateInspection,
-    TResult? Function()? deleteInspection,
+    TResult? Function()? fetchMostRecentInspection,
   }) {
     return addInspection?.call(data);
   }
@@ -288,8 +280,7 @@ class _$AddInspectionImpl implements _AddInspection {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? started,
     TResult Function(InspectionModel data)? addInspection,
-    TResult Function()? updateInspection,
-    TResult Function()? deleteInspection,
+    TResult Function()? fetchMostRecentInspection,
     required TResult orElse(),
   }) {
     if (addInspection != null) {
@@ -303,8 +294,8 @@ class _$AddInspectionImpl implements _AddInspection {
   TResult map<TResult extends Object?>({
     required TResult Function(_Started value) started,
     required TResult Function(_AddInspection value) addInspection,
-    required TResult Function(_UpdateInspection value) updateInspection,
-    required TResult Function(_DeleteInspection value) deleteInspection,
+    required TResult Function(_FetchMostRecentInspection value)
+        fetchMostRecentInspection,
   }) {
     return addInspection(this);
   }
@@ -314,8 +305,8 @@ class _$AddInspectionImpl implements _AddInspection {
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(_Started value)? started,
     TResult? Function(_AddInspection value)? addInspection,
-    TResult? Function(_UpdateInspection value)? updateInspection,
-    TResult? Function(_DeleteInspection value)? deleteInspection,
+    TResult? Function(_FetchMostRecentInspection value)?
+        fetchMostRecentInspection,
   }) {
     return addInspection?.call(this);
   }
@@ -325,8 +316,8 @@ class _$AddInspectionImpl implements _AddInspection {
   TResult maybeMap<TResult extends Object?>({
     TResult Function(_Started value)? started,
     TResult Function(_AddInspection value)? addInspection,
-    TResult Function(_UpdateInspection value)? updateInspection,
-    TResult Function(_DeleteInspection value)? deleteInspection,
+    TResult Function(_FetchMostRecentInspection value)?
+        fetchMostRecentInspection,
     required TResult orElse(),
   }) {
     if (addInspection != null) {
@@ -347,35 +338,38 @@ abstract class _AddInspection implements InspectionEvent {
 }
 
 /// @nodoc
-abstract class _$$UpdateInspectionImplCopyWith<$Res> {
-  factory _$$UpdateInspectionImplCopyWith(_$UpdateInspectionImpl value,
-          $Res Function(_$UpdateInspectionImpl) then) =
-      __$$UpdateInspectionImplCopyWithImpl<$Res>;
+abstract class _$$FetchMostRecentInspectionImplCopyWith<$Res> {
+  factory _$$FetchMostRecentInspectionImplCopyWith(
+          _$FetchMostRecentInspectionImpl value,
+          $Res Function(_$FetchMostRecentInspectionImpl) then) =
+      __$$FetchMostRecentInspectionImplCopyWithImpl<$Res>;
 }
 
 /// @nodoc
-class __$$UpdateInspectionImplCopyWithImpl<$Res>
-    extends _$InspectionEventCopyWithImpl<$Res, _$UpdateInspectionImpl>
-    implements _$$UpdateInspectionImplCopyWith<$Res> {
-  __$$UpdateInspectionImplCopyWithImpl(_$UpdateInspectionImpl _value,
-      $Res Function(_$UpdateInspectionImpl) _then)
+class __$$FetchMostRecentInspectionImplCopyWithImpl<$Res>
+    extends _$InspectionEventCopyWithImpl<$Res, _$FetchMostRecentInspectionImpl>
+    implements _$$FetchMostRecentInspectionImplCopyWith<$Res> {
+  __$$FetchMostRecentInspectionImplCopyWithImpl(
+      _$FetchMostRecentInspectionImpl _value,
+      $Res Function(_$FetchMostRecentInspectionImpl) _then)
       : super(_value, _then);
 }
 
 /// @nodoc
 
-class _$UpdateInspectionImpl implements _UpdateInspection {
-  const _$UpdateInspectionImpl();
+class _$FetchMostRecentInspectionImpl implements _FetchMostRecentInspection {
+  const _$FetchMostRecentInspectionImpl();
 
   @override
   String toString() {
-    return 'InspectionEvent.updateInspection()';
+    return 'InspectionEvent.fetchMostRecentInspection()';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is _$UpdateInspectionImpl);
+        (other.runtimeType == runtimeType &&
+            other is _$FetchMostRecentInspectionImpl);
   }
 
   @override
@@ -386,10 +380,9 @@ class _$UpdateInspectionImpl implements _UpdateInspection {
   TResult when<TResult extends Object?>({
     required TResult Function() started,
     required TResult Function(InspectionModel data) addInspection,
-    required TResult Function() updateInspection,
-    required TResult Function() deleteInspection,
+    required TResult Function() fetchMostRecentInspection,
   }) {
-    return updateInspection();
+    return fetchMostRecentInspection();
   }
 
   @override
@@ -397,10 +390,9 @@ class _$UpdateInspectionImpl implements _UpdateInspection {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? started,
     TResult? Function(InspectionModel data)? addInspection,
-    TResult? Function()? updateInspection,
-    TResult? Function()? deleteInspection,
+    TResult? Function()? fetchMostRecentInspection,
   }) {
-    return updateInspection?.call();
+    return fetchMostRecentInspection?.call();
   }
 
   @override
@@ -408,12 +400,11 @@ class _$UpdateInspectionImpl implements _UpdateInspection {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? started,
     TResult Function(InspectionModel data)? addInspection,
-    TResult Function()? updateInspection,
-    TResult Function()? deleteInspection,
+    TResult Function()? fetchMostRecentInspection,
     required TResult orElse(),
   }) {
-    if (updateInspection != null) {
-      return updateInspection();
+    if (fetchMostRecentInspection != null) {
+      return fetchMostRecentInspection();
     }
     return orElse();
   }
@@ -423,10 +414,10 @@ class _$UpdateInspectionImpl implements _UpdateInspection {
   TResult map<TResult extends Object?>({
     required TResult Function(_Started value) started,
     required TResult Function(_AddInspection value) addInspection,
-    required TResult Function(_UpdateInspection value) updateInspection,
-    required TResult Function(_DeleteInspection value) deleteInspection,
+    required TResult Function(_FetchMostRecentInspection value)
+        fetchMostRecentInspection,
   }) {
-    return updateInspection(this);
+    return fetchMostRecentInspection(this);
   }
 
   @override
@@ -434,10 +425,10 @@ class _$UpdateInspectionImpl implements _UpdateInspection {
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(_Started value)? started,
     TResult? Function(_AddInspection value)? addInspection,
-    TResult? Function(_UpdateInspection value)? updateInspection,
-    TResult? Function(_DeleteInspection value)? deleteInspection,
+    TResult? Function(_FetchMostRecentInspection value)?
+        fetchMostRecentInspection,
   }) {
-    return updateInspection?.call(this);
+    return fetchMostRecentInspection?.call(this);
   }
 
   @override
@@ -445,133 +436,19 @@ class _$UpdateInspectionImpl implements _UpdateInspection {
   TResult maybeMap<TResult extends Object?>({
     TResult Function(_Started value)? started,
     TResult Function(_AddInspection value)? addInspection,
-    TResult Function(_UpdateInspection value)? updateInspection,
-    TResult Function(_DeleteInspection value)? deleteInspection,
+    TResult Function(_FetchMostRecentInspection value)?
+        fetchMostRecentInspection,
     required TResult orElse(),
   }) {
-    if (updateInspection != null) {
-      return updateInspection(this);
+    if (fetchMostRecentInspection != null) {
+      return fetchMostRecentInspection(this);
     }
     return orElse();
   }
 }
 
-abstract class _UpdateInspection implements InspectionEvent {
-  const factory _UpdateInspection() = _$UpdateInspectionImpl;
-}
-
-/// @nodoc
-abstract class _$$DeleteInspectionImplCopyWith<$Res> {
-  factory _$$DeleteInspectionImplCopyWith(_$DeleteInspectionImpl value,
-          $Res Function(_$DeleteInspectionImpl) then) =
-      __$$DeleteInspectionImplCopyWithImpl<$Res>;
-}
-
-/// @nodoc
-class __$$DeleteInspectionImplCopyWithImpl<$Res>
-    extends _$InspectionEventCopyWithImpl<$Res, _$DeleteInspectionImpl>
-    implements _$$DeleteInspectionImplCopyWith<$Res> {
-  __$$DeleteInspectionImplCopyWithImpl(_$DeleteInspectionImpl _value,
-      $Res Function(_$DeleteInspectionImpl) _then)
-      : super(_value, _then);
-}
-
-/// @nodoc
-
-class _$DeleteInspectionImpl implements _DeleteInspection {
-  const _$DeleteInspectionImpl();
-
-  @override
-  String toString() {
-    return 'InspectionEvent.deleteInspection()';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is _$DeleteInspectionImpl);
-  }
-
-  @override
-  int get hashCode => runtimeType.hashCode;
-
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function() started,
-    required TResult Function(InspectionModel data) addInspection,
-    required TResult Function() updateInspection,
-    required TResult Function() deleteInspection,
-  }) {
-    return deleteInspection();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? started,
-    TResult? Function(InspectionModel data)? addInspection,
-    TResult? Function()? updateInspection,
-    TResult? Function()? deleteInspection,
-  }) {
-    return deleteInspection?.call();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? started,
-    TResult Function(InspectionModel data)? addInspection,
-    TResult Function()? updateInspection,
-    TResult Function()? deleteInspection,
-    required TResult orElse(),
-  }) {
-    if (deleteInspection != null) {
-      return deleteInspection();
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(_Started value) started,
-    required TResult Function(_AddInspection value) addInspection,
-    required TResult Function(_UpdateInspection value) updateInspection,
-    required TResult Function(_DeleteInspection value) deleteInspection,
-  }) {
-    return deleteInspection(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(_Started value)? started,
-    TResult? Function(_AddInspection value)? addInspection,
-    TResult? Function(_UpdateInspection value)? updateInspection,
-    TResult? Function(_DeleteInspection value)? deleteInspection,
-  }) {
-    return deleteInspection?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(_Started value)? started,
-    TResult Function(_AddInspection value)? addInspection,
-    TResult Function(_UpdateInspection value)? updateInspection,
-    TResult Function(_DeleteInspection value)? deleteInspection,
-    required TResult orElse(),
-  }) {
-    if (deleteInspection != null) {
-      return deleteInspection(this);
-    }
-    return orElse();
-  }
-}
-
-abstract class _DeleteInspection implements InspectionEvent {
-  const factory _DeleteInspection() = _$DeleteInspectionImpl;
+abstract class _FetchMostRecentInspection implements InspectionEvent {
+  const factory _FetchMostRecentInspection() = _$FetchMostRecentInspectionImpl;
 }
 
 /// @nodoc

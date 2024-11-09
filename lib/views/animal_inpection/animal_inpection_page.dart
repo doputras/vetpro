@@ -1,6 +1,6 @@
 import 'dart:io';
+import 'dart:typed_data'; // Import for Uint8List
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:vetpro/bloc/inspection/inspection_bloc.dart';
 import 'package:vetpro/bloc/inspection_invoice/inspection_invoice_bloc.dart';
@@ -9,6 +9,8 @@ import 'package:vetpro/common/constants/colors.dart';
 import 'package:vetpro/common/constants/theme.dart';
 import 'package:vetpro/data/models/inspection_model.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:vetpro/views/animal_inpection/widgets/choose_animal_widget.dart';
+import 'package:intl/intl.dart'; // Import for date formatting
 
 class AnimalInpectionPage extends StatefulWidget {
   const AnimalInpectionPage({super.key});
@@ -31,27 +33,43 @@ class _AnimalInpectionPageState extends State<AnimalInpectionPage> {
   final TextEditingController suggestionController = TextEditingController();
   final TextEditingController locationController = TextEditingController();
   final TextEditingController inspectorController = TextEditingController();
-  final TextEditingController animalController = TextEditingController();
   final TextEditingController createdAtController = TextEditingController();
 
-  getCamera() async {
+  final GlobalKey<ChooseAnimalWidgetState> _chooseAnimalKey = GlobalKey();
+
+  Future<void> getCamera() async {
     try {
-      pickedFile = (await _picker.pickImage(
-          source: ImageSource.camera,
-          maxHeight: 800.0,
-          maxWidth: 460.0,
-          imageQuality: 100))!;
-      setState(() {
-        tempFile = File(pickedFile!.path);
-        bytes = tempFile!.readAsBytesSync();
-      });
+      pickedFile = await _picker.pickImage(
+        source: ImageSource.camera,
+        maxHeight: 800.0,
+        maxWidth: 460.0,
+        imageQuality: 100,
+      );
+      if (pickedFile != null) {
+        setState(() {
+          tempFile = File(pickedFile!.path);
+          bytes = tempFile!.readAsBytesSync();
+        });
+      }
     } catch (e) {
       print(e);
     }
   }
 
-  String? selectedItem;
-  String? otherItem;
+  // Function to show DatePicker and set the selected date to the controller
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2101),
+    );
+    if (picked != null) {
+      setState(() {
+        createdAtController.text = DateFormat('yyyy-MM-dd').format(picked); // Format date as needed
+      });
+    }
+  }
 
   @override
   void dispose() {
@@ -63,9 +81,7 @@ class _AnimalInpectionPageState extends State<AnimalInpectionPage> {
     suggestionController.dispose();
     locationController.dispose();
     inspectorController.dispose();
-    animalController.dispose();
     createdAtController.dispose();
-
     super.dispose();
   }
 
@@ -77,254 +93,179 @@ class _AnimalInpectionPageState extends State<AnimalInpectionPage> {
         elevation: 0,
         centerTitle: true,
         title: Text(
-          'Animal Inpection',
+          'Animal Inspection',
           style: whiteTextStyle,
         ),
       ),
-      body: Container(
-        height: MediaQuery.of(context).size.height,
-        padding: const EdgeInsets.symmetric(
-          vertical: 20,
-        ),
-        margin: const EdgeInsets.all(15),
-        decoration: BoxDecoration(
-            color: const Color.fromARGB(255, 231, 229, 229),
-            borderRadius: BorderRadius.circular(15)),
-        child: ListView(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 25,
-          ),
+      body: SingleChildScrollView(
+        child: Column(
           children: [
-            CustomFormField(
-              controller: reviewController,
-              title: 'Hasil pemeriksaan hewan',
-              fillColor: Colors.white,
-              maxLine: 3,
-            ),
-            const SizedBox(
-              height: 11,
-            ),
-            CustomFormField(
-              controller: animalController,
-              title: 'Hewan',
-              fillColor: Colors.white,
-              maxLine: 1,
-            ),
-            // ChooseAnimalWidget(
-            //   title: 'Pilih hewan',
-            //   selectedAnimal: selectedItem,
-            //   otherAnimal: otherItem,
-            //   //controller: animalController,
-            // ),
-            const SizedBox(
-              height: 11,
-            ),
-            CustomFormField(
-              controller: createdAtController,
-              title: 'Tanggal pemeriksaan',
-              fillColor: Colors.white,
-              maxLine: 1,
-            ),
-            const SizedBox(
-              height: 11,
-            ),
-            CustomFormField(
-              controller: medicalController,
-              title: 'Perawatan medis',
-              fillColor: Colors.white,
-              maxLine: 2,
-            ),
-            const SizedBox(
-              height: 11,
-            ),
-            CustomFormField(
-              controller: cageController,
-              title: 'Perawatan kandang',
-              fillColor: Colors.white,
-              maxLine: 2,
-            ),
-            const SizedBox(
-              height: 11,
-            ),
-            CustomFormField(
-              controller: eatController,
-              title: 'Pemberian makan',
-              fillColor: Colors.white,
-              maxLine: 2,
-            ),
-            const SizedBox(
-              height: 11,
-            ),
-            CustomFormField(
-              controller: scopeController,
-              title: 'Perawatan lingkungan',
-              fillColor: Colors.white,
-              maxLine: 2,
-            ),
-            const SizedBox(
-              height: 11,
-            ),
-            CustomFormField(
-              controller: suggestionController,
-              title: 'Saran tambahan',
-              fillColor: Colors.white,
-              maxLine: 2,
-            ),
-            const SizedBox(
-              height: 11,
-            ),
-            CustomFormField(
-              controller: locationController,
-              title: 'Lokasi',
-              fillColor: Colors.white,
-              maxLine: 1,
-            ),
-            const SizedBox(
-              height: 11,
-            ),
-            CustomFormField(
-              controller: inspectorController,
-              title: 'Nama Pemeriksa',
-              fillColor: Colors.white,
-              maxLine: 2,
-            ),
-            const SizedBox(
-              height: 11,
-            ),
-            const Text(
-              'Bukti Gambar',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
-            ),
-            const SizedBox(
-              height: 8,
-            ),
-            (tempFile != null)
-                ? Container(
-                    width: double.infinity,
-                    height: 250,
-                    decoration: BoxDecoration(
-                        color: greyColor.withOpacity(0.7),
-                        borderRadius: BorderRadius.circular(30),
-                        image: DecorationImage(
-                          image: FileImage(
-                            File(pickedFile!.path),
-                          ),
-                          fit: BoxFit.cover,
-                        )),
-                  )
-                : Container(
+            Container(
+              padding: const EdgeInsets.symmetric(vertical: 20),
+              margin: const EdgeInsets.all(15),
+              decoration: BoxDecoration(
+                color: const Color.fromARGB(255, 231, 229, 229),
+                borderRadius: BorderRadius.circular(15),
+              ),
+              child: ListView(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                padding: const EdgeInsets.symmetric(horizontal: 25),
+                children: [
+                  CustomFormField(
+                    controller: reviewController,
+                    title: 'Hasil pemeriksaan hewan',
+                    fillColor: Colors.white,
+                    maxLine: 3,
+                  ),
+                  const SizedBox(height: 11),
+                  ChooseAnimalWidget(
+                    key: _chooseAnimalKey,
+                    title: 'Pilih Hewan',
+                  ),
+                  const SizedBox(height: 11),
+                  GestureDetector(
+                    onTap: () => _selectDate(context), // Show date picker on tap
+                    child: AbsorbPointer( // Prevents keyboard from appearing
+                      child: CustomFormField(
+                        controller: createdAtController,
+                        title: 'Tanggal pemeriksaan',
+                        fillColor: Colors.white,
+                        maxLine: 1,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 11),
+                  CustomFormField(
+                    controller: medicalController,
+                    title: 'Perawatan medis',
+                    fillColor: Colors.white,
+                    maxLine: 2,
+                  ),
+                  const SizedBox(height: 11),
+                  CustomFormField(
+                    controller: cageController,
+                    title: 'Perawatan kandang',
+                    fillColor: Colors.white,
+                    maxLine: 2,
+                  ),
+                  const SizedBox(height: 11),
+                  CustomFormField(
+                    controller: eatController,
+                    title: 'Pemberian makan',
+                    fillColor: Colors.white,
+                    maxLine: 2,
+                  ),
+                  const SizedBox(height: 11),
+                  CustomFormField(
+                    controller: scopeController,
+                    title: 'Perawatan lingkungan',
+                    fillColor: Colors.white,
+                    maxLine: 2,
+                  ),
+                  const SizedBox(height: 11),
+                  CustomFormField(
+                    controller: suggestionController,
+                    title: 'Saran tambahan',
+                    fillColor: Colors.white,
+                    maxLine: 2,
+                  ),
+                  const SizedBox(height: 11),
+                  CustomFormField(
+                    controller: locationController,
+                    title: 'Lokasi',
+                    fillColor: Colors.white,
+                    maxLine: 1,
+                  ),
+                  const SizedBox(height: 11),
+                  CustomFormField(
+                    controller: inspectorController,
+                    title: 'Nama Pemeriksa',
+                    fillColor: Colors.white,
+                    maxLine: 2,
+                  ),
+                  const SizedBox(height: 11),
+                  const Text(
+                    'Bukti Gambar',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+                  ),
+                  const SizedBox(height: 8),
+                  // Image display area
+                  Container(
                     width: double.infinity,
                     height: 250,
                     decoration: BoxDecoration(
                       color: greyColor.withOpacity(0.7),
                       borderRadius: BorderRadius.circular(30),
+                      image: tempFile != null
+                          ? DecorationImage(
+                              image: FileImage(tempFile!),
+                              fit: BoxFit.cover,
+                            )
+                          : null,
                     ),
-                    child: const Center(
-                      child: Icon(
-                        Icons.image,
-                        color: whiteColor,
-                        size: 32,
-                      ),
-                    ),
-                  ),
-            const SizedBox(
-              height: 30,
-            ),
-            Container(
-              height: 100,
-              padding: const EdgeInsets.all(10),
-              margin: const EdgeInsets.only(left: 25, right: 25, bottom: 25),
-              decoration: BoxDecoration(
-                  color: secondaryColor,
-                  borderRadius: BorderRadius.circular(20)),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  InkWell(
-                    onTap: () => getCamera(),
-                    child: Container(
-                      height: 100,
-                      width: 100,
-                      decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(20)),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          const Icon(
-                            Icons.image,
-                            size: 35,
-                          ),
-                          Text(
-                            'Tambah Foto',
-                            style: blackTextStyle,
+                    child: tempFile == null
+                        ? const Center(
+                            child: Icon(Icons.image, color: whiteColor, size: 32),
                           )
-                        ],
-                      ),
-                    ),
+                        : null,
                   ),
-                  const Spacer(),
+                  const SizedBox(height: 15),
+                  ElevatedButton(
+                    onPressed: getCamera,
+                    child: const Text("Add Photo"),
+                  ),
+                  const SizedBox(height: 30),
                   BlocConsumer<InspectionBloc, InspectionState>(
-                      builder: (context, state) {
-                    return state.maybeWhen(
-                      orElse: () {
-                        return InkWell(
-                          onTap: () {
-                            final dataModel = InspectionModel(
-                              animal: animalController.text,
-                              cageTreatment: cageController.text,
-                              environmentalCare: scopeController.text,
-                              feeding: eatController.text,
-                              inspector: inspectorController.text,
-                              location: locationController.text,
-                              medicalTreatment: medicalController.text,
-                              suggestion: suggestionController.text,
-                              result: reviewController.text,
-                              date: createdAtController.text,
-                            );
-                            context
-                                .read<InspectionBloc>()
-                                .add(InspectionEvent.addInspection(dataModel));
+                    builder: (context, state) {
+                      return state.maybeWhen(
+                        orElse: () {
+                          return InkWell(
+                            onTap: () {
+                              final selectedAnimal =
+                                  _chooseAnimalKey.currentState?.selectedAnimal == 'Lainnya'
+                                      ? _chooseAnimalKey.currentState?.otherAnimal
+                                      : _chooseAnimalKey.currentState?.selectedAnimal;
 
-                            context.read<InspectionInvoiceBloc>().add(
-                                InspectionInvoiceEvent.addToListInvoice(
-                                    dataModel, 'unpaid'));
-                          },
-                          child: Container(
-                            height: 100,
-                            width: 100,
-                            decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(20)),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                const Icon(
-                                  Icons.check,
-                                  size: 35,
-                                  color: Colors.green,
-                                ),
-                                Text(
-                                  'Selesai',
-                                  style: blackTextStyle,
-                                )
-                              ],
+                              final dataModel = InspectionModel(
+                                animal: selectedAnimal ?? '',
+                                cageTreatment: cageController.text,
+                                environmentalCare: scopeController.text,
+                                feeding: eatController.text,
+                                inspector: inspectorController.text,
+                                location: locationController.text,
+                                medicalTreatment: medicalController.text,
+                                suggestion: suggestionController.text,
+                                result: reviewController.text,
+                                date: createdAtController.text,
+                              );
+                              context.read<InspectionBloc>().add(InspectionEvent.addInspection(dataModel));
+
+                              context.read<InspectionInvoiceBloc>().add(
+                                InspectionInvoiceEvent.addToListInvoice(dataModel, 'unpaid'),
+                              );
+                            },
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(vertical: 15),
+                              alignment: Alignment.center,
+                              decoration: BoxDecoration(
+                                color: primaryColor,
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: Text(
+                                'Submit',
+                                style: whiteTextStyle,
+                              ),
                             ),
-                          ),
-                        );
-                      },
-                      loading: () {
-                        return const Center(
-                          child: CircularProgressIndicator(
-                            color: primaryColor,
-                          ),
-                        );
-                      },
-                    );
-                  }, listener: (context, state) {
-                    state.maybeWhen(
+                          );
+                        },
+                        loading: () => const Center(
+                          child: CircularProgressIndicator(color: primaryColor),
+                        ),
+                      );
+                    },
+                    listener: (context, state) {
+                      state.maybeWhen(
                         orElse: () {},
                         loaded: (data) {
                           Navigator.pop(context);
@@ -342,8 +283,10 @@ class _AnimalInpectionPageState extends State<AnimalInpectionPage> {
                               content: Text(message),
                             ),
                           );
-                        });
-                  })
+                        },
+                      );
+                    },
+                  ),
                 ],
               ),
             ),

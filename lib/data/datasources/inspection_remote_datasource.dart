@@ -35,12 +35,50 @@ class InspectionRemoteDatasource {
       if (response.statusCode == 200) {
         List<dynamic> jsonData = json.decode(response.body);
         List<InspectionModel> inspections = jsonData.map((data) => InspectionModel.fromJson(data)).toList();
+        inspections.sort((a, b) => b.date.compareTo(a.date)); 
         return right(inspections);
       } else {
         return left('Failed to load inspections with status code: ${response.statusCode}');
       }
     } catch (e) {
       return left('Exception when fetching data: $e');
+    }
+  }
+
+   Future<Either<String, InspectionModel>> updateInspection(InspectionModel data) async {
+    try {
+      final response = await http.put(
+        Uri.parse('$apiUrl/${data.id}'), // Ensure ID is part of the model
+        headers: {"Content-Type": "application/json"},
+        body: json.encode(data.toJson()),
+      );
+
+      if (response.statusCode == 200) {
+        final jsonData = json.decode(response.body);
+        return Right(InspectionModel.fromJson(jsonData));
+      } else {
+        return Left('Failed to update inspection: ${response.statusCode}');
+      }
+    } catch (e) {
+      return Left('Error updating inspection: $e');
+    }
+  }
+
+  // Delete inspection by ID
+  Future<Either<String, String>> deleteInspection(int inspectionId) async {
+    try {
+      final response = await http.delete(
+        Uri.parse('$apiUrl/$inspectionId'),
+        headers: {"Content-Type": "application/json"},
+      );
+
+      if (response.statusCode == 200) {
+        return const Right('Inspection deleted successfully');
+      } else {
+        return Left('Failed to delete inspection: ${response.statusCode}');
+      }
+    } catch (e) {
+      return Left('Error deleting inspection: $e');
     }
   }
 }
