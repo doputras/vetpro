@@ -6,7 +6,8 @@ import 'package:vetpro/data/models/schedule_response_model.dart';
 import 'package:logger/logger.dart';
 
 class ScheduleRemoteDatasource {
-  final String apiUrl = "http://10.0.2.2:8000/api/schedules"; // Base URL for schedules API
+  final String apiUrl =
+      "http://192.168.0.100:8000/api/schedules"; // Base URL for schedules API
   Logger logger = Logger();
 
   final Map<String, String> headers = {
@@ -16,23 +17,25 @@ class ScheduleRemoteDatasource {
 
   // Get all schedules
   Future<Either<String, ScheduleResponseModel>> getSchedule() async {
-  try {
-    final response = await http.get(Uri.parse(apiUrl), headers: headers);
-    logger.d("Raw API response: ${response.body}");
+    try {
+      final response = await http.get(Uri.parse(apiUrl), headers: headers);
+      logger.d("Raw API response: ${response.body}");
 
-    if (response.statusCode == 200) {
-      final List<dynamic> jsonResponse = json.decode(response.body);
-      return Right(ScheduleResponseModel.fromList(jsonResponse));
-    } else {
-      return Left('Failed to fetch schedules. Status code: ${response.statusCode}');
+      if (response.statusCode == 200) {
+        final List<dynamic> jsonResponse = json.decode(response.body);
+        return Right(ScheduleResponseModel.fromList(jsonResponse));
+      } else {
+        return Left(
+            'Failed to fetch schedules. Status code: ${response.statusCode}');
+      }
+    } catch (e) {
+      return Left('An error occurred: $e');
     }
-  } catch (e) {
-    return Left('An error occurred: $e');
   }
-}
 
   // Create a new schedule
-  Future<Either<String, Schedule>> createSchedule(ScheduleRequestModel model) async {
+  Future<Either<String, Schedule>> createSchedule(
+      ScheduleRequestModel model) async {
     try {
       final response = await http.post(
         Uri.parse(apiUrl),
@@ -44,7 +47,8 @@ class ScheduleRemoteDatasource {
         final Map<String, dynamic> jsonResponse = json.decode(response.body);
         return Right(Schedule.fromMap(jsonResponse)); // Parse single schedule
       } else {
-        return Left('Failed to create schedule. Status code: ${response.statusCode}');
+        return Left(
+            'Failed to create schedule. Status code: ${response.statusCode}');
       }
     } catch (e) {
       return Left('An error occurred: $e');
@@ -52,7 +56,8 @@ class ScheduleRemoteDatasource {
   }
 
   // Update an existing schedule
-  Future<Either<String, Schedule>> updateSchedule(int id, ScheduleRequestModel model) async {
+  Future<Either<String, Schedule>> updateSchedule(
+      int id, ScheduleRequestModel model) async {
     try {
       final response = await http.put(
         Uri.parse('$apiUrl/$id'),
@@ -64,7 +69,8 @@ class ScheduleRemoteDatasource {
         final Map<String, dynamic> jsonResponse = json.decode(response.body);
         return Right(Schedule.fromMap(jsonResponse)); // Parse single schedule
       } else {
-        return Left('Failed to update schedule. Status code: ${response.statusCode}');
+        return Left(
+            'Failed to update schedule. Status code: ${response.statusCode}');
       }
     } catch (e) {
       return Left('An error occurred: $e');
@@ -82,7 +88,8 @@ class ScheduleRemoteDatasource {
       if (response.statusCode == 200) {
         return const Right('Delete successful.');
       } else {
-        return Left('Failed to delete schedule. Status code: ${response.statusCode}');
+        return Left(
+            'Failed to delete schedule. Status code: ${response.statusCode}');
       }
     } catch (e) {
       return Left('An error occurred: $e');

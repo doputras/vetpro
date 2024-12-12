@@ -136,10 +136,12 @@ class _AnimalInpectionPageState extends State<AnimalInpectionPage> {
         date: createdAtController.text,
       );
 
-      context.read<InspectionBloc>().add(InspectionEvent.addInspection(dataModel));
-      context.read<InspectionInvoiceBloc>().add(
-        InspectionInvoiceEvent.addToListInvoice(dataModel, 'unpaid'),
-      );
+      context
+          .read<InspectionBloc>()
+          .add(InspectionEvent.addInspection(dataModel));
+      // context.read<InspectionInvoiceBloc>().add(
+      //   InspectionInvoiceEvent.addToListInvoice(dataModel, 'unpaid'),
+      // );
     }
   }
 
@@ -247,7 +249,8 @@ class _AnimalInpectionPageState extends State<AnimalInpectionPage> {
                     const SizedBox(height: 11),
                     const Text(
                       'Bukti Gambar',
-                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
                     ),
                     const SizedBox(height: 8),
                     // Image display area
@@ -266,7 +269,8 @@ class _AnimalInpectionPageState extends State<AnimalInpectionPage> {
                       ),
                       child: tempFile == null
                           ? const Center(
-                              child: Icon(Icons.image, color: whiteColor, size: 32),
+                              child: Icon(Icons.image,
+                                  color: whiteColor, size: 32),
                             )
                           : null,
                     ),
@@ -283,7 +287,8 @@ class _AnimalInpectionPageState extends State<AnimalInpectionPage> {
                             return InkWell(
                               onTap: _submitForm,
                               child: Container(
-                                padding: const EdgeInsets.symmetric(vertical: 15),
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 15),
                                 alignment: Alignment.center,
                                 decoration: BoxDecoration(
                                   color: primaryColor,
@@ -297,7 +302,8 @@ class _AnimalInpectionPageState extends State<AnimalInpectionPage> {
                             );
                           },
                           loading: () => const Center(
-                            child: CircularProgressIndicator(color: primaryColor),
+                            child:
+                                CircularProgressIndicator(color: primaryColor),
                           ),
                         );
                       },

@@ -1,13 +1,12 @@
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:dartz/dartz.dart';
-import 'package:vetpro/data/models/inspection_model.dart';
+import 'package:vetpro/data/models/invoices_model.dart';
 
-class InspectionRemoteDatasource {
-  final String apiUrl = "http://192.168.0.100:8000/api/inspections";
+class InvoicesRemoteDatasource {
+  final String apiUrl = "http://192.168.0.100:8000/api/invoices";
 
-  Future<Either<String, InspectionModel>> addInspection(
-      InspectionModel data) async {
+  Future<Either<String, InvoiceModel>> addInvoices(InvoiceModel data) async {
     try {
       final response = await http.post(
         Uri.parse(apiUrl),
@@ -20,8 +19,8 @@ class InspectionRemoteDatasource {
 
       if (response.statusCode == 201) {
         var jsonData = json.decode(response.body);
-        InspectionModel inspection = InspectionModel.fromJson(jsonData);
-        return right(inspection);
+        InvoiceModel invoices = InvoiceModel.fromJson(jsonData);
+        return right(invoices);
       } else {
         return left('Request failed with status: ${response.statusCode}.');
       }
@@ -30,28 +29,26 @@ class InspectionRemoteDatasource {
     }
   }
 
-  Future<Either<String, List<InspectionModel>>> getListInspection() async {
+  Future<Either<String, List<InvoiceModel>>> getListInvoices() async {
     try {
       final response = await http.get(
         Uri.parse(apiUrl),
       );
       if (response.statusCode == 200) {
-        List<dynamic> jsonData = json.decode(response.body);
-        List<InspectionModel> inspections =
-            jsonData.map((data) => InspectionModel.fromJson(data)).toList();
-        inspections.sort((a, b) => b.date.compareTo(a.date));
-        return right(inspections);
+        final jsonData = json.decode(response.body) as List;
+        List<InvoiceModel> invoices =
+            jsonData.map((invoice) => InvoiceModel.fromJson(invoice)).toList();
+        return right(invoices);
       } else {
         return left(
-            'Failed to load inspections with status code: ${response.statusCode}');
+            'Failed to load Invoicess with status code: ${response.statusCode}');
       }
     } catch (e) {
       return left('Exception when fetching data: $e');
     }
   }
 
-  Future<Either<String, InspectionModel>> updateInspection(
-      InspectionModel data) async {
+  Future<Either<String, InvoiceModel>> updateInvoices(InvoiceModel data) async {
     try {
       final response = await http.put(
         Uri.parse('$apiUrl/${data.id}'), // Ensure ID is part of the model
@@ -61,30 +58,30 @@ class InspectionRemoteDatasource {
 
       if (response.statusCode == 200) {
         final jsonData = json.decode(response.body);
-        return Right(InspectionModel.fromJson(jsonData));
+        return Right(InvoiceModel.fromJson(jsonData));
       } else {
-        return Left('Failed to update inspection: ${response.statusCode}');
+        return Left('Failed to update Invoices: ${response.statusCode}');
       }
     } catch (e) {
-      return Left('Error updating inspection: $e');
+      return Left('Error updating Invoices: $e');
     }
   }
 
-  // Delete inspection by ID
-  Future<Either<String, String>> deleteInspection(int inspectionId) async {
+  // Delete Invoices by ID
+  Future<Either<String, String>> deleteInvoices(int invoicesId) async {
     try {
       final response = await http.delete(
-        Uri.parse('$apiUrl/$inspectionId'),
+        Uri.parse('$apiUrl/$invoicesId'),
         headers: {"Content-Type": "application/json"},
       );
 
       if (response.statusCode == 200) {
-        return const Right('Inspection deleted successfully');
+        return const Right('Invoices deleted successfully');
       } else {
-        return Left('Failed to delete inspection: ${response.statusCode}');
+        return Left('Failed to delete Invoices: ${response.statusCode}');
       }
     } catch (e) {
-      return Left('Error deleting inspection: $e');
+      return Left('Error deleting Invoices: $e');
     }
   }
 }
