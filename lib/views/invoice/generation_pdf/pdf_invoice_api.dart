@@ -1,21 +1,28 @@
 import 'dart:io';
 
 import 'package:get/get_connect/http/src/utils/utils.dart';
+import 'package:intl/intl.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart';
+import 'package:vetpro/data/models/invoices_model.dart';
 import 'package:vetpro/views/invoice/generation_pdf/pdf_api.dart';
 
 class PdfInvoiceApi {
-  static Future<File> generate() async {
+  static Future<File> generate({
+    required String companyName,
+    required List<DataInvoiceModel>? items,
+    required String subTotal,
+    required String tax,
+  }) async {
     final pdf = Document();
 
     pdf.addPage(
       MultiPage(
         build: (context) => [
-          buildTitle(),
-          buildCardInvoice(),
-          buildListInvoice(),
-          buildBottom(),
+          buildTitle(companyName: companyName),
+          buildCardInvoice(amountDue: {'sub_total': subTotal, 'tax': tax}),
+          buildListInvoice(items: items),
+          buildBottom(subTotal: subTotal, tax: tax),
           Spacer(),
           buildFooter(),
         ],
@@ -25,7 +32,7 @@ class PdfInvoiceApi {
     return PdfApi.saveDocument(name: 'invoice.pdf', pdf: pdf);
   }
 
-  static Widget buildTitle() => Column(
+  static Widget buildTitle({required String companyName}) => Column(
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           Row(children: [
@@ -38,7 +45,7 @@ class PdfInvoiceApi {
           Text('BILL TO:',
               style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
           _buildTextLeftAndRight(
-            left: 'Your Company Name',
+            left: 'PT MA', //Your Company Name
             right: 'Company Name',
             fontWeightleft: FontWeight.bold,
             fontWeightRight: FontWeight.bold,
@@ -85,7 +92,7 @@ class PdfInvoiceApi {
     );
   }
 
-  static Widget buildCardInvoice() {
+  static Widget buildCardInvoice({Map<String, dynamic>? amountDue}) {
     return Column(children: [
       Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
         _buildContaintCardInvoice(
@@ -102,7 +109,12 @@ class PdfInvoiceApi {
         ),
         _buildContaintCardInvoice(
           title: 'AMOUNT DUE',
-          subTitle: 'RP 1.000.000',
+          subTitle: NumberFormat.currency(
+                  locale: 'id', symbol: 'Rp', decimalDigits: 0)
+              .format(
+            int.parse(amountDue?['sub_total'].split('.')[0]) +
+                int.parse(amountDue?['tax'].split('.')[0]),
+          ),
         ),
       ]),
       Divider(),
@@ -128,27 +140,32 @@ class PdfInvoiceApi {
     ]);
   }
 
-  static Widget buildListInvoice() {
+  static Widget buildListInvoice({required List<DataInvoiceModel>? items}) {
     return Column(children: [
       _buildContaintListInvoice(
         isHeader: true,
         item: "ITEMS",
         description: "DESCRIPTION",
-        quantity: "QUANTITY",
+        quantity: "QTY",
         price: "PRICE",
         amount: "AMOUNT",
         fontWeight: FontWeight.bold,
       ),
       ListView.builder(
           itemBuilder: (context, index) {
+            final result = items[index];
             return _buildContaintListInvoice(
-                item: "item 1",
-                description: "description",
-                quantity: "3",
-                price: "Rp 20.000",
-                amount: "Rp 600.000");
+                item: "${index + 1}",
+                description: result.description.toString(),
+                quantity: result.quantity.toString(),
+                price: NumberFormat.currency(
+                        locale: 'id', symbol: 'Rp', decimalDigits: 0)
+                    .format(int.parse(result.price?.split('.')[0] ?? '0')),
+                amount: NumberFormat.currency(
+                        locale: 'id', symbol: 'Rp', decimalDigits: 0)
+                    .format(int.parse(result.total?.split('.')[0] ?? '0')));
           },
-          itemCount: 10),
+          itemCount: items!.length),
       Divider(),
     ]);
   }
@@ -167,8 +184,8 @@ class PdfInvoiceApi {
         0: FlexColumnWidth(2),
         1: FlexColumnWidth(4),
         2: FlexColumnWidth(2),
-        3: FlexColumnWidth(2),
-        4: FlexColumnWidth(2),
+        3: FlexColumnWidth(4),
+        4: FlexColumnWidth(4),
       },
       // border: TableBorder.all(color: Colors.grey, width: 0.5),
 
@@ -209,7 +226,7 @@ class PdfInvoiceApi {
     );
   }
 
-  static Widget buildBottom() {
+  static Widget buildBottom({required String subTotal, required String tax}) {
     return Column(children: [
       Row(children: [
         Flexible(child: _buildMessageBottom(), flex: 2),
@@ -217,16 +234,33 @@ class PdfInvoiceApi {
             child: Column(children: [
               _buildTextLeftAndRight(
                 left: 'Subtotal',
-                right: 'Rp 1.000.000',
+                right: NumberFormat.currency(
+                        locale: 'id', symbol: 'Rp', decimalDigits: 0)
+                    .format(
+                  int.parse(subTotal.split('.')[0]),
+                ),
                 fontWeightleft: FontWeight.bold,
               ),
               _buildTextLeftAndRight(
-                  left: 'Tax', fontWeightleft: FontWeight.bold, right: 'Rp 0'),
+                left: 'tax',
+                fontWeightleft: FontWeight.bold,
+                right: NumberFormat.currency(
+                        locale: 'id', symbol: 'Rp', decimalDigits: 0)
+                    .format(
+                  int.parse(tax.split('.')[0]),
+                ),
+              ),
               Divider(),
               _buildTextLeftAndRight(
-                  left: 'Total',
-                  fontWeightleft: FontWeight.bold,
-                  right: 'Rp 1.000.000'),
+                left: 'Total',
+                fontWeightleft: FontWeight.bold,
+                right: NumberFormat.currency(
+                        locale: 'id', symbol: 'Rp', decimalDigits: 0)
+                    .format(
+                  int.parse(subTotal.split('.')[0]) +
+                      int.parse(tax.split('.')[0]),
+                ),
+              ),
             ]),
             flex: 1),
       ]),

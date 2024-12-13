@@ -1,5 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:http/http.dart' as http;
+import 'package:vetpro/common/constants/global_variables.dart';
 import 'dart:convert';
 import 'package:vetpro/data/models/schedule_request_model.dart';
 import 'package:vetpro/data/models/schedule_response_model.dart';
@@ -7,7 +8,7 @@ import 'package:logger/logger.dart';
 
 class ScheduleRemoteDatasource {
   final String apiUrl =
-      "http://192.168.0.100:8000/api/schedules"; // Base URL for schedules API
+      "${GlobalVariables.baseUrl}api/schedules"; // Base URL for schedules API
   Logger logger = Logger();
 
   final Map<String, String> headers = {

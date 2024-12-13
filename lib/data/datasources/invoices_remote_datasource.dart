@@ -1,12 +1,15 @@
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:dartz/dartz.dart';
+import 'package:vetpro/common/constants/global_variables.dart';
+import 'package:vetpro/data/models/add_invoice_model.dart';
+import 'package:vetpro/data/models/edit_invoice_model.dart';
 import 'package:vetpro/data/models/invoices_model.dart';
 
 class InvoicesRemoteDatasource {
-  final String apiUrl = "http://192.168.0.100:8000/api/invoices";
+  final String apiUrl = "${GlobalVariables.baseUrl}api/invoices";
 
-  Future<Either<String, InvoiceModel>> addInvoices(InvoiceModel data) async {
+  Future<Either<String, InvoiceModel>> addInvoices(AddInvoiceModel data) async {
     try {
       final response = await http.post(
         Uri.parse(apiUrl),
@@ -14,7 +17,7 @@ class InvoicesRemoteDatasource {
           "Content-Type": "application/json",
           "Accept": "application/json",
         },
-        body: json.encode(data.toJson()), // Using toJson if available
+        body: json.encode(data.toJson()),
       );
 
       if (response.statusCode == 201) {
@@ -48,12 +51,51 @@ class InvoicesRemoteDatasource {
     }
   }
 
-  Future<Either<String, InvoiceModel>> updateInvoices(InvoiceModel data) async {
+  Future<Either<String, List<InvoiceModel>>> getListInvoicesByStatus(
+      String status) async {
+    try {
+      final response = await http.get(
+        Uri.parse("$apiUrl/status/$status"),
+      );
+      if (response.statusCode == 200) {
+        final jsonData = json.decode(response.body) as List;
+        List<InvoiceModel> invoices =
+            jsonData.map((invoice) => InvoiceModel.fromJson(invoice)).toList();
+        return right(invoices);
+      } else {
+        return left(
+            'Failed to load Invoicess with status code: ${response.statusCode}');
+      }
+    } catch (e) {
+      return left('Exception when fetching data: $e');
+    }
+  }
+
+  Future<Either<String, InvoiceModel>> getInvoicesById(String id) async {
+    try {
+      final response = await http.get(
+        Uri.parse(apiUrl + "/$id"),
+      );
+      if (response.statusCode == 200) {
+        final jsonData = json.decode(response.body);
+        InvoiceModel invoices = InvoiceModel.fromJson(jsonData);
+        return right(invoices);
+      } else {
+        return left(
+            'Failed to load Invoicess with status code: ${response.statusCode}');
+      }
+    } catch (e) {
+      return left('Exception when fetching data: $e');
+    }
+  }
+
+  Future<Either<String, InvoiceModel>> updateInvoices(
+      {required EditInvoiceModel data, required String id}) async {
     try {
       final response = await http.put(
-        Uri.parse('$apiUrl/${data.id}'), // Ensure ID is part of the model
+        Uri.parse('$apiUrl/${id}'), // Ensure ID is part of the model
         headers: {"Content-Type": "application/json"},
-        body: json.encode(data.toJson()),
+        body: data.toRawJson(),
       );
 
       if (response.statusCode == 200) {

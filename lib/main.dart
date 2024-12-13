@@ -3,12 +3,14 @@ import 'package:get/get.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:vetpro/bloc/inspection/inspection_bloc.dart';
 import 'package:vetpro/bloc/inspection_invoice/inspection_invoice_bloc.dart';
+import 'package:vetpro/bloc/invoice/invoice_bloc.dart';
 import 'package:vetpro/bloc/login/auth_bloc.dart';
 import 'package:vetpro/bloc/logout/logout_bloc.dart';
 import 'package:vetpro/bloc/schedule/schedule_bloc.dart';
 import 'package:vetpro/data/datasources/auth_local_datasource.dart';
 import 'package:vetpro/data/datasources/auth_remote_datasource.dart';
 import 'package:vetpro/data/datasources/inspection_remote_datasource.dart';
+import 'package:vetpro/data/datasources/invoices_remote_datasource.dart';
 import 'package:vetpro/data/datasources/schedule_remote_datasource.dart';
 import 'package:vetpro/views/auth/login_page.dart';
 
@@ -51,6 +53,9 @@ class MyApp extends StatelessWidget {
           create: (context) => InspectionInvoiceBloc(),
         ),
         BlocProvider(
+          create: (context) => InvoiceBloc(InvoicesRemoteDatasource()),
+        ),
+        BlocProvider(
           create: (context) => ScheduleBloc(ScheduleRemoteDatasource()),
         ),
       ],
@@ -61,6 +66,8 @@ class MyApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           useMaterial3: true,
         ),
+
+        // home: PdfExample(),
         home: FutureBuilder<bool>(
           future: AuthLocalDatasource().islogin(),
           builder: (context, snapshot) {

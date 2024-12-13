@@ -1,10 +1,11 @@
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:dartz/dartz.dart';
+import 'package:vetpro/common/constants/global_variables.dart';
 import 'package:vetpro/data/models/inspection_model.dart';
 
 class InspectionRemoteDatasource {
-  final String apiUrl = "http://192.168.0.100:8000/api/inspections";
+  final String apiUrl = "${GlobalVariables.baseUrl}api/inspections";
 
   Future<Either<String, InspectionModel>> addInspection(
       InspectionModel data) async {
@@ -54,7 +55,7 @@ class InspectionRemoteDatasource {
       InspectionModel data) async {
     try {
       final response = await http.put(
-        Uri.parse('$apiUrl/${data.id}'), // Ensure ID is part of the model
+        Uri.parse('$apiUrl/${data.id}'),
         headers: {"Content-Type": "application/json"},
         body: json.encode(data.toJson()),
       );

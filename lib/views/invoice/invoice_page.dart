@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:vetpro/bloc/invoice/invoice_bloc.dart';
 import 'package:vetpro/common/constants/theme.dart';
 import 'package:vetpro/data/models/inspection_model.dart';
 import 'package:vetpro/data/models/invoices_model.dart';
+import 'package:vetpro/views/invoice/detail_invoice_page.dart';
 
 import '../../bloc/list_inspection/list_inspection_bloc.dart';
 import '../../common/components/list_card_widget.dart';
@@ -28,8 +30,8 @@ class _InvoicePageState extends State<InvoicePage> {
     context
         .read<ListInspectionBloc>()
         .add(const ListInspectionEvent.getInspection());
-    super.initState();
     context.read<InvoiceBloc>().add(InvoiceEvent.fetchDataInvoiceEvent());
+    super.initState();
   }
 
   // _loadSavedData() async {
@@ -47,68 +49,182 @@ class _InvoicePageState extends State<InvoicePage> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        floatingActionButton: FloatingActionButton(
+          backgroundColor: Colors.green,
+          onPressed: () =>
+              Get.to(const AddInvoicePage(), arguments: {'type': 'add'}),
+          child: const Icon(
+            Icons.add,
+            size: 50,
+            color: Colors.white,
+          ),
+        ),
         body: ListView(
           padding: const EdgeInsets.symmetric(
             horizontal: 20,
           ),
           children: [
-            Container(
-              margin: const EdgeInsets.only(top: 20),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Unpaid',
-                    style: primaryTextStyle.copyWith(
-                      fontSize: 35,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  Image.asset('assets/logo2.png')
-                ],
-              ),
-            ),
+            // BlocBuilder<InvoiceBloc, InvoiceState>(
+            //   builder: (context, state) {
+            //     return state.maybeWhen(
+            //       loaded: (data) {
+            //         data = data
+            //             .where((invoice) => invoice.status == 'unpaid')
+            //             .toList();
+            //         if (data.isEmpty) {
+            //           return SizedBox.shrink();
+            //         } else {
+            //           final modifiableData = List<InvoiceModel>.from(data);
+            //           modifiableData
+            //               .sort((a, b) => b.tanggal!.compareTo(a.tanggal!));
+
+            //           return Column(
+            //             children: [
+            //               Container(
+            //                 margin: const EdgeInsets.only(top: 20),
+            //                 child: Row(
+            //                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            //                   children: [
+            //                     Text(
+            //                       'Unpaid',
+            //                       style: primaryTextStyle.copyWith(
+            //                         fontSize: 35,
+            //                         fontWeight: FontWeight.bold,
+            //                       ),
+            //                     ),
+            //                     Image.asset('assets/logo2.png')
+            //                   ],
+            //                 ),
+            //               ),
+            //               ListView.builder(
+            //                   shrinkWrap: true,
+            //                   physics: const NeverScrollableScrollPhysics(),
+            //                   itemCount: modifiableData.length,
+            //                   itemBuilder: (context, index) {
+            //                     final inspection = modifiableData[index];
+            //                     return ListCardWidget(
+            //                       color:
+            //                           const Color.fromARGB(255, 223, 220, 220),
+            //                       flag: '3',
+            //                       text1: inspection.pemeriksa ?? '-',
+            //                       text2: inspection.status ?? '-',
+            //                       text3: DateFormat('dd MMMM yyyy').format(
+            //                           inspection.tanggal ?? DateTime.now()),
+            //                       widget: InkWell(
+            //                           onTap: () => Get.to(
+            //                                   const DetailInvoicePage(),
+            //                                   arguments: {
+            //                                     'type': 'detail',
+            //                                     'id': inspection.id
+            //                                   }),
+            //                           child: Image.asset('assets/file.png')),
+            //                     );
+            //                   }),
+            //             ],
+            //           );
+            //         }
+            //       },
+            //       loading: () {
+            //         return const Center(
+            //           child: CircularProgressIndicator(
+            //             backgroundColor: Colors.transparent,
+            //             color: primaryColor,
+            //           ),
+            //         );
+            //       },
+            //       error: (message) => Center(
+            //         child: Text(
+            //           message,
+            //           style: blackTextStyle.copyWith(
+            //             fontSize: 16,
+            //             fontWeight: bold,
+            //           ),
+            //         ),
+            //       ),
+            //       orElse: () {
+            //         // return const Center(child: Text("data"));
+            //         return const Center(
+            //           child: CircularProgressIndicator(
+            //             backgroundColor: Colors.transparent,
+            //             color: primaryColor,
+            //           ),
+            //         );
+            //       },
+            //     );
+            //   },
+            // ),
             BlocBuilder<InvoiceBloc, InvoiceState>(
               builder: (context, state) {
                 return state.maybeWhen(
                   loaded: (data) {
+                    final dataUnpaid = data
+                        .where((invoice) => invoice.status == 'unpaid')
+                        .toList();
+                    final dataPaid = data
+                        .where((invoice) => invoice.status == 'paid')
+                        .toList();
                     if (data.isEmpty) {
-                      return Container(
-                        alignment: Alignment.topCenter,
-                        width: MediaQuery.of(context).size.width * 0.5,
-                        height: 500,
-                        child: Center(
-                          child: Text(
-                            'Tidak data inspection invoice yang tersedia.',
-                            maxLines: 2,
-                            textAlign: TextAlign.center,
-                            style: blackTextStyle.copyWith(
-                              fontSize: 16,
-                              fontWeight: bold,
-                            ),
-                          ),
-                        ),
-                      );
+                      return SizedBox.shrink();
                     } else {
-                      return ListView.builder(
-                          shrinkWrap: true,
-                          physics: const NeverScrollableScrollPhysics(),
-                          itemCount: data.length,
-                          itemBuilder: (context, index) {
-                            final invoice = data[index];
-                            return ListTile(
-                              title: Text("${invoice.pemeriksa}"),
-                              subtitle: Text(invoice.status ?? ''),
-                            );
-                          });
+                      final modifiableData = List<InvoiceModel>.from(dataPaid);
+                      final modifiableDataUnpaid =
+                          List<InvoiceModel>.from(dataUnpaid);
+                      modifiableData
+                          .sort((a, b) => b.createdAt!.compareTo(a.createdAt!));
+                      modifiableDataUnpaid
+                          .sort((a, b) => b.createdAt!.compareTo(a.createdAt!));
+
+                      return Column(
+                        children: [
+                          if (modifiableDataUnpaid.isNotEmpty) ...[
+                            Container(
+                              margin: const EdgeInsets.only(top: 20),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    'Unpaid',
+                                    style: primaryTextStyle.copyWith(
+                                      fontSize: 35,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  Image.asset('assets/logo2.png')
+                                ],
+                              ),
+                            ),
+                            _CardInvoice(modifiableDataUnpaid),
+                          ],
+                          if (modifiableData.isNotEmpty) ...[
+                            Container(
+                              margin: const EdgeInsets.only(top: 20),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    'Paid',
+                                    style: primaryTextStyle.copyWith(
+                                      fontSize: 35,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  modifiableDataUnpaid.isEmpty
+                                      ? Image.asset('assets/logo2.png')
+                                      : SizedBox.shrink(),
+                                ],
+                              ),
+                            ),
+                            _CardInvoice(modifiableData),
+                          ],
+                        ],
+                      );
                     }
                   },
                   loading: () {
-                    return const Center(
-                      child: CircularProgressIndicator(
-                        backgroundColor: Colors.transparent,
-                        color: primaryColor,
-                      ),
+                    return Center(
+                      child: CircularProgressIndicator(),
                     );
                   },
                   error: (message) => Center(
@@ -121,129 +237,17 @@ class _InvoicePageState extends State<InvoicePage> {
                     ),
                   ),
                   orElse: () {
-                    return const Center(child: Text("data"));
-                    // return const Center(
-                    //   child: CircularProgressIndicator(
-                    //     backgroundColor: Colors.transparent,
-                    //     color: primaryColor,
-                    //   ),
-                    // );
+                    // return const Center(child: Text("data"));
+                    return const Center(
+                      child: CircularProgressIndicator(
+                        backgroundColor: Colors.transparent,
+                        color: primaryColor,
+                      ),
+                    );
                   },
                 );
               },
             ),
-            // BlocBuilder<ListInspectionBloc, ListInspectionState>(
-            //   builder: (context, state) {
-            //     return state.maybeWhen(
-            //       loaded: (data) {
-            //         if (data.isEmpty) {
-            //           return Container(
-            //             alignment: Alignment.topCenter,
-            //             width: MediaQuery.of(context).size.width * 0.5,
-            //             height: 500,
-            //             child: Center(
-            //               child: Text(
-            //                 'Tidak data inspection invoice yang tersedia.',
-            //                 maxLines: 2,
-            //                 textAlign: TextAlign.center,
-            //                 style: blackTextStyle.copyWith(
-            //                   fontSize: 16,
-            //                   fontWeight: bold,
-            //                 ),
-            //               ),
-            //             ),
-            //           );
-            //         } else {
-            //           return ListView.builder(
-            //               shrinkWrap: true,
-            //               physics: const NeverScrollableScrollPhysics(),
-            //               itemCount: data.length,
-            //               itemBuilder: (context, index) {
-            //                 final InspectionModel inspection = data[index];
-            //                 return ListCardWidget(
-            //                   color: const Color.fromARGB(255, 223, 220, 220),
-            //                   flag: '3',
-            //                   text1: inspection.inspector,
-            //                   text2: "unpaid",
-            //                   text3: inspection.animal,
-            //                   widget: InkWell(
-            //                       onTap: () => Get.to(const AddInvoicePage()),
-            //                       child: Image.asset('assets/file.png')),
-            //                 );
-            //               });
-            //         }
-            //       },
-            //       orElse: () {
-            //         return const Center(
-            //           child: CircularProgressIndicator(
-            //             backgroundColor: Colors.transparent,
-            //             color: primaryColor,
-            //           ),
-            //         );
-            //       },
-            //     );
-            //   },
-            // ),
-            // ListCardWidget(
-            //     color: const Color.fromARGB(255, 223, 220, 220),
-            //     flag: '3',
-            //     text1: 'Drh. Buhori Muslim',
-            //     text2: 'Telkom University',
-            //     text3: '16 September 2023',
-            //     widget: InkWell(
-            //         onTap: () => Get.to(const AddInvoicePage()),
-            //         child: Image.asset('assets/file.png'))),
-            // Container(
-            //   margin: const EdgeInsets.only(top: 10),
-            //   child: Row(
-            //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            //     children: [
-            //       Text(
-            //         'Paid',
-            //         style: primaryTextStyle.copyWith(
-            //           fontSize: 35,
-            //           fontWeight: FontWeight.bold,
-            //         ),
-            //       )
-            //     ],
-            //   ),
-            // ),
-            // ListCardWidget(
-            //     color: const Color.fromARGB(255, 116, 204, 119),
-            //     flag: '3',
-            //     text1: 'Drh. Buhori Muslim',
-            //     text2: 'Telkom University',
-            //     text3: '16 September 2023',
-            //     widget: InkWell(
-            //         onTap: () => Get.to(const AddInvoicePage()),
-            //         child: Image.asset('assets/file.png'))),
-            // ListCardWidget(
-            //     color: const Color.fromARGB(255, 116, 204, 119),
-            //     flag: '3',
-            //     text1: 'Drh. Buhori Muslim',
-            //     text2: 'Telkom University',
-            //     text3: '16 September 2023',
-            //     widget: InkWell(
-            //         onTap: () => Get.to(const AddInvoicePage()),
-            //         child: Image.asset('assets/file.png'))),
-            // ListCardWidget(
-            //     color: const Color.fromARGB(255, 116, 204, 119),
-            //     flag: '3',
-            //     text1: 'Drh. Buhori Muslim',
-            //     text2: 'Telkom University',
-            //     text3: '16 September 2023',
-            //     widget: InkWell(
-            //         onTap: () => Get.to(const AddInvoicePage()),
-            //         child: Image.asset('assets/file.png'))),
-            // ListCardWidget(
-            //     color: const Color.fromARGB(255, 116, 204, 119),
-            //     flag: '3',
-            //     text1: 'Drh. Buhori Muslim',
-            //     text2: 'Telkom University',
-            //     text3: '16 September 2023',
-            //     widget: InkWell(
-            //         onTap: () => Get.to(const AddInvoicePage()),
-            //         child: Image.asset('assets/file.png'))),
             const SizedBox(
               height: 20,
             ),
@@ -261,5 +265,27 @@ class _InvoicePageState extends State<InvoicePage> {
         // ),
       ),
     );
+  }
+
+  ListView _CardInvoice(List<InvoiceModel> modifiableDataUnpaid) {
+    return ListView.builder(
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        itemCount: modifiableDataUnpaid.length,
+        itemBuilder: (context, index) {
+          final inspection = modifiableDataUnpaid[index];
+          return ListCardWidget(
+            color: const Color.fromARGB(255, 223, 220, 220),
+            flag: '3',
+            text1: inspection.pemeriksa ?? '-',
+            text2: inspection.status ?? '-',
+            text3: DateFormat('dd MMMM yyyy')
+                .format(inspection.tanggal ?? DateTime.now()),
+            widget: InkWell(
+                onTap: () => Get.to(const DetailInvoicePage(),
+                    arguments: {'type': 'detail', 'id': inspection.id}),
+                child: Image.asset('assets/file.png')),
+          );
+        });
   }
 }
