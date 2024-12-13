@@ -1,8 +1,6 @@
 import 'dart:convert';
 
-import 'package:equatable/equatable.dart';
-
-class InvoiceModel extends Equatable {
+class InvoiceModel {
   final int? id;
   final DateTime? tanggal;
   final String? pemeriksa;
