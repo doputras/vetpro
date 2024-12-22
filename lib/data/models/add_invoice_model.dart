@@ -6,11 +6,13 @@ class AddInvoiceModel {
   DateTime? tanggal;
   String? pemeriksa;
   String? status;
+  int? userId;
   List<DataInvoiceModel>? details;
 
   AddInvoiceModel({
     this.tanggal,
     this.pemeriksa,
+    this.userId,
     this.status,
     this.details,
   });
@@ -26,6 +28,7 @@ class AddInvoiceModel {
             json["tanggal"] == null ? null : DateTime.parse(json["tanggal"]),
         pemeriksa: json["pemeriksa"],
         status: json["status"],
+        userId: json["user_id"],
         details: json["details"] == null
             ? []
             : List<DataInvoiceModel>.from(
@@ -37,6 +40,7 @@ class AddInvoiceModel {
             "${tanggal!.year.toString().padLeft(4, '0')}-${tanggal!.month.toString().padLeft(2, '0')}-${tanggal!.day.toString().padLeft(2, '0')}",
         "pemeriksa": pemeriksa,
         "status": status,
+        "user_id": userId,
         "details": details == null
             ? []
             : List<dynamic>.from(details!.map((x) => x.toJson())),

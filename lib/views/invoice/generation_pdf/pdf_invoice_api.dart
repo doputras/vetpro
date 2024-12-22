@@ -45,7 +45,7 @@ class PdfInvoiceApi {
           Text('BILL TO:',
               style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
           _buildTextLeftAndRight(
-            left: 'PT MA', //Your Company Name
+            left: 'PT', //Your Company Name
             right: 'Company Name',
             fontWeightleft: FontWeight.bold,
             fontWeightRight: FontWeight.bold,

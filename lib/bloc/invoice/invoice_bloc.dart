@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:vetpro/data/datasources/auth_local_datasource.dart';
 import 'package:vetpro/data/datasources/invoices_remote_datasource.dart';
 import 'package:vetpro/data/models/add_invoice_model.dart';
 import 'package:vetpro/data/models/edit_invoice_model.dart';
@@ -24,14 +25,16 @@ class InvoiceBloc extends Bloc<InvoiceEvent, InvoiceState> {
 
   FutureOr<void> _onToListInvoice(
       _GetListInvoice event, Emitter<InvoiceState> emit) async {
-    final response = await datasource.getListInvoices();
+    final role = await AuthLocalDatasource().getRole();
+    final response = role == 'admin'
+        ? await datasource.getListInvoices()
+        : await datasource.getInvoicesByUserID();
 
     response.fold(
       (errorMessage) => emit(InvoiceState.error(errorMessage)),
       (invoiceList) {
         if (invoiceList.isNotEmpty) {
-          final mostRecentInvoice = invoiceList;
-          emit(InvoiceState.loaded(mostRecentInvoice));
+          emit(InvoiceState.loaded(invoiceList));
         } else {
           emit(const InvoiceState.error("No recent Invoices found."));
         }

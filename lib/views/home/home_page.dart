@@ -20,8 +20,9 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Trigger fetching the most recent inspection when the page loads
-    context.read<InspectionBloc>().add(const InspectionEvent.fetchMostRecentInspection());
-
+    context
+        .read<InspectionBloc>()
+        .add(const InspectionEvent.fetchMostRecentInspection());
 
     return Scaffold(
       body: ListView(
@@ -113,58 +114,69 @@ class HomePage extends StatelessWidget {
           ),
         ],
       ),
-      floatingActionButton: BlocConsumer<LogoutBloc, LogoutState>(
-        listener: (context, state) {
-          state.maybeWhen(
-            orElse: () {},
-            loaded: (message) {
-              AuthLocalDatasource().removeAuthData();
-              Navigator.pushAndRemoveUntil(context, MaterialPageRoute(
-                builder: (context) {
-                  return const LoginPage();
-                },
-              ), (route) => false);
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(message),
-                  backgroundColor: greenColor,
-                ),
-              );
-            },
-            error: (message) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(message),
-                  backgroundColor: secondaryColor,
-                ),
-              );
-            },
-          );
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          AuthLocalDatasource().logout();
+          Get.offAll(const LoginPage());
         },
-        builder: (context, state) {
-          return state.maybeWhen(
-            orElse: () {
-              return FloatingActionButton(
-                onPressed: () {
-                  context.read<LogoutBloc>().add(const LogoutEvent.logout());
-                },
-                backgroundColor: whiteColor,
-                child: const Icon(
-                  Icons.logout,
-                  color: secondaryColor,
-                ),
-              );
-            },
-            loading: () {
-              return const Center(
-                child: CircularProgressIndicator(
-                  color: secondaryColor,
-                ),
-              );
-            },
-          );
-        },
+        backgroundColor: whiteColor,
+        child: const Icon(
+          Icons.logout,
+          color: secondaryColor,
+        ),
       ),
+      // floatingActionButton: BlocConsumer<LogoutBloc, LogoutState>(
+      //   listener: (context, state) {
+      //     state.maybeWhen(
+      //       orElse: () {},
+      //       loaded: (message) {
+      //         AuthLocalDatasource().removeAuthData();
+      //         Navigator.pushAndRemoveUntil(context, MaterialPageRoute(
+      //           builder: (context) {
+      //             return const LoginPage();
+      //           },
+      //         ), (route) => false);
+      //         ScaffoldMessenger.of(context).showSnackBar(
+      //           SnackBar(
+      //             content: Text(message),
+      //             backgroundColor: greenColor,
+      //           ),
+      //         );
+      //       },
+      //       error: (message) {
+      //         ScaffoldMessenger.of(context).showSnackBar(
+      //           SnackBar(
+      //             content: Text(message),
+      //             backgroundColor: secondaryColor,
+      //           ),
+      //         );
+      //       },
+      //     );
+      //   },
+      //   builder: (context, state) {
+      //     return state.maybeWhen(
+      //       orElse: () {
+      //         return FloatingActionButton(
+      //           onPressed: () {
+      //             context.read<LogoutBloc>().add(const LogoutEvent.logout());
+      //           },
+      //           backgroundColor: whiteColor,
+      //           child: const Icon(
+      //             Icons.logout,
+      //             color: secondaryColor,
+      //           ),
+      //         );
+      //       },
+      //       loading: () {
+      //         return const Center(
+      //           child: CircularProgressIndicator(
+      //             color: secondaryColor,
+      //           ),
+      //         );
+      //       },
+      //     );
+      //   },
+      // ),
       bottomNavigationBar: const TabMenuWidget(menu: '1'),
     );
   }

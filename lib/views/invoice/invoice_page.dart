@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:vetpro/bloc/invoice/invoice_bloc.dart';
 import 'package:vetpro/common/constants/theme.dart';
+import 'package:vetpro/data/datasources/auth_local_datasource.dart';
 import 'package:vetpro/data/models/inspection_model.dart';
 import 'package:vetpro/data/models/invoices_model.dart';
 import 'package:vetpro/views/invoice/detail_invoice_page.dart';
@@ -23,7 +24,7 @@ class InvoicePage extends StatefulWidget {
 
 class _InvoicePageState extends State<InvoicePage> {
   //List<InspectionInvoice> savedItems = [];
-
+  String role = '';
   @override
   void initState() {
     //_loadSavedData();
@@ -31,9 +32,14 @@ class _InvoicePageState extends State<InvoicePage> {
         .read<ListInspectionBloc>()
         .add(const ListInspectionEvent.getInspection());
     context.read<InvoiceBloc>().add(InvoiceEvent.fetchDataInvoiceEvent());
+    getRole();
     super.initState();
   }
 
+  Future<void> getRole() async {
+    role = (await AuthLocalDatasource().getRole())!;
+    setState(() {});
+  }
   // _loadSavedData() async {
   //   final prefs = await SharedPreferences.getInstance();
   //   final data = prefs.getString('invoiceData');
@@ -49,16 +55,18 @@ class _InvoicePageState extends State<InvoicePage> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        floatingActionButton: FloatingActionButton(
-          backgroundColor: Colors.green,
-          onPressed: () =>
-              Get.to(const AddInvoicePage(), arguments: {'type': 'add'}),
-          child: const Icon(
-            Icons.add,
-            size: 50,
-            color: Colors.white,
-          ),
-        ),
+        floatingActionButton: role == 'admin'
+            ? SizedBox.shrink()
+            : FloatingActionButton(
+                backgroundColor: Colors.green,
+                onPressed: () =>
+                    Get.to(const AddInvoicePage(), arguments: {'type': 'add'}),
+                child: const Icon(
+                  Icons.add,
+                  size: 50,
+                  color: Colors.white,
+                ),
+              ),
         body: ListView(
           padding: const EdgeInsets.symmetric(
             horizontal: 20,
@@ -176,6 +184,7 @@ class _InvoicePageState extends State<InvoicePage> {
 
                       return Column(
                         children: [
+                          // UNPAID
                           if (modifiableDataUnpaid.isNotEmpty) ...[
                             Container(
                               margin: const EdgeInsets.only(top: 20),
@@ -196,6 +205,8 @@ class _InvoicePageState extends State<InvoicePage> {
                             ),
                             _CardInvoice(modifiableDataUnpaid),
                           ],
+
+                          // PAID
                           if (modifiableData.isNotEmpty) ...[
                             Container(
                               margin: const EdgeInsets.only(top: 20),
@@ -253,7 +264,7 @@ class _InvoicePageState extends State<InvoicePage> {
             ),
           ],
         ),
-        bottomNavigationBar: const TabMenuWidget(menu: '4'),
+        bottomNavigationBar: TabMenuWidget(menu: '4'),
         // floatingActionButton: FloatingActionButton(
         //   backgroundColor: Colors.green,
         //   onPressed: () => Get.to(const AddInvoicePage()),

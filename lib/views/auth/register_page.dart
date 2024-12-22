@@ -6,20 +6,21 @@ import 'package:vetpro/common/components/form.dart';
 import 'package:vetpro/common/constants/colors.dart';
 import 'package:vetpro/data/datasources/auth_local_datasource.dart';
 import 'package:vetpro/data/models/user_model.dart';
-import 'package:vetpro/views/auth/register_page.dart';
+import 'package:vetpro/views/auth/login_page.dart';
 import 'package:vetpro/views/home/home_page.dart';
 
 import '../../bloc/login/auth_bloc.dart';
 import '../../common/constants/theme.dart';
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+class RegisterPage extends StatefulWidget {
+  const RegisterPage({super.key});
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<RegisterPage> createState() => _RegisterPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _RegisterPageState extends State<RegisterPage> {
+  final namaController = TextEditingController();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
 
@@ -96,6 +97,23 @@ class _LoginPageState extends State<LoginPage> {
                       height: 10,
                     ),
                     CustomFormField(
+                      controller: namaController,
+                      isShadow: false,
+                      isBorder: true,
+                      keyboardType: TextInputType.emailAddress,
+                      prefixIcon: const Icon(
+                        Icons.person_outline_rounded,
+                        color: greyColor,
+                        size: 24,
+                      ),
+                      title: 'Name',
+                      hintText: 'Name',
+                      fillColor: greyColor.withOpacity(0.2),
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    CustomFormField(
                       controller: emailController,
                       isShadow: false,
                       isBorder: true,
@@ -130,33 +148,11 @@ class _LoginPageState extends State<LoginPage> {
                     const SizedBox(
                       height: 20,
                     ),
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const RegisterPage()),
-                          );
-                        },
-                        child: Text(
-                          'Belum Punya Akun Silahkan Register',
-                          style: primaryTextStyle.copyWith(
-                            fontWeight: FontWeight.bold,
-                            color: primaryColor,
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
                     BlocConsumer<AuthNewBloc, AuthNewState>(
                       listener: (context, state) {
                         state.maybeWhen(
                           orElse: () {},
-                          loginUser: (credential) {
+                          registerUser: (credential) {
                             AuthLocalDatasource()
                                 .saveAuthData(credential.data ?? UserData());
                             Navigator.pushReplacement(context,
@@ -165,7 +161,7 @@ class _LoginPageState extends State<LoginPage> {
                             }));
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
-                                content: Text('Login Success'),
+                                content: Text('Register Success'),
                                 backgroundColor: greenColor,
                               ),
                             );
@@ -195,14 +191,15 @@ class _LoginPageState extends State<LoginPage> {
                               borderRadius: 35,
                               onPressed: () {
                                 final UserData userData = UserData(
+                                  name: namaController.text,
                                   email: emailController.text,
                                   password: passwordController.text,
                                 );
                                 context.read<AuthNewBloc>().add(
-                                      AuthNewEvent.login(userData),
+                                      AuthNewEvent.register(userData),
                                     );
                               },
-                              title: 'Login',
+                              title: 'Register',
                             );
                           },
                           loading: () {
@@ -214,6 +211,25 @@ class _LoginPageState extends State<LoginPage> {
                           },
                         );
                       },
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const LoginPage()),
+                        );
+                      },
+                      child: Text(
+                        ' Sudah Punya Akun Silahkan Login',
+                        style: primaryTextStyle.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: primaryColor,
+                        ),
+                      ),
                     ),
                   ],
                 ),

@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:vetpro/bloc/auth_new/bloc/auth_new_bloc.dart';
 import 'package:vetpro/bloc/inspection/inspection_bloc.dart';
 import 'package:vetpro/bloc/inspection_invoice/inspection_invoice_bloc.dart';
 import 'package:vetpro/bloc/invoice/invoice_bloc.dart';
-import 'package:vetpro/bloc/login/auth_bloc.dart';
-import 'package:vetpro/bloc/logout/logout_bloc.dart';
 import 'package:vetpro/bloc/schedule/schedule_bloc.dart';
 import 'package:vetpro/data/datasources/auth_local_datasource.dart';
 import 'package:vetpro/data/datasources/auth_remote_datasource.dart';
@@ -37,12 +36,13 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider(
-          create: (context) => LoginBloc(FirebasAuthDatasource()),
-        ),
-        BlocProvider(
-          create: (context) => LogoutBloc(FirebasAuthDatasource()),
-        ),
+        // BlocProvider(
+        //   create: (context) => LoginBloc(FirebasAuthDatasource()),
+        // ),
+        // BlocProvider(
+        //   create: (context) => LogoutBloc(FirebasAuthDatasource()),
+        // ),
+        BlocProvider(create: (context) => AuthNewBloc(AuthRemoteDatasource())),
         BlocProvider(
           create: (context) => InspectionBloc(InspectionRemoteDatasource()),
         ),
@@ -69,7 +69,7 @@ class MyApp extends StatelessWidget {
 
         // home: PdfExample(),
         home: FutureBuilder<bool>(
-          future: AuthLocalDatasource().islogin(),
+          future: AuthLocalDatasource().getLogin(),
           builder: (context, snapshot) {
             if (snapshot.hasData && snapshot.data!) {
               return const HomePage();

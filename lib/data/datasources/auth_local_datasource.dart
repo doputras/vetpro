@@ -1,23 +1,44 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:vetpro/data/models/user_model.dart';
 
 class AuthLocalDatasource {
-  Future<bool> saveAuthData(UserCredential data) async {
-    final data = FirebaseAuth.instance;
+  Future<void> saveAuthData(UserData data) async {
     final pref = await SharedPreferences.getInstance();
-    final result = await pref.setString('auth', data.currentUser.toString());
-    return result;
+    await pref.setString('role', data.role ?? 'user');
+    await pref.setString('id', "${data.id}" ?? '');
+    setLogin(true);
   }
 
-  Future<bool> islogin() async {
+  Future<void> setLogin(bool isLoggedIn) async {
     final SharedPreferences pref = await SharedPreferences.getInstance();
-    final authJson = pref.getString('auth') ?? '';
-    return authJson.isNotEmpty;
+    await pref.setBool('isLoggedIn', isLoggedIn);
+  }
+
+  Future<bool> getLogin() async {
+    final SharedPreferences pref = await SharedPreferences.getInstance();
+    return pref.getBool('isLoggedIn') ?? false;
   }
 
   Future<bool> removeAuthData() async {
     final SharedPreferences pref = await SharedPreferences.getInstance();
     final result = await pref.remove('auth');
     return result;
+  }
+
+  Future<String?> getRole() async {
+    final SharedPreferences pref = await SharedPreferences.getInstance();
+    return pref.getString('role');
+  }
+
+  Future<String?> getId() async {
+    final SharedPreferences pref = await SharedPreferences.getInstance();
+    return pref.getString('id');
+  }
+
+  Future<void> logout() async {
+    final SharedPreferences pref = await SharedPreferences.getInstance();
+    await pref.remove('role');
+    await pref.remove('id');
+    await setLogin(false);
   }
 }
