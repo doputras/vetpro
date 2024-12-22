@@ -548,78 +548,109 @@ class _AddAndDetailInvoiceState extends State<AddAndDetailInvoice> {
       builder: (context, state) {
         return Container(
           margin: const EdgeInsets.only(left: 20, right: 20),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Expanded(
-                child: CustomTextButton(
-                  onPressed: () async {
-                    if (isAcctiveButton) {
-                      final invoice = await submitStatus('unpaid');
-                      context
-                          .read<InvoiceBloc>()
-                          .add(InvoiceEvent.addDataInvoiceEvent(invoice));
-                    } else {
-                      if (!Get.isSnackbarOpen) {
-                        Get.snackbar(
-                          'Error',
-                          'Tanggal, Nama Pemeriksaan, dan Data tidak boleh kosong',
-                          backgroundColor: Colors.white,
-                          colorText: Colors.black,
-                        );
-                      }
-                    }
-                  },
-                  icon: Icons.save,
-                  title: 'Simpan sebagai unpaid',
-                  colorText: blackColor,
-                  isShowSubTitle: false,
-                  colorIcon: blackColor,
-                  buttonColor: const Color.fromARGB(137, 244, 192, 192),
-                  textWeight: medium,
-                  height: 50,
-                  width: MediaQuery.of(context).size.width / 2.5,
-                  textSize: 12,
-                  borderRadius: 12,
-                ),
-              ),
-              const SizedBox(
-                width: 10,
-              ),
-              Expanded(
-                child: CustomTextButton(
-                  onPressed: () async {
-                    if (isAcctiveButton) {
-                      final invoice = await submitStatus('paid');
-                      context
-                          .read<InvoiceBloc>()
-                          .add(InvoiceEvent.addDataInvoiceEvent(invoice));
-                    } else {
-                      if (!Get.isSnackbarOpen) {
-                        Get.snackbar(
-                          'Error',
-                          'Tanggal, Nama Pemeriksaan, dan Data tidak boleh kosong',
-                          backgroundColor: Colors.white,
-                          colorText: Colors.black,
-                        );
-                      }
-                    }
-                  },
-                  icon: Icons.check,
-                  title: 'Simpan sebagai paid',
-                  colorText: whiteColor,
-                  isShowSubTitle: false,
-                  colorIcon: greenColor,
-                  buttonColor: secondaryColor,
-                  textWeight: medium,
-                  height: 50,
-                  width: MediaQuery.of(context).size.width / 2.5,
-                  textSize: 12,
-                  borderRadius: 12,
-                ),
-              ),
-            ],
+          child: CustomTextButton(
+            onPressed: () async {
+              if (isAcctiveButton) {
+                final invoice = await submitStatus('unpaid');
+                context
+                    .read<InvoiceBloc>()
+                    .add(InvoiceEvent.addDataInvoiceEvent(invoice));
+              } else {
+                if (!Get.isSnackbarOpen) {
+                  Get.snackbar(
+                    'Error',
+                    'Tanggal, Nama Pemeriksaan, dan Data tidak boleh kosong',
+                    backgroundColor: Colors.white,
+                    colorText: Colors.black,
+                  );
+                }
+              }
+            },
+            icon: Icons.save,
+            title: 'Simpan sebagai unpaid',
+            colorText: blackColor,
+            isShowSubTitle: false,
+            colorIcon: blackColor,
+            buttonColor: const Color.fromARGB(137, 244, 192, 192),
+            textWeight: medium,
+            height: 50,
+            width: MediaQuery.of(context).size.width / 2.5,
+            textSize: 12,
+            borderRadius: 12,
           ),
+
+          // child: Row(
+          //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          //   children: [
+          //     Expanded(
+          //       child: CustomTextButton(
+          //         onPressed: () async {
+          //           if (isAcctiveButton) {
+          //             final invoice = await submitStatus('unpaid');
+          //             context
+          //                 .read<InvoiceBloc>()
+          //                 .add(InvoiceEvent.addDataInvoiceEvent(invoice));
+          //           } else {
+          //             if (!Get.isSnackbarOpen) {
+          //               Get.snackbar(
+          //                 'Error',
+          //                 'Tanggal, Nama Pemeriksaan, dan Data tidak boleh kosong',
+          //                 backgroundColor: Colors.white,
+          //                 colorText: Colors.black,
+          //               );
+          //             }
+          //           }
+          //         },
+          //         icon: Icons.save,
+          //         title: 'Simpan sebagai unpaid',
+          //         colorText: blackColor,
+          //         isShowSubTitle: false,
+          //         colorIcon: blackColor,
+          //         buttonColor: const Color.fromARGB(137, 244, 192, 192),
+          //         textWeight: medium,
+          //         height: 50,
+          //         width: MediaQuery.of(context).size.width / 2.5,
+          //         textSize: 12,
+          //         borderRadius: 12,
+          //       ),
+          //     ),
+          //     const SizedBox(
+          //       width: 10,
+          //     ),
+          //     Expanded(
+          //       child: CustomTextButton(
+          //         onPressed: () async {
+          //           if (isAcctiveButton) {
+          //             final invoice = await submitStatus('paid');
+          //             context
+          //                 .read<InvoiceBloc>()
+          //                 .add(InvoiceEvent.addDataInvoiceEvent(invoice));
+          //           } else {
+          //             if (!Get.isSnackbarOpen) {
+          //               Get.snackbar(
+          //                 'Error',
+          //                 'Tanggal, Nama Pemeriksaan, dan Data tidak boleh kosong',
+          //                 backgroundColor: Colors.white,
+          //                 colorText: Colors.black,
+          //               );
+          //             }
+          //           }
+          //         },
+          //         icon: Icons.check,
+          //         title: 'Simpan sebagai paid',
+          //         colorText: whiteColor,
+          //         isShowSubTitle: false,
+          //         colorIcon: greenColor,
+          //         buttonColor: secondaryColor,
+          //         textWeight: medium,
+          //         height: 50,
+          //         width: MediaQuery.of(context).size.width / 2.5,
+          //         textSize: 12,
+          //         borderRadius: 12,
+          //       ),
+          //     ),
+          //   ],
+          // ),
         );
       },
     );
