@@ -427,42 +427,74 @@ class _AddAndDetailInvoiceState extends State<AddAndDetailInvoice> {
                         );
                       },
                       builder: (context, state) {
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 80,
-                            vertical: 10,
-                          ),
-                          child: CustomTextButton(
-                            onPressed: () async {
-                              if (isAcctiveButton) {
-                                final invoice = await submitEdit('paid');
-                                context.read<InvoiceBloc>().add(
-                                    InvoiceEvent.editDataInvoiceEvent(
-                                        data: invoice,
-                                        id: "${widget.idInvoice ?? 0}"));
-                              } else {
-                                if (!Get.isSnackbarOpen) {
-                                  Get.snackbar(
-                                    'Error',
-                                    'Tanggal, Nama Pemeriksaan, dan Data tidak boleh kosong',
-                                    backgroundColor: Colors.white,
-                                    colorText: Colors.black,
-                                  );
-                                }
-                              }
-                            },
-                            icon: Icons.check,
-                            title: 'Simpan sebagai paid Detail',
-                            colorText: whiteColor,
-                            isShowSubTitle: false,
-                            colorIcon: whiteColor,
-                            buttonColor: greenColor,
-                            textWeight: medium,
-                            height: 50,
-                            width: MediaQuery.of(context).size.width / 2.5,
-                            textSize: 12,
-                            borderRadius: 12,
-                          ),
+                        return Row(
+                          children: [
+                            Expanded(
+                              child: Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 20),
+                                child: CustomTextButton(
+                                  onPressed: () async {
+                                    if (isAcctiveButton) {
+                                      final invoice = await submitEdit('paid');
+                                      context.read<InvoiceBloc>().add(
+                                          InvoiceEvent.editDataInvoiceEvent(
+                                              data: invoice,
+                                              id: "${widget.idInvoice ?? 0}"));
+                                    } else {
+                                      if (!Get.isSnackbarOpen) {
+                                        Get.snackbar(
+                                          'Error',
+                                          'Tanggal, Nama Pemeriksaan, dan Data tidak boleh kosong',
+                                          backgroundColor: Colors.white,
+                                          colorText: Colors.black,
+                                        );
+                                      }
+                                    }
+                                  },
+                                  icon: Icons.check,
+                                  title: 'Simpan sebagai paid Detail',
+                                  colorText: whiteColor,
+                                  isShowSubTitle: false,
+                                  colorIcon: whiteColor,
+                                  buttonColor: greenColor,
+                                  textWeight: medium,
+                                  height: 50,
+                                  textSize: 12,
+                                  borderRadius: 12,
+                                ),
+                              ),
+                            ),
+                            SizedBox(width: 20),
+                            Expanded(
+                              child: Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 20),
+                                child: CustomTextButton(
+                                  onPressed: () async {
+                                    final pdfFile =
+                                        await PdfInvoiceApi.generate(
+                                      subTotal: getTotalQty().toString(),
+                                      tax: '0',
+                                      items: items,
+                                      companyName: "PT MANA",
+                                    );
+                                    PdfApi.openFile(pdfFile);
+                                  },
+                                  icon: Icons.print,
+                                  title: 'Cetak Invoice',
+                                  colorText: whiteColor,
+                                  isShowSubTitle: false,
+                                  colorIcon: whiteColor,
+                                  buttonColor: greenColor,
+                                  textWeight: medium,
+                                  height: 50,
+                                  textSize: 12,
+                                  borderRadius: 12,
+                                ),
+                              ),
+                            ),
+                          ],
                         );
                       },
                     )
