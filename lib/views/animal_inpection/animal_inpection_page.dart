@@ -176,6 +176,7 @@ class _AnimalInpectionPageState extends State<AnimalInpectionPage> {
                   children: [
                     CustomFormField(
                       controller: reviewController,
+                      onTap: (){print("object");},
                       title: 'Hasil pemeriksaan hewan',
                       fillColor: Colors.white,
                       maxLine: 3,
