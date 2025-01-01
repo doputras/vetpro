@@ -151,14 +151,22 @@ class DetailAnimalInpectionPage extends StatelessWidget {
                     decoration: BoxDecoration(
                       color: greyColor.withOpacity(0.7),
                       borderRadius: BorderRadius.circular(30),
-                    ),
-                    child: const Center(
-                      child: Icon(
-                        Icons.image,
-                        color: whiteColor,
-                        size: 32,
+                      image: DecorationImage(
+                        image: NetworkImage(
+                          'https://cdn0-production-images-kly.akamaized.net/BFn3llE-ku7K1-Q6dazCX3ed2II=/640x360/smart/filters:quality(75):strip_icc():format(webp)/kly-media-production/medias/677475/original/Lleyn_sheep.jpg',
+                        ),
+                        fit: BoxFit.cover,
                       ),
                     ),
+                    child: false
+                        ? Center(
+                            child: Icon(
+                              Icons.image,
+                              color: whiteColor,
+                              size: 32,
+                            ),
+                          )
+                        : const SizedBox(),
                   ),
                   const SizedBox(
                     height: 30,
