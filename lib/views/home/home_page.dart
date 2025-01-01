@@ -14,15 +14,25 @@ import '../../data/datasources/auth_local_datasource.dart';
 
 // HomePage.dart
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  @override
+  void initState() {
+    context
+        .read<InspectionBloc>()
+        .add(const InspectionEvent.fetchMostRecentInspection());
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     // Trigger fetching the most recent inspection when the page loads
-    context
-        .read<InspectionBloc>()
-        .add(const InspectionEvent.fetchMostRecentInspection());
 
     return Scaffold(
       body: ListView(
