@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
@@ -5,7 +7,6 @@ import 'package:intl/intl.dart';
 import 'package:vetpro/bloc/invoice/invoice_bloc.dart';
 import 'package:vetpro/common/constants/theme.dart';
 import 'package:vetpro/data/datasources/auth_local_datasource.dart';
-import 'package:vetpro/data/models/inspection_model.dart';
 import 'package:vetpro/data/models/invoices_model.dart';
 import 'package:vetpro/views/invoice/detail_invoice_page.dart';
 
@@ -271,7 +272,7 @@ class _InvoicePageState extends State<InvoicePage> {
         //   child: const Icon(
         //     Icons.add,
         //     size: 50,
-        //     color: Colors.white,
+        //     color: Colors.white
         //   ),
         // ),
       ),

@@ -1,3 +1,5 @@
+// ignore_for_file: unused_import, prefer_const_constructors
+
 import 'dart:io';
 
 import 'package:get/get_connect/http/src/utils/utils.dart';

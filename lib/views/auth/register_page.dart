@@ -9,7 +9,6 @@ import 'package:vetpro/data/models/user_model.dart';
 import 'package:vetpro/views/auth/login_page.dart';
 import 'package:vetpro/views/home/home_page.dart';
 
-import '../../bloc/login/auth_bloc.dart';
 import '../../common/constants/theme.dart';
 
 class RegisterPage extends StatefulWidget {

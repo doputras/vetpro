@@ -1,3 +1,5 @@
+// ignore_for_file: unnecessary_import, deprecated_member_use, prefer_const_constructors, avoid_print, unrelated_type_equality_checks, use_build_context_synchronously, prefer_const_literals_to_create_immutables
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
@@ -167,7 +169,7 @@ class _AddAndDetailInvoiceState extends State<AddAndDetailInvoice> {
                             context: context,
                             initialDate: DateTime.now(),
                             firstDate: DateTime(2015),
-                            lastDate: DateTime(2025),
+                            lastDate: DateTime(2027),
                           ).then((selectedDate) {
                             if (selectedDate != null) {
                               setState(() {
@@ -186,7 +188,7 @@ class _AddAndDetailInvoiceState extends State<AddAndDetailInvoice> {
                           return null;
                         },
                       ),
-                      const Text('Pemeriksaan'),
+                      const Text('Pemeriksa'),
                       TextFormField(
                         controller: nameController,
                         decoration: InputDecoration(

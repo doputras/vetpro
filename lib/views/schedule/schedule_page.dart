@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
@@ -142,7 +144,7 @@ class _SchedulePageState extends State<SchedulePage> {
                       loadedGet: (model) {
                         _autoDeleteSchedules(model.data);
                         sortByInspectionDate(model.data);
-                        if (model.data!.isEmpty) {
+                        if (model.data.isEmpty) {
                           return Container(
                             alignment: Alignment.topCenter,
                             width: double.infinity,
@@ -163,7 +165,7 @@ class _SchedulePageState extends State<SchedulePage> {
                           return ListView.builder(
                             shrinkWrap: true,
                             physics: const NeverScrollableScrollPhysics(),
-                            itemCount: model.data!.length,
+                            itemCount: model.data.length,
                             itemBuilder: (context, index) {
                               return ListCardWidget(
                                 onTap: () {
@@ -172,18 +174,18 @@ class _SchedulePageState extends State<SchedulePage> {
                                     MaterialPageRoute(
                                       builder: (context) {
                                         return DetailSchedulePage(
-                                            schedule: model.data![index]);
+                                            schedule: model.data[index]);
                                       },
                                     ),
                                   );
                                 },
                                 color: secondaryColor,
                                 flag: '2',
-                                text1: model.data![index].animalName!,
-                                text2: model.data![index].location!,
-                                text3: model.data![index].inspector!,
+                                text1: model.data[index].animalName!,
+                                text2: model.data[index].location!,
+                                text3: model.data[index].inspector!,
                                 text4: DateTime.parse(model
-                                        .data![index].inspectionDate
+                                        .data[index].inspectionDate
                                         .toString())
                                     .formatDate(),
                                 widget: const Center(
@@ -194,7 +196,7 @@ class _SchedulePageState extends State<SchedulePage> {
                                 ),
                                 onPressed: () => Get.to(
                                   EditSchedulePage(
-                                    schedule: model.data![index],
+                                    schedule: model.data[index],
                                   ),
                                 ),
                               );
