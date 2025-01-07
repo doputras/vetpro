@@ -24,11 +24,9 @@ class InvoicePage extends StatefulWidget {
 }
 
 class _InvoicePageState extends State<InvoicePage> {
-  //List<InspectionInvoice> savedItems = [];
   String role = '';
   @override
   void initState() {
-    //_loadSavedData();
     context
         .read<ListInspectionBloc>()
         .add(const ListInspectionEvent.getInspection());
@@ -41,16 +39,6 @@ class _InvoicePageState extends State<InvoicePage> {
     role = (await AuthLocalDatasource().getRole())!;
     setState(() {});
   }
-  // _loadSavedData() async {
-  //   final prefs = await SharedPreferences.getInstance();
-  //   final data = prefs.getString('invoiceData');
-  //   if (data != null) {
-  //     final List<dynamic> decodedData = json.decode(data);
-  //     savedItems =
-  //         decodedData.map((item) => InspectionInvoice.fromJson(item)).toList();
-  //   }
-  //   setState(() {}); // Trigger a rebuild with the loaded data
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -73,95 +61,6 @@ class _InvoicePageState extends State<InvoicePage> {
             horizontal: 20,
           ),
           children: [
-            // BlocBuilder<InvoiceBloc, InvoiceState>(
-            //   builder: (context, state) {
-            //     return state.maybeWhen(
-            //       loaded: (data) {
-            //         data = data
-            //             .where((invoice) => invoice.status == 'unpaid')
-            //             .toList();
-            //         if (data.isEmpty) {
-            //           return SizedBox.shrink();
-            //         } else {
-            //           final modifiableData = List<InvoiceModel>.from(data);
-            //           modifiableData
-            //               .sort((a, b) => b.tanggal!.compareTo(a.tanggal!));
-
-            //           return Column(
-            //             children: [
-            //               Container(
-            //                 margin: const EdgeInsets.only(top: 20),
-            //                 child: Row(
-            //                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            //                   children: [
-            //                     Text(
-            //                       'Unpaid',
-            //                       style: primaryTextStyle.copyWith(
-            //                         fontSize: 35,
-            //                         fontWeight: FontWeight.bold,
-            //                       ),
-            //                     ),
-            //                     Image.asset('assets/logo2.png')
-            //                   ],
-            //                 ),
-            //               ),
-            //               ListView.builder(
-            //                   shrinkWrap: true,
-            //                   physics: const NeverScrollableScrollPhysics(),
-            //                   itemCount: modifiableData.length,
-            //                   itemBuilder: (context, index) {
-            //                     final inspection = modifiableData[index];
-            //                     return ListCardWidget(
-            //                       color:
-            //                           const Color.fromARGB(255, 223, 220, 220),
-            //                       flag: '3',
-            //                       text1: inspection.pemeriksa ?? '-',
-            //                       text2: inspection.status ?? '-',
-            //                       text3: DateFormat('dd MMMM yyyy').format(
-            //                           inspection.tanggal ?? DateTime.now()),
-            //                       widget: InkWell(
-            //                           onTap: () => Get.to(
-            //                                   const DetailInvoicePage(),
-            //                                   arguments: {
-            //                                     'type': 'detail',
-            //                                     'id': inspection.id
-            //                                   }),
-            //                           child: Image.asset('assets/file.png')),
-            //                     );
-            //                   }),
-            //             ],
-            //           );
-            //         }
-            //       },
-            //       loading: () {
-            //         return const Center(
-            //           child: CircularProgressIndicator(
-            //             backgroundColor: Colors.transparent,
-            //             color: primaryColor,
-            //           ),
-            //         );
-            //       },
-            //       error: (message) => Center(
-            //         child: Text(
-            //           message,
-            //           style: blackTextStyle.copyWith(
-            //             fontSize: 16,
-            //             fontWeight: bold,
-            //           ),
-            //         ),
-            //       ),
-            //       orElse: () {
-            //         // return const Center(child: Text("data"));
-            //         return const Center(
-            //           child: CircularProgressIndicator(
-            //             backgroundColor: Colors.transparent,
-            //             color: primaryColor,
-            //           ),
-            //         );
-            //       },
-            //     );
-            //   },
-            // ),
             BlocBuilder<InvoiceBloc, InvoiceState>(
               builder: (context, state) {
                 return state.maybeWhen(
@@ -249,7 +148,6 @@ class _InvoicePageState extends State<InvoicePage> {
                     ),
                   ),
                   orElse: () {
-                    // return const Center(child: Text("data"));
                     return const Center(
                       child: CircularProgressIndicator(
                         backgroundColor: Colors.transparent,
@@ -266,15 +164,6 @@ class _InvoicePageState extends State<InvoicePage> {
           ],
         ),
         bottomNavigationBar: TabMenuWidget(menu: '4'),
-        // floatingActionButton: FloatingActionButton(
-        //   backgroundColor: Colors.green,
-        //   onPressed: () => Get.to(const AddInvoicePage()),
-        //   child: const Icon(
-        //     Icons.add,
-        //     size: 50,
-        //     color: Colors.white
-        //   ),
-        // ),
       ),
     );
   }
@@ -287,7 +176,7 @@ class _InvoicePageState extends State<InvoicePage> {
         itemBuilder: (context, index) {
           final inspection = modifiableDataUnpaid[index];
           return ListCardWidget(
-            color: const Color.fromARGB(255, 223, 220, 220),
+            color: getCardColor(inspection.status ?? 'unpaid'),
             flag: '3',
             text1: inspection.pemeriksa ?? '-',
             text2: inspection.status ?? '-',
@@ -299,5 +188,13 @@ class _InvoicePageState extends State<InvoicePage> {
                 child: Image.asset('assets/file.png')),
           );
         });
+  }
+
+  Color getCardColor(String status) {
+    if (status == 'paid') {
+      return const Color.fromARGB(255, 125, 199, 107);
+    } else {
+      return const Color.fromARGB(255, 223, 220, 220); // Default color for unpaid
+    }
   }
 }

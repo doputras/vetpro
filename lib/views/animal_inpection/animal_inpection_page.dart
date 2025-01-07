@@ -1,3 +1,5 @@
+// ignore_for_file: unused_import, use_build_context_synchronously, avoid_print
+
 import 'dart:io';
 import 'dart:typed_data'; // Import for Uint8List
 import 'package:flutter/material.dart';

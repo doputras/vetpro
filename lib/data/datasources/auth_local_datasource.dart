@@ -4,6 +4,7 @@ import 'package:vetpro/data/models/user_model.dart';
 class AuthLocalDatasource {
   Future<void> saveAuthData(UserData data) async {
     final pref = await SharedPreferences.getInstance();
+    await pref.setString('name', data.name ?? '');
     await pref.setString('role', data.role ?? 'user');
     await pref.setString('id', "${data.id}" ?? '');
     setLogin(true);
@@ -23,6 +24,11 @@ class AuthLocalDatasource {
     final SharedPreferences pref = await SharedPreferences.getInstance();
     final result = await pref.remove('auth');
     return result;
+  }
+
+  Future<String?> getName() async {
+    final SharedPreferences pref = await SharedPreferences.getInstance();
+    return pref.getString('name');
   }
 
   Future<String?> getRole() async {

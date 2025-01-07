@@ -10,6 +10,7 @@ import 'package:vetpro/bloc/invoice/invoice_bloc.dart';
 import 'package:vetpro/common/components/buttons.dart';
 import 'package:vetpro/common/constants/colors.dart';
 import 'package:vetpro/common/constants/theme.dart';
+import 'package:vetpro/data/datasources/auth_local_datasource.dart';
 import 'package:vetpro/data/models/add_invoice_model.dart';
 import 'package:vetpro/data/models/edit_invoice_model.dart';
 import 'package:vetpro/data/models/invoices_model.dart';
@@ -45,6 +46,8 @@ class _AddAndDetailInvoiceState extends State<AddAndDetailInvoice> {
   final TextEditingController descController = TextEditingController();
   final TextEditingController priceController = TextEditingController();
   final TextEditingController qtyController = TextEditingController();
+  final AuthLocalDatasource authLocalDatasource = AuthLocalDatasource();
+  String pemeriksa = '';
 
   void addItem() {
     if (descController.text.isNotEmpty &&
@@ -77,7 +80,7 @@ class _AddAndDetailInvoiceState extends State<AddAndDetailInvoice> {
   Future<AddInvoiceModel> submitStatus(String status) async {
     final invoice = AddInvoiceModel(
       tanggal: DateFormat('dd MMMM yyyy').parse(dateController.text),
-      pemeriksa: nameController.text,
+      pemeriksa: pemeriksa,
       status: status,
       details: items,
     );
@@ -95,7 +98,7 @@ class _AddAndDetailInvoiceState extends State<AddAndDetailInvoice> {
         .toList();
     final invoice = EditInvoiceModel(
       tanggal: DateFormat('dd MMMM yyyy').parse(dateController.text),
-      pemeriksa: nameController.text,
+      pemeriksa: pemeriksa,
       status: status,
       details: itemsEdit,
     );
@@ -104,18 +107,25 @@ class _AddAndDetailInvoiceState extends State<AddAndDetailInvoice> {
 
   bool get isAcctiveButton =>
       dateController.text.isNotEmpty &&
-      nameController.text.isNotEmpty &&
       items.isNotEmpty;
-  @override
+
+ @override
   void initState() {
-    setState(() {
-      nameController.text = widget.invoice?.pemeriksa ?? '';
-      items = widget.invoice?.details ?? [];
-      dateController.text = widget.invoice?.tanggal != null
-          ? DateFormat('dd MMMM yyyy').format(widget.invoice!.tanggal!)
-          : '';
-    });
     super.initState();
+    if (widget.invoice != null) {
+      idInvoice = widget.invoice!.id ?? 0;
+      dateController.text = DateFormat('dd MMMM yyyy').format(widget.invoice!.tanggal ?? DateTime.now());
+      items = widget.invoice!.details ?? [];
+    }
+    _setPemeriksa();
+  }
+
+  Future<void> _setPemeriksa() async {
+    final name = await authLocalDatasource.getName();
+    setState(() {
+      pemeriksa = name ?? '';
+      nameController.text = pemeriksa;
+    });
   }
 
   @override
@@ -187,20 +197,6 @@ class _AddAndDetailInvoiceState extends State<AddAndDetailInvoice> {
                           }
                           return null;
                         },
-                      ),
-                      const Text('Pemeriksa'),
-                      TextFormField(
-                        controller: nameController,
-                        decoration: InputDecoration(
-                            isDense: true,
-                            focusedBorder: OutlineInputBorder(
-                                borderSide:
-                                    const BorderSide(color: Colors.grey),
-                                borderRadius: BorderRadius.circular(20)),
-                            border: OutlineInputBorder(
-                                borderSide:
-                                    const BorderSide(color: Colors.grey),
-                                borderRadius: BorderRadius.circular(20))),
                       ),
                     ],
                   ),
@@ -479,7 +475,7 @@ class _AddAndDetailInvoiceState extends State<AddAndDetailInvoice> {
                                       subTotal: getTotalQty().toString(),
                                       tax: '0',
                                       items: items,
-                                      companyName: "PT MANA", 
+                                      userName: widget.invoice?.pemeriksa ?? '', 
                                       invoiceId: widget.invoice?.id.toString() ?? '',
                                       invoiceDate: dateController.text,
                                     );
@@ -521,7 +517,7 @@ class _AddAndDetailInvoiceState extends State<AddAndDetailInvoice> {
                             subTotal: getTotalQty().toString(),
                             tax: '0',
                             items: items,
-                            companyName: "PT MANA", 
+                            userName: widget.invoice?.pemeriksa ?? '', 
                             invoiceId: widget.invoice?.id.toString() ?? '',
                             invoiceDate: dateController.text,
                           );
@@ -597,7 +593,7 @@ class _AddAndDetailInvoiceState extends State<AddAndDetailInvoice> {
                 if (!Get.isSnackbarOpen) {
                   Get.snackbar(
                     'Error',
-                    'Tanggal, Nama Pemeriksaan, dan Data tidak boleh kosong',
+                    'Tanggal, Nama Pemeriksa, dan Data tidak boleh kosong',
                     backgroundColor: Colors.white,
                     colorText: Colors.black,
                   );

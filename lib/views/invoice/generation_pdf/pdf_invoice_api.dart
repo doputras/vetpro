@@ -1,29 +1,36 @@
 // ignore_for_file: unused_import, prefer_const_constructors
 
 import 'dart:io';
+import 'dart:typed_data';
 
+import 'package:flutter/services.dart' show rootBundle;
 import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:intl/intl.dart';
 import 'package:pdf/pdf.dart';
-import 'package:pdf/widgets.dart';
+import 'package:pdf/widgets.dart' as pw;
 import 'package:vetpro/data/models/invoices_model.dart';
 import 'package:vetpro/views/invoice/generation_pdf/pdf_api.dart';
 
 class PdfInvoiceApi {
   static Future<File> generate({
-    required String companyName,
+    required String userName,
     required List<DataInvoiceModel>? items,
     required String subTotal,
     required String tax,
     required String invoiceId,
     required String invoiceDate,
   }) async {
-    final pdf = Document();
+    final pdf = pw.Document();
+
+    final imageLogo = pw.MemoryImage(
+      (await rootBundle.load('assets/logo-telkom2.png')).buffer.asUint8List(),
+    );
 
     pdf.addPage(
-      MultiPage(
+      pw.MultiPage(
         build: (context) => [
-          buildTitle(companyName: companyName),
+          buildHeader(imageLogo),
+          buildTitle(companyName: userName),
           buildCardInvoice(
             amountDue: {'sub_total': subTotal, 'tax': tax},
             invoiceId: invoiceId,
@@ -31,7 +38,7 @@ class PdfInvoiceApi {
           ),
           buildListInvoice(items: items),
           buildBottom(subTotal: subTotal, tax: tax),
-          Spacer(),
+          pw.Spacer(),
           buildFooter(),
         ],
       ),
@@ -40,23 +47,44 @@ class PdfInvoiceApi {
     return PdfApi.saveDocument(name: 'invoice.pdf', pdf: pdf);
   }
 
-  static Widget buildTitle({required String companyName}) => Column(
-        crossAxisAlignment: CrossAxisAlignment.end,
+  static pw.Widget buildHeader(pw.MemoryImage imageLogo,) => pw.Column(
+        crossAxisAlignment: pw.CrossAxisAlignment.start,
         children: [
-          Row(children: [
-            Text('I N V O I C E',
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-            SizedBox(width: 0.2 * PdfPageFormat.cm),
-            Expanded(child: Divider())
-          ]),
-          SizedBox(height: 0.8 * PdfPageFormat.cm),
-          Text('BILL TO:',
-              style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+          pw.Row(
+            mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+            children: [
+              pw.Column(
+                crossAxisAlignment: pw.CrossAxisAlignment.start,
+                children: [
+                  pw.Image(imageLogo, width: 100, height: 100),
+                  pw.SizedBox(height: 8),
+                ],
+              ),
+              pw.Text('I N V O I C E',
+                  style: pw.TextStyle(fontSize: 24, fontWeight: pw.FontWeight.bold)),
+            ],
+          ),
+          pw.SizedBox(height: 0.8 * PdfPageFormat.cm),
+        ],
+      );
+
+  static pw.Widget buildTitle({required String companyName}) => pw.Column(
+        crossAxisAlignment: pw.CrossAxisAlignment.end,
+        children: [
+          pw.SizedBox(height: 0.8 * PdfPageFormat.cm),
           _buildTextLeftAndRight(
-            left: '', //Your Company Name
+            left: 'Bill from:',
+            right: 'BILL TO:',
+            fontSizeleft: 12,
+            fontSizeRight: 12,
+            fontWeightleft: pw.FontWeight.bold,
+            fontWeightRight: pw.FontWeight.bold,
+          ),
+          _buildTextLeftAndRight(
+            left: companyName,
             right: 'Telkom University',
-            fontWeightleft: FontWeight.bold,
-            fontWeightRight: FontWeight.bold,
+            fontWeightleft: pw.FontWeight.bold,
+            fontWeightRight: pw.FontWeight.bold,
             fontSizeleft: 20,
             fontSizeRight: 18,
           ),
@@ -67,33 +95,33 @@ class PdfInvoiceApi {
           _buildTextLeftAndRight(left: '', right: 'Bandung'),
           _buildTextLeftAndRight(left: '', right: 'Indonesia'),
           _buildTextLeftAndRight(left: '', right: '40257'),
-          Divider(),
+          pw.Divider(),
         ],
       );
 
-  static Row _buildTextLeftAndRight({
+  static pw.Row _buildTextLeftAndRight({
     required String left,
     required String right,
     double fontSizeleft = 12,
-    FontWeight fontWeightleft = FontWeight.normal,
+    pw.FontWeight fontWeightleft = pw.FontWeight.normal,
     double fontSizeRight = 12,
-    FontWeight fontWeightRight = FontWeight.normal,
+    pw.FontWeight fontWeightRight = pw.FontWeight.normal,
   }) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return pw.Row(
+      mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
       children: [
-        Text(
+        pw.Text(
           left,
-          style: TextStyle(
+          style: pw.TextStyle(
             fontSize: fontSizeleft,
             fontWeight: fontWeightleft,
           ),
         ),
-        Expanded(
-          child: Text(
+        pw.Expanded(
+          child: pw.Text(
             right,
-            textAlign: TextAlign.right,
-            style: TextStyle(
+            textAlign: pw.TextAlign.right,
+            style: pw.TextStyle(
               fontSize: fontSizeRight,
               fontWeight: fontWeightRight,
             ),
@@ -103,13 +131,13 @@ class PdfInvoiceApi {
     );
   }
 
-  static Widget buildCardInvoice({
+  static pw.Widget buildCardInvoice({
     required Map<String, dynamic>? amountDue,
     required String invoiceId,
     required String invoiceDate,
   }) {
-    return Column(children: [
-      Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+    return pw.Column(children: [
+      pw.Row(mainAxisAlignment: pw.MainAxisAlignment.spaceBetween, children: [
         _buildContaintCardInvoice(
           title: 'INVOICE #',
           subTitle: invoiceId,
@@ -128,31 +156,31 @@ class PdfInvoiceApi {
           ),
         ),
       ]),
-      Divider(),
+      pw.Divider(),
     ]);
   }
 
-  static Column _buildContaintCardInvoice(
+  static pw.Column _buildContaintCardInvoice(
       {required String title, required String subTitle}) {
-    return Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
-      Text(
+    return pw.Column(crossAxisAlignment: pw.CrossAxisAlignment.center, children: [
+      pw.Text(
         title,
-        style: TextStyle(
-          fontWeight: FontWeight.bold,
+        style: pw.TextStyle(
+          fontWeight: pw.FontWeight.bold,
         ),
       ),
-      Text(
+      pw.Text(
         subTitle,
-        style: TextStyle(
+        style: pw.TextStyle(
           fontSize: 18,
-          fontWeight: FontWeight.bold,
+          fontWeight: pw.FontWeight.bold,
         ),
       ),
     ]);
   }
 
-  static Widget buildListInvoice({required List<DataInvoiceModel>? items}) {
-    return Column(children: [
+  static pw.Widget buildListInvoice({required List<DataInvoiceModel>? items}) {
+    return pw.Column(children: [
       _buildContaintListInvoice(
         isHeader: true,
         item: "ITEMS",
@@ -160,9 +188,9 @@ class PdfInvoiceApi {
         quantity: "QTY",
         price: "PRICE",
         amount: "AMOUNT",
-        fontWeight: FontWeight.bold,
+        fontWeight: pw.FontWeight.bold,
       ),
-      ListView.builder(
+      pw.ListView.builder(
           itemBuilder: (context, index) {
             final result = items[index];
             return _buildContaintListInvoice(
@@ -177,72 +205,72 @@ class PdfInvoiceApi {
                     .format(int.parse(result.total?.split('.')[0] ?? '0')));
           },
           itemCount: items!.length),
-      Divider(),
+      pw.Divider(),
     ]);
   }
 
-  static Table _buildContaintListInvoice({
+  static pw.Table _buildContaintListInvoice({
     required String item,
     required String description,
     required String quantity,
     required String price,
     required String amount,
     bool isHeader = false,
-    FontWeight fontWeight = FontWeight.normal,
+    pw.FontWeight fontWeight = pw.FontWeight.normal,
   }) {
-    return Table(
+    return pw.Table(
       columnWidths: const {
-        0: FlexColumnWidth(2),
-        1: FlexColumnWidth(4),
-        2: FlexColumnWidth(2),
-        3: FlexColumnWidth(4),
-        4: FlexColumnWidth(4),
+        0: pw.FlexColumnWidth(2),
+        1: pw.FlexColumnWidth(4),
+        2: pw.FlexColumnWidth(2),
+        3: pw.FlexColumnWidth(4),
+        4: pw.FlexColumnWidth(4),
       },
       // border: TableBorder.all(color: Colors.grey, width: 0.5),
 
       children: [
-        TableRow(
+        pw.TableRow(
           children: [
             _buildCell(item, isHeader: isHeader),
             _buildCell(description, isHeader: isHeader),
             _buildCell(quantity,
                 isHeader: isHeader,
-                textAlign: isHeader ? TextAlign.left : TextAlign.center),
+                textAlign: isHeader ? pw.TextAlign.left : pw.TextAlign.center),
             _buildCell(price,
                 isHeader: isHeader,
-                textAlign: isHeader ? TextAlign.left : TextAlign.right),
+                textAlign: isHeader ? pw.TextAlign.left : pw.TextAlign.right),
             _buildCell(amount,
                 isHeader: isHeader,
-                textAlign: isHeader ? TextAlign.left : TextAlign.right),
+                textAlign: isHeader ? pw.TextAlign.left : pw.TextAlign.right),
           ],
         ),
       ],
     );
   }
 
-  static Widget _buildCell(
+  static pw.Widget _buildCell(
     String text, {
     bool isHeader = false,
-    TextAlign textAlign = TextAlign.left,
+    pw.TextAlign textAlign = pw.TextAlign.left,
   }) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Text(
+    return pw.Padding(
+      padding: const pw.EdgeInsets.all(8.0),
+      child: pw.Text(
         text,
         textAlign: textAlign,
-        style: TextStyle(
-          fontWeight: isHeader ? FontWeight.bold : FontWeight.normal,
+        style: pw.TextStyle(
+          fontWeight: isHeader ? pw.FontWeight.bold : pw.FontWeight.normal,
         ),
       ),
     );
   }
 
-  static Widget buildBottom({required String subTotal, required String tax}) {
-    return Column(children: [
-      Row(children: [
-        Flexible(child: _buildMessageBottom(), flex: 2),
-        Flexible(
-            child: Column(children: [
+  static pw.Widget buildBottom({required String subTotal, required String tax}) {
+    return pw.Column(children: [
+      pw.Row(children: [
+        pw.Flexible(child: _buildMessageBottom(), flex: 2),
+        pw.Flexible(
+            child: pw.Column(children: [
               _buildTextLeftAndRight(
                 left: 'Subtotal',
                 right: NumberFormat.currency(
@@ -250,21 +278,21 @@ class PdfInvoiceApi {
                     .format(
                   int.parse(subTotal.split('.')[0]),
                 ),
-                fontWeightleft: FontWeight.bold,
+                fontWeightleft: pw.FontWeight.bold,
               ),
               _buildTextLeftAndRight(
                 left: 'tax',
-                fontWeightleft: FontWeight.bold,
+                fontWeightleft: pw.FontWeight.bold,
                 right: NumberFormat.currency(
                         locale: 'id', symbol: 'Rp', decimalDigits: 0)
                     .format(
                   int.parse(tax.split('.')[0]),
                 ),
               ),
-              Divider(),
+              pw.Divider(),
               _buildTextLeftAndRight(
                 left: 'Total',
-                fontWeightleft: FontWeight.bold,
+                fontWeightleft: pw.FontWeight.bold,
                 right: NumberFormat.currency(
                         locale: 'id', symbol: 'Rp', decimalDigits: 0)
                     .format(
@@ -279,20 +307,20 @@ class PdfInvoiceApi {
   }
 
   static _buildMessageBottom() {
-    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      Text('NOTES:', style: TextStyle(fontWeight: FontWeight.bold)),
-      SizedBox(height: 0.5 * PdfPageFormat.cm),
-      Text(
+    return pw.Column(crossAxisAlignment: pw.CrossAxisAlignment.start, children: [
+      pw.Text('NOTES:', style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
+      pw.SizedBox(height: 0.5 * PdfPageFormat.cm),
+      pw.Text(
         'LOREM IPSUM DOLOR SIT AMET CONSECTETUR ADIPISICING ELIT SED DO EIUSMOD TEMPOR INCIDIDUNT UT LABORE ET DOLORE MAGNA ALIQUA',
-        style: TextStyle(fontSize: 10),
+        style: pw.TextStyle(fontSize: 10),
       ),
     ]);
   }
 
   static buildFooter() {
-    return Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-      Text(''),
-      Text('Telkom University'),
+    return pw.Row(mainAxisAlignment: pw.MainAxisAlignment.spaceBetween, children: [
+      pw.Text(''),
+      pw.Text('Telkom University'),
     ]);
   }
 }
