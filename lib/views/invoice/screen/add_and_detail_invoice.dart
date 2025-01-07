@@ -447,7 +447,7 @@ class _AddAndDetailInvoiceState extends State<AddAndDetailInvoice> {
                                       if (!Get.isSnackbarOpen) {
                                         Get.snackbar(
                                           'Error',
-                                          'Tanggal, Nama Pemeriksaan, dan Data tidak boleh kosong',
+                                          'Tanggal, Nama Pemeriksa, dan Data tidak boleh kosong',
                                           backgroundColor: Colors.white,
                                           colorText: Colors.black,
                                         );
@@ -479,7 +479,9 @@ class _AddAndDetailInvoiceState extends State<AddAndDetailInvoice> {
                                       subTotal: getTotalQty().toString(),
                                       tax: '0',
                                       items: items,
-                                      companyName: "PT MANA",
+                                      companyName: "PT MANA", 
+                                      invoiceId: widget.invoice?.id.toString() ?? '',
+                                      invoiceDate: dateController.text,
                                     );
                                     PdfApi.openFile(pdfFile);
                                   },
@@ -519,7 +521,9 @@ class _AddAndDetailInvoiceState extends State<AddAndDetailInvoice> {
                             subTotal: getTotalQty().toString(),
                             tax: '0',
                             items: items,
-                            companyName: "PT MANA",
+                            companyName: "PT MANA", 
+                            invoiceId: widget.invoice?.id.toString() ?? '',
+                            invoiceDate: dateController.text,
                           );
                           PdfApi.openFile(pdfFile);
                         },

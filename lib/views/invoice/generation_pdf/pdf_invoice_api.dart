@@ -15,6 +15,8 @@ class PdfInvoiceApi {
     required List<DataInvoiceModel>? items,
     required String subTotal,
     required String tax,
+    required String invoiceId,
+    required String invoiceDate,
   }) async {
     final pdf = Document();
 
@@ -22,7 +24,11 @@ class PdfInvoiceApi {
       MultiPage(
         build: (context) => [
           buildTitle(companyName: companyName),
-          buildCardInvoice(amountDue: {'sub_total': subTotal, 'tax': tax}),
+          buildCardInvoice(
+            amountDue: {'sub_total': subTotal, 'tax': tax},
+            invoiceId: invoiceId,
+            invoiceDate: invoiceDate,
+          ),
           buildListInvoice(items: items),
           buildBottom(subTotal: subTotal, tax: tax),
           Spacer(),
@@ -47,20 +53,20 @@ class PdfInvoiceApi {
           Text('BILL TO:',
               style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
           _buildTextLeftAndRight(
-            left: 'PT', //Your Company Name
-            right: 'Company Name',
+            left: '', //Your Company Name
+            right: 'Telkom University',
             fontWeightleft: FontWeight.bold,
             fontWeightRight: FontWeight.bold,
             fontSizeleft: 20,
             fontSizeRight: 18,
           ),
           _buildTextLeftAndRight(
-            left: 'Your Bussines Addres',
-            right: 'Addres',
+            left: '',
+            right: 'Jl. Telekomunikasi No. 1, \nTerusan Buahbatu - Bojongsoang, Kec. Dayeuhkolot',
           ),
-          _buildTextLeftAndRight(left: 'City', right: 'City'),
-          _buildTextLeftAndRight(left: 'Country', right: 'Country'),
-          _buildTextLeftAndRight(left: 'Postal', right: 'Postal'),
+          _buildTextLeftAndRight(left: '', right: 'Bandung'),
+          _buildTextLeftAndRight(left: '', right: 'Indonesia'),
+          _buildTextLeftAndRight(left: '', right: '40257'),
           Divider(),
         ],
       );
@@ -83,31 +89,34 @@ class PdfInvoiceApi {
             fontWeight: fontWeightleft,
           ),
         ),
-        Text(
-          right,
-          style: TextStyle(
-            fontSize: fontSizeRight,
-            fontWeight: fontWeightRight,
+        Expanded(
+          child: Text(
+            right,
+            textAlign: TextAlign.right,
+            style: TextStyle(
+              fontSize: fontSizeRight,
+              fontWeight: fontWeightRight,
+            ),
           ),
         ),
       ],
     );
   }
 
-  static Widget buildCardInvoice({Map<String, dynamic>? amountDue}) {
+  static Widget buildCardInvoice({
+    required Map<String, dynamic>? amountDue,
+    required String invoiceId,
+    required String invoiceDate,
+  }) {
     return Column(children: [
       Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
         _buildContaintCardInvoice(
           title: 'INVOICE #',
-          subTitle: '12312321',
+          subTitle: invoiceId,
         ),
         _buildContaintCardInvoice(
           title: 'DATE',
-          subTitle: '12/31/20',
-        ),
-        _buildContaintCardInvoice(
-          title: 'INVOICE DUE DATE',
-          subTitle: '12/31/20',
+          subTitle: invoiceDate,
         ),
         _buildContaintCardInvoice(
           title: 'AMOUNT DUE',
@@ -282,8 +291,8 @@ class PdfInvoiceApi {
 
   static buildFooter() {
     return Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-      Text('Your Company Name'),
-      Text('Company Name'),
+      Text(''),
+      Text('Telkom University'),
     ]);
   }
 }

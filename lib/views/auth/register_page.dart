@@ -68,12 +68,12 @@ class _RegisterPageState extends State<RegisterPage> {
                       alignment: Alignment.centerLeft,
                       child: RichText(
                         text: TextSpan(
-                          text: "Welcome to ",
+                          text: "Vetpro",
                           style: primaryTextStyle.copyWith(
                               fontSize: 35, fontWeight: bold),
                           children: [
                             TextSpan(
-                              text: '\nVetpro',
+                              text: '\nRegister',
                               style: secondaryTextStyle.copyWith(
                                 fontSize: 35,
                                 fontWeight: bold,

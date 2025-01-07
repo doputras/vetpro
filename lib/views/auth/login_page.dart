@@ -1,5 +1,6 @@
 // ignore_for_file: unused_import
 
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:vetpro/bloc/auth_new/bloc/auth_new_bloc.dart';
@@ -94,6 +95,16 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                       ),
                     ),
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        'Login',
+                        style: primaryTextStyle.copyWith(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
                     const SizedBox(
                       height: 10,
                     ),
@@ -135,18 +146,32 @@ class _LoginPageState extends State<LoginPage> {
                     Align(
                       alignment: Alignment.centerLeft,
                       child: GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const RegisterPage()),
-                          );
-                        },
-                        child: Text(
-                          'Belum Punya Akun Silahkan Register',
-                          style: primaryTextStyle.copyWith(
-                            fontWeight: FontWeight.bold,
-                            color: primaryColor,
+                        onTap: () {},
+                        child: RichText(
+                          text: TextSpan(
+                            text: 'Belum Punya Akun? Silahkan ',
+                            style: primaryTextStyle.copyWith(
+                              fontWeight: FontWeight.bold,
+                              color: primaryColor,
+                            ),
+                            children: [
+                              TextSpan(
+                                text: 'Register',
+                                style: primaryTextStyle.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.blue,
+                                ),
+                                recognizer: TapGestureRecognizer()
+                                  ..onTap = () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => const RegisterPage(),
+                                      ),
+                                    );
+                                  },
+                              ),
+                            ],
                           ),
                         ),
                       ),
