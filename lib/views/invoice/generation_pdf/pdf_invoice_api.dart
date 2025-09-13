@@ -268,7 +268,6 @@ class PdfInvoiceApi {
   static pw.Widget buildBottom({required String subTotal, required String tax}) {
     return pw.Column(children: [
       pw.Row(children: [
-        pw.Flexible(child: _buildMessageBottom(), flex: 2),
         pw.Flexible(
             child: pw.Column(children: [
               _buildTextLeftAndRight(
@@ -306,16 +305,7 @@ class PdfInvoiceApi {
     ]);
   }
 
-  static _buildMessageBottom() {
-    return pw.Column(crossAxisAlignment: pw.CrossAxisAlignment.start, children: [
-      pw.Text('NOTES:', style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
-      pw.SizedBox(height: 0.5 * PdfPageFormat.cm),
-      pw.Text(
-        'LOREM IPSUM DOLOR SIT AMET CONSECTETUR ADIPISICING ELIT SED DO EIUSMOD TEMPOR INCIDIDUNT UT LABORE ET DOLORE MAGNA ALIQUA',
-        style: pw.TextStyle(fontSize: 10),
-      ),
-    ]);
-  }
+
 
   static buildFooter() {
     return pw.Row(mainAxisAlignment: pw.MainAxisAlignment.spaceBetween, children: [
