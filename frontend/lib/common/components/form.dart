@@ -1,49 +1,47 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:vetpro/common/components/sticker.dart';
+import 'package:vetpro/common/constants/colors.dart';
+import 'package:vetpro/common/constants/theme.dart';
 
-import '../constants/colors.dart';
-import '../constants/theme.dart';
-
+/// Labelled text field. Fields are flat (no shadow): raised things are
+/// pressable, flat things are typed into.
 class CustomFormField extends StatelessWidget {
   final String title;
-  final bool obscureText;
   final TextEditingController? controller;
-  final bool isShowTitle;
-  final TextInputType? keyboardType;
-  final Function(String)? onFieldSubmitted;
-  final Function(String)? onChanged;
-  final Widget? prefixIcon;
-  final Widget? sufixIcon;
   final String? hintText;
-  final double borderRadius;
-  final Color fillColor;
   final int maxLine;
-  final bool isShadow;
-  final bool isBorder;
-  final String? initialValue;
+  final TextInputType? keyboardType;
+  final TextInputAction? textInputAction;
+  final bool obscureText;
+  final Widget? prefixIcon;
+  final Widget? suffixIcon;
+  final String? prefixText;
+  final bool readOnly;
   final VoidCallback? onTap;
-  final bool? readOnly;
+  final ValueChanged<String>? onChanged;
+  final ValueChanged<String>? onFieldSubmitted;
+  final List<TextInputFormatter>? inputFormatters;
+  final Iterable<String>? autofillHints;
 
   const CustomFormField({
     super.key,
     required this.title,
-    this.obscureText = false,
     this.controller,
-    this.isShowTitle = true,
-    this.keyboardType,
-    this.onFieldSubmitted,
-    this.onChanged,
-    this.prefixIcon,
-    this.sufixIcon,
     this.hintText,
-    this.borderRadius = 30,
-    required this.fillColor,
     this.maxLine = 1,
-    this.isShadow = true,
-    this.isBorder = false,
-    this.initialValue,
-    this.onTap,
+    this.keyboardType,
+    this.textInputAction,
+    this.obscureText = false,
+    this.prefixIcon,
+    this.suffixIcon,
+    this.prefixText,
     this.readOnly = false,
+    this.onTap,
+    this.onChanged,
+    this.onFieldSubmitted,
+    this.inputFormatters,
+    this.autofillHints,
   });
 
   @override
@@ -51,67 +49,106 @@ class CustomFormField extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if (isShowTitle)
-          Text(
-            title,
-            style: const TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.w500,
-              color: Colors.black,
-            ),
-          ),
-        if (isShowTitle)
-          const SizedBox(
-            height: 8,
-          ),
-        Container(
-          alignment: Alignment.centerLeft,
-          decoration: BoxDecoration(boxShadow: [
-            if (isShadow)
-              BoxShadow(
-                color: greyColor.withOpacity(0.8), // shadow color
-                spreadRadius: -1, // shadow width
-                blurRadius: 4, // level shadow
-                offset: const Offset(0, 6), // Offset shadow (x, y)
-              ),
-          ], borderRadius: BorderRadius.circular(30)),
-          child: TextFormField(
-            onTap: onTap,
-            readOnly: readOnly!,
-            initialValue: initialValue,
-            onChanged: onChanged,
-            maxLines: maxLine,
-            obscureText: obscureText,
-            controller: controller,
-            keyboardType: keyboardType,
-            onFieldSubmitted: onFieldSubmitted,
-            decoration: InputDecoration(
-              hintText: hintText,
-              hintStyle: greyTextStyle,
-              filled: true,
-              isDense: true,
-              fillColor: fillColor,
-              focusedBorder: OutlineInputBorder(
-                borderSide: const BorderSide(
-                  width: 2,
-                  color: primaryColor,
-                ),
-                borderRadius: BorderRadius.circular(borderRadius),
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderSide: BorderSide(
-                  width: 2,
-                  color: isBorder ? greyColor : Colors.white,
-                ),
-                borderRadius: BorderRadius.circular(borderRadius),
-              ),
-              contentPadding: const EdgeInsets.all(15),
-              prefixIcon: prefixIcon,
-              suffixIcon: sufixIcon,
-            ),
+        Text(title, style: labelStyle),
+        const SizedBox(height: 6),
+        TextFormField(
+          controller: controller,
+          readOnly: readOnly,
+          onTap: onTap,
+          onChanged: onChanged,
+          onFieldSubmitted: onFieldSubmitted,
+          obscureText: obscureText,
+          minLines: maxLine > 1 ? 2 : 1,
+          maxLines: obscureText ? 1 : maxLine,
+          keyboardType: maxLine > 1 ? TextInputType.multiline : keyboardType,
+          textInputAction: textInputAction,
+          textCapitalization: maxLine > 1
+              ? TextCapitalization.sentences
+              : TextCapitalization.none,
+          inputFormatters: inputFormatters,
+          autofillHints: autofillHints,
+          style: bodyStyle.copyWith(fontWeight: FontWeight.w600),
+          decoration: InputDecoration(
+            hintText: hintText,
+            prefixIcon: prefixIcon,
+            suffixIcon: suffixIcon,
+            prefixText: prefixText,
+            prefixStyle: bodyStyle.copyWith(
+                color: mutedColor, fontWeight: FontWeight.w700),
           ),
         ),
       ],
+    );
+  }
+}
+
+/// A titled sticker card that groups related fields.
+class FormSection extends StatelessWidget {
+  final String title;
+  final IconData icon;
+  final List<Widget> children;
+
+  const FormSection({
+    super.key,
+    required this.title,
+    required this.icon,
+    required this.children,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16),
+      child: Sticker(
+        padding: const EdgeInsets.fromLTRB(16, 16, 16, 18),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(6),
+                  decoration: BoxDecoration(
+                    color: tealSoftColor,
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(color: inkColor, width: 1.5),
+                  ),
+                  child: Icon(icon, size: 18, color: inkColor),
+                ),
+                const SizedBox(width: 10),
+                Expanded(child: Text(title, style: displayStyle(18))),
+              ],
+            ),
+            for (final child in children) ...[
+              const SizedBox(height: 14),
+              child,
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// Read-only label/value pair for detail screens.
+class InfoRow extends StatelessWidget {
+  final String label;
+  final String? value;
+  const InfoRow(this.label, this.value, {super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final v = (value == null || value!.trim().isEmpty) ? '—' : value!;
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 12),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(label, style: mutedStyle.copyWith(fontWeight: FontWeight.w700)),
+          const SizedBox(height: 4),
+          Text(v, style: bodyStyle),
+        ],
+      ),
     );
   }
 }

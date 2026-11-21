@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:vetpro/common/components/form.dart';
-import '../../../common/constants/colors.dart';
+import 'package:vetpro/common/components/species.dart';
+import 'package:vetpro/common/constants/colors.dart';
+import 'package:vetpro/common/constants/theme.dart';
 
+/// Species picker: tap a sticker instead of opening a dropdown.
+/// Read the result through a GlobalKey: [selectedAnimal] / [otherAnimal].
 class ChooseAnimalWidget extends StatefulWidget {
-  final String title;
+  final String? initialAnimal;
 
-  const ChooseAnimalWidget({
-    super.key,
-    required this.title,
-  });
+  const ChooseAnimalWidget({super.key, this.initialAnimal});
 
   @override
   ChooseAnimalWidgetState createState() => ChooseAnimalWidgetState();
@@ -17,107 +18,118 @@ class ChooseAnimalWidget extends StatefulWidget {
 class ChooseAnimalWidgetState extends State<ChooseAnimalWidget> {
   String? selectedAnimal;
   String? otherAnimal;
+  late final TextEditingController _other = TextEditingController();
 
-  final animals = [
-    'Domba',
-    'Rusa',
-    'Angsa',
-    'Burung',
-    'Kelinci',
-    'Lainnya',
-  ];
+  /// The animal name to save: the typed name when "Lainnya" is picked.
+  String? get animalName =>
+      selectedAnimal == 'Lainnya' ? otherAnimal?.trim() : selectedAnimal;
+
+  @override
+  void initState() {
+    super.initState();
+    final initial = widget.initialAnimal?.trim();
+    if (initial == null || initial.isEmpty) return;
+    final known = speciesList.any((s) => s.name == initial);
+    selectedAnimal = known ? initial : 'Lainnya';
+    if (!known) {
+      otherAnimal = initial;
+      _other.text = initial;
+    }
+  }
+
+  @override
+  void dispose() {
+    _other.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        Text(
-          widget.title,
-          style: const TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.w500,
-            color: Colors.black,
-          ),
-        ),
-        const SizedBox(
-          height: 8,
-        ),
-        Container(
-          width: double.infinity,
-          height: 80,
-          alignment: Alignment.centerLeft,
-          decoration: BoxDecoration(
-            color: Colors.white,
-            boxShadow: [
-              BoxShadow(
-                color: greyColor.withOpacity(0.8), // shadow color
-                spreadRadius: -1, // shadow width
-                blurRadius: 4, // shadow blur level
-                offset: const Offset(0, 6), // Offset shadow (x, y)
-              ),
-            ],
-            borderRadius: BorderRadius.circular(30),
-          ),
-          child: DropdownButtonFormField<String>(
-            value: selectedAnimal,
-            onChanged: (String? newValue) {
-              setState(() {
-                selectedAnimal = newValue;
-                if (selectedAnimal != 'Lainnya') {
-                  otherAnimal = '';
-                }
-              });
-            },
-            items: animals.map<DropdownMenuItem<String>>((String value) {
-              return DropdownMenuItem<String>(
-                value: value,
-                child: Text(value),
-              );
-            }).toList(),
-            decoration: InputDecoration(
-              helperMaxLines: 2,
-              filled: true,
-              isDense: true,
-              fillColor: Colors.white,
-              focusedBorder: OutlineInputBorder(
-                borderSide: const BorderSide(
-                  width: 2,
-                  color: Colors.white,
-                ),
-                borderRadius: BorderRadius.circular(30),
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderSide: const BorderSide(
-                  width: 2,
-                  color: Colors.white,
-                ),
-                borderRadius: BorderRadius.circular(30),
-              ),
-              contentPadding: const EdgeInsets.all(15),
-            ),
-          ),
-        ),
-
-        if (selectedAnimal == 'Lainnya')
-          Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        LayoutBuilder(builder: (context, c) {
+          const gap = 10.0;
+          final w = (c.maxWidth - gap * 2) / 3;
+          return Wrap(
+            spacing: gap,
+            runSpacing: gap,
             children: [
-              const SizedBox(
-                height: 11,
-              ),
-              CustomFormField(
-                onChanged: (value) {
-                  setState(() {
-                    otherAnimal = value;
-                  });
-                },
-                title: 'Tulis nama hewan',
-                fillColor: Colors.white,
-                maxLine: 2,
-              ),
+              for (final s in speciesList)
+                SizedBox(width: w, child: _chip(s, s.name == selectedAnimal)),
+            ],
+          );
+        }),
+        if (selectedAnimal == 'Lainnya') ...[
+          const SizedBox(height: 14),
+          CustomFormField(
+            title: 'Nama hewannya',
+            hintText: 'mis. Kambing',
+            controller: _other,
+            onChanged: (v) => otherAnimal = v,
+          ),
+        ],
+      ],
+    );
+  }
+
+  Widget _chip(Species s, bool selected) {
+    final noMotion = MediaQuery.maybeDisableAnimationsOf(context) ?? false;
+    return Semantics(
+      button: true,
+      selected: selected,
+      label: s.name,
+      excludeSemantics: true,
+      child: GestureDetector(
+        onTap: () => setState(() {
+          selectedAnimal = s.name;
+          if (s.name != 'Lainnya') otherAnimal = '';
+        }),
+        child: AnimatedContainer(
+          duration:
+              noMotion ? Duration.zero : const Duration(milliseconds: 160),
+          curve: Curves.easeOutQuart,
+          padding: const EdgeInsets.symmetric(vertical: 10),
+          transform: Matrix4.translationValues(0, selected ? 3 : 0, 0),
+          decoration: BoxDecoration(
+            color: selected ? s.color : whiteColor,
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: inkColor, width: 2),
+            boxShadow: [
+              BoxShadow(color: inkColor, offset: Offset(0, selected ? 0 : 3)),
             ],
           ),
-      ],
+          child: Column(
+            children: [
+              Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  SpeciesSticker(animal: s.name, size: 46),
+                  if (selected)
+                    Positioned(
+                      right: -6,
+                      top: -4,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: inkColor,
+                          shape: BoxShape.circle,
+                          border: Border.all(color: whiteColor, width: 2),
+                        ),
+                        padding: const EdgeInsets.all(2),
+                        child: const Icon(Icons.check_rounded,
+                            size: 14, color: whiteColor),
+                      ),
+                    ),
+                ],
+              ),
+              const SizedBox(height: 6),
+              Text(s.name,
+                  style: labelStyle.copyWith(
+                      fontSize: 13, fontWeight: FontWeight.w800)),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

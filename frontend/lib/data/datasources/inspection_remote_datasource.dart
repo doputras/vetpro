@@ -40,7 +40,11 @@ class InspectionRemoteDatasource {
         List<dynamic> jsonData = json.decode(response.body);
         List<InspectionModel> inspections =
             jsonData.map((data) => InspectionModel.fromJson(data)).toList();
-        inspections.sort((a, b) => b.date.compareTo(a.date));
+        // Newest date first; same day -> most recently created first.
+        inspections.sort((a, b) {
+          final byDate = b.date.compareTo(a.date);
+          return byDate != 0 ? byDate : (b.id ?? 0).compareTo(a.id ?? 0);
+        });
         return right(inspections);
       } else {
         return left(

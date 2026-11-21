@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:vetpro/bloc/auth_new/bloc/auth_new_bloc.dart';
-import 'package:vetpro/common/components/buttons.dart';
 import 'package:vetpro/common/components/form.dart';
-import 'package:vetpro/common/constants/colors.dart';
+import 'package:vetpro/common/components/sticker.dart';
+import 'package:vetpro/common/constants/theme.dart';
 import 'package:vetpro/data/datasources/auth_local_datasource.dart';
 import 'package:vetpro/data/models/user_model.dart';
+import 'package:vetpro/views/auth/auth_layout.dart';
 import 'package:vetpro/views/auth/login_page.dart';
 import 'package:vetpro/views/home/home_page.dart';
-
-import '../../common/constants/theme.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -22,221 +21,141 @@ class _RegisterPageState extends State<RegisterPage> {
   final namaController = TextEditingController();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
+  bool _obscure = true;
+  bool _submitted = false;
+  String? _localError;
 
   @override
   void dispose() {
+    namaController.dispose();
     emailController.dispose();
     passwordController.dispose();
     super.dispose();
   }
 
+  void _clearError(String _) {
+    if (_localError != null) setState(() => _localError = null);
+  }
+
+  void _submit() {
+    if (namaController.text.trim().isEmpty ||
+        emailController.text.trim().isEmpty ||
+        passwordController.text.isEmpty) {
+      setState(() => _localError = 'Lengkapi nama, email, dan kata sandi.');
+      return;
+    }
+    setState(() {
+      _localError = null;
+      _submitted = true;
+    });
+    context.read<AuthNewBloc>().add(AuthNewEvent.register(UserData(
+          name: namaController.text.trim(),
+          email: emailController.text.trim(),
+          password: passwordController.text,
+        )));
+  }
+
+  void _toLogin() {
+    if (Navigator.canPop(context)) {
+      Navigator.pop(context);
+    } else {
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (_) => const LoginPage()));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        body: Stack(
-          children: [
-            Image.asset(
-              'assets/vet-clinic.png',
-              fit: BoxFit.fill,
-              width: MediaQuery.of(context).size.width,
+    return BlocConsumer<AuthNewBloc, AuthNewState>(
+      listener: (context, state) {
+        state.maybeWhen(
+          orElse: () {},
+          registerUser: (credential) {
+            AuthLocalDatasource().saveAuthData(credential.data ?? UserData());
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (_) => const HomePage()),
+              (_) => false,
+            );
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Akun dibuat. Selamat datang!')),
+            );
+          },
+        );
+      },
+      builder: (context, state) {
+        final loading =
+            state.maybeWhen(loading: () => true, orElse: () => false);
+        final serverError = _submitted
+            ? state.maybeWhen(error: (m) => m, orElse: () => null)
+            : null;
+        final error = _localError ?? serverError;
+
+        return AuthLayout(
+          lead: 'Gabung ke',
+          highlight: 'VetPro',
+          subtitle: 'Satu akun untuk semua catatan pemeriksaanmu.',
+          form: [
+            CustomFormField(
+              onChanged: _clearError,
+              title: 'Nama lengkap',
+              hintText: 'mis. drh. Sari Wulandari',
+              controller: namaController,
+              textInputAction: TextInputAction.next,
+              autofillHints: const [AutofillHints.name],
+              prefixIcon: const Icon(Icons.person_outline_rounded),
             ),
-            Align(
-              alignment: Alignment.topRight,
-              child: Container(
-                margin: const EdgeInsets.all(15),
-                child: Image.asset('assets/logo-telkom.png'),
+            const SizedBox(height: 14),
+            CustomFormField(
+              onChanged: _clearError,
+              title: 'Email',
+              hintText: 'nama@email.com',
+              controller: emailController,
+              keyboardType: TextInputType.emailAddress,
+              textInputAction: TextInputAction.next,
+              autofillHints: const [AutofillHints.email],
+              prefixIcon: const Icon(Icons.mail_outline_rounded),
+            ),
+            const SizedBox(height: 14),
+            CustomFormField(
+              onChanged: _clearError,
+              title: 'Kata sandi',
+              hintText: 'Buat kata sandi',
+              controller: passwordController,
+              obscureText: _obscure,
+              textInputAction: TextInputAction.done,
+              autofillHints: const [AutofillHints.newPassword],
+              onFieldSubmitted: (_) => _submit(),
+              prefixIcon: const Icon(Icons.lock_outline_rounded),
+              suffixIcon: IconButton(
+                tooltip: _obscure ? 'Tampilkan' : 'Sembunyikan',
+                icon: Icon(_obscure
+                    ? Icons.visibility_outlined
+                    : Icons.visibility_off_outlined),
+                onPressed: () => setState(() => _obscure = !_obscure),
               ),
             ),
-            SingleChildScrollView(
-              child: Container(
-                width: MediaQuery.of(context).size.width,
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 25, vertical: 25),
-                margin: EdgeInsets.only(
-                    top: MediaQuery.of(context).size.height / 2.5),
-                decoration: const BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(25),
-                        topRight: Radius.circular(25))),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: RichText(
-                        text: TextSpan(
-                          text: "Vetpro",
-                          style: primaryTextStyle.copyWith(
-                              fontSize: 35, fontWeight: bold),
-                          children: [
-                            TextSpan(
-                              text: '\nRegister',
-                              style: secondaryTextStyle.copyWith(
-                                fontSize: 35,
-                                fontWeight: bold,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        'Veterinary Care in Your Pocket',
-                        style: greyTextStyle.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    CustomFormField(
-                      controller: namaController,
-                      isShadow: false,
-                      isBorder: true,
-                      keyboardType: TextInputType.emailAddress,
-                      prefixIcon: const Icon(
-                        Icons.person_outline_rounded,
-                        color: greyColor,
-                        size: 24,
-                      ),
-                      title: 'Name',
-                      hintText: 'Name',
-                      fillColor: greyColor.withOpacity(0.2),
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    CustomFormField(
-                      controller: emailController,
-                      isShadow: false,
-                      isBorder: true,
-                      keyboardType: TextInputType.emailAddress,
-                      prefixIcon: const Icon(
-                        Icons.person_outline_rounded,
-                        color: greyColor,
-                        size: 24,
-                      ),
-                      title: 'Email',
-                      hintText: 'Email',
-                      fillColor: greyColor.withOpacity(0.2),
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    CustomFormField(
-                      controller: passwordController,
-                      isShadow: false,
-                      isBorder: true,
-                      obscureText: true,
-                      keyboardType: TextInputType.visiblePassword,
-                      prefixIcon: const Icon(
-                        Icons.lock_outline_rounded,
-                        color: greyColor,
-                        size: 24,
-                      ),
-                      title: 'Password',
-                      hintText: 'Password',
-                      fillColor: greyColor.withOpacity(0.2),
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    BlocConsumer<AuthNewBloc, AuthNewState>(
-                      listener: (context, state) {
-                        state.maybeWhen(
-                          orElse: () {},
-                          registerUser: (credential) {
-                            AuthLocalDatasource()
-                                .saveAuthData(credential.data ?? UserData());
-                            Navigator.pushReplacement(context,
-                                MaterialPageRoute(builder: (context) {
-                              return const HomePage();
-                            }));
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('Register Success'),
-                                backgroundColor: greenColor,
-                              ),
-                            );
-                          },
-                          error: (message) {
-                            showDialog(
-                                context: context,
-                                builder: (context) {
-                                  return AlertDialog(
-                                    title: const Center(
-                                        child: Text('Pemberitahuan')),
-                                    content: Text(
-                                      message,
-                                      textAlign: TextAlign.center,
-                                    ),
-                                  );
-                                });
-                          },
-                        );
-                      },
-                      builder: (context, state) {
-                        return state.maybeWhen(
-                          orElse: () {
-                            return CustomFilledButton(
-                              width: 300,
-                              height: 60,
-                              borderRadius: 35,
-                              onPressed: () {
-                                final UserData userData = UserData(
-                                  name: namaController.text,
-                                  email: emailController.text,
-                                  password: passwordController.text,
-                                );
-                                context.read<AuthNewBloc>().add(
-                                      AuthNewEvent.register(userData),
-                                    );
-                              },
-                              title: 'Register',
-                            );
-                          },
-                          loading: () {
-                            return const Center(
-                              child: CircularProgressIndicator(
-                                color: primaryColor,
-                              ),
-                            );
-                          },
-                        );
-                      },
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const LoginPage()),
-                        );
-                      },
-                      child: Text(
-                        ' Sudah Punya Akun Silahkan Login',
-                        style: primaryTextStyle.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: primaryColor,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            )
+            if (error != null) ...[
+              const SizedBox(height: 14),
+              FormError(error),
+            ],
+            const SizedBox(height: 20),
+            StickerButton(
+              label: 'Buat akun',
+              icon: Icons.person_add_alt_1_rounded,
+              loading: loading,
+              onPressed: _submit,
+            ),
           ],
-        ),
-      ),
+          footer: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text('Sudah punya akun?', style: bodyStyle),
+              TextButton(onPressed: _toLogin, child: const Text('Masuk')),
+            ],
+          ),
+        );
+      },
     );
   }
 }

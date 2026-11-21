@@ -32,13 +32,8 @@ class InvoiceBloc extends Bloc<InvoiceEvent, InvoiceState> {
 
     response.fold(
       (errorMessage) => emit(InvoiceState.error(errorMessage)),
-      (invoiceList) {
-        if (invoiceList.isNotEmpty) {
-          emit(InvoiceState.loaded(invoiceList));
-        } else {
-          emit(const InvoiceState.error("No recent Invoices found."));
-        }
-      },
+      // Empty is a valid result: the page shows an empty state, not an error.
+      (invoiceList) => emit(InvoiceState.loaded(invoiceList)),
     );
   }
 

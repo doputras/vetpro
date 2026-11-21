@@ -18,6 +18,7 @@ class AuthNewBloc extends Bloc<AuthNewEvent, AuthNewState> {
 
   FutureOr<void> _onRegister(
       _Register event, Emitter<AuthNewState> emit) async {
+    emit(const AuthNewState.loading());
     final response = await datasource.register(event.useData);
 
     response.fold(
@@ -34,6 +35,7 @@ class AuthNewBloc extends Bloc<AuthNewEvent, AuthNewState> {
   }
 
   FutureOr<void> _onLogin(_Login event, Emitter<AuthNewState> emit) async {
+    emit(const AuthNewState.loading());
     final response = await datasource.login(event.useData);
 
     response.fold(
@@ -43,7 +45,7 @@ class AuthNewBloc extends Bloc<AuthNewEvent, AuthNewState> {
           final responeData = data;
           emit(AuthNewState.loginUser(responeData));
         } else {
-          emit(const AuthNewState.error("Gagal Register"));
+          emit(const AuthNewState.error("Email atau kata sandi salah."));
         }
       },
     );

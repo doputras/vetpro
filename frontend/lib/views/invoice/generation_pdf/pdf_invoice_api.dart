@@ -22,14 +22,10 @@ class PdfInvoiceApi {
   }) async {
     final pdf = pw.Document();
 
-    final imageLogo = pw.MemoryImage(
-      (await rootBundle.load('assets/logo-telkom2.png')).buffer.asUint8List(),
-    );
-
     pdf.addPage(
       pw.MultiPage(
         build: (context) => [
-          buildHeader(imageLogo),
+          buildHeader(),
           buildTitle(companyName: userName),
           buildCardInvoice(
             amountDue: {'sub_total': subTotal, 'tax': tax},
@@ -47,21 +43,20 @@ class PdfInvoiceApi {
     return PdfApi.saveDocument(name: 'invoice.pdf', pdf: pdf);
   }
 
-  static pw.Widget buildHeader(pw.MemoryImage imageLogo,) => pw.Column(
+  static pw.Widget buildHeader() => pw.Column(
         crossAxisAlignment: pw.CrossAxisAlignment.start,
         children: [
           pw.Row(
             mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
             children: [
-              pw.Column(
-                crossAxisAlignment: pw.CrossAxisAlignment.start,
-                children: [
-                  pw.Image(imageLogo, width: 100, height: 100),
-                  pw.SizedBox(height: 8),
-                ],
-              ),
+              pw.Text('VetPro',
+                  style: pw.TextStyle(
+                      fontSize: 28,
+                      fontWeight: pw.FontWeight.bold,
+                      color: PdfColor.fromInt(0xFFD93A28))),
               pw.Text('I N V O I C E',
-                  style: pw.TextStyle(fontSize: 24, fontWeight: pw.FontWeight.bold)),
+                  style: pw.TextStyle(
+                      fontSize: 24, fontWeight: pw.FontWeight.bold)),
             ],
           ),
           pw.SizedBox(height: 0.8 * PdfPageFormat.cm),
@@ -90,7 +85,8 @@ class PdfInvoiceApi {
           ),
           _buildTextLeftAndRight(
             left: '',
-            right: 'Jl. Telekomunikasi No. 1, \nTerusan Buahbatu - Bojongsoang, Kec. Dayeuhkolot',
+            right:
+                'Jl. Telekomunikasi No. 1, \nTerusan Buahbatu - Bojongsoang, Kec. Dayeuhkolot',
           ),
           _buildTextLeftAndRight(left: '', right: 'Bandung'),
           _buildTextLeftAndRight(left: '', right: 'Indonesia'),
@@ -162,21 +158,23 @@ class PdfInvoiceApi {
 
   static pw.Column _buildContaintCardInvoice(
       {required String title, required String subTitle}) {
-    return pw.Column(crossAxisAlignment: pw.CrossAxisAlignment.center, children: [
-      pw.Text(
-        title,
-        style: pw.TextStyle(
-          fontWeight: pw.FontWeight.bold,
-        ),
-      ),
-      pw.Text(
-        subTitle,
-        style: pw.TextStyle(
-          fontSize: 18,
-          fontWeight: pw.FontWeight.bold,
-        ),
-      ),
-    ]);
+    return pw.Column(
+        crossAxisAlignment: pw.CrossAxisAlignment.center,
+        children: [
+          pw.Text(
+            title,
+            style: pw.TextStyle(
+              fontWeight: pw.FontWeight.bold,
+            ),
+          ),
+          pw.Text(
+            subTitle,
+            style: pw.TextStyle(
+              fontSize: 18,
+              fontWeight: pw.FontWeight.bold,
+            ),
+          ),
+        ]);
   }
 
   static pw.Widget buildListInvoice({required List<DataInvoiceModel>? items}) {
@@ -265,7 +263,8 @@ class PdfInvoiceApi {
     );
   }
 
-  static pw.Widget buildBottom({required String subTotal, required String tax}) {
+  static pw.Widget buildBottom(
+      {required String subTotal, required String tax}) {
     return pw.Column(children: [
       pw.Row(children: [
         pw.Flexible(
@@ -305,12 +304,12 @@ class PdfInvoiceApi {
     ]);
   }
 
-
-
   static buildFooter() {
-    return pw.Row(mainAxisAlignment: pw.MainAxisAlignment.spaceBetween, children: [
-      pw.Text(''),
-      pw.Text('Telkom University'),
-    ]);
+    return pw.Row(
+        mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+        children: [
+          pw.Text(''),
+          pw.Text('Telkom University'),
+        ]);
   }
 }

@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:get/get.dart';
 import 'package:vetpro/bloc/list_inspection/list_inspection_bloc.dart';
+import 'package:vetpro/common/components/species.dart';
+import 'package:vetpro/common/components/states.dart';
+import 'package:vetpro/common/components/sticker.dart';
+import 'package:vetpro/common/components/tab_menu_widget.dart';
 import 'package:vetpro/common/constants/colors.dart';
 import 'package:vetpro/common/constants/theme.dart';
+import 'package:vetpro/common/extensions/format_ext.dart';
 import 'package:vetpro/data/models/inspection_model.dart';
-import 'package:vetpro/common/extensions/date_format_ext.dart';
-
-import '../../common/components/list_card_widget.dart';
-import '../../common/components/tab_menu_widget.dart';
-import '../animal_inpection/detail_animal_inpection_page.dart';
+import 'package:vetpro/views/home/home_page.dart';
 
 class HistoryPage extends StatefulWidget {
   const HistoryPage({super.key});
@@ -20,150 +20,186 @@ class HistoryPage extends StatefulWidget {
 
 class _HistoryPageState extends State<HistoryPage> {
   final TextEditingController _searchController = TextEditingController();
-  String _searchQuery = '';
-  bool _isSearching = false; // Flag to toggle search bar
+  String _query = '';
+  String? _species; // null = all
 
   @override
   void initState() {
-    context.read<ListInspectionBloc>().add(const ListInspectionEvent.getInspection());
-    _searchController.addListener(() {
-      setState(() {
-        _searchQuery = _searchController.text;
-      });
-    });
     super.initState();
+    _refresh();
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        body: ListView(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          children: [
-            const SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                _isSearching
-                    ? Expanded(
-                        child: TextField(
-                          controller: _searchController,
-                          decoration: InputDecoration(
-                            hintText: 'Search inspections...',
-                            prefixIcon: Icon(Icons.search),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
-                              borderSide: BorderSide.none,
-                            ),
-                            filled: true,
-                            fillColor: Colors.grey[200],
-                          ),
-                        ),
-                      )
-                    : Text(
-                        'History',
-                        style: primaryTextStyle.copyWith(fontSize: 40, fontWeight: bold),
-                      ),
-                IconButton(
-                  icon: Icon(_isSearching ? Icons.close : Icons.search, size: 30),
-                  onPressed: () {
-                    setState(() {
-                      if (_isSearching) {
-                        _searchController.clear();
-                        _searchQuery = '';
-                      }
-                      _isSearching = !_isSearching;
-                    });
-                  },
-                ),
-              ],
-            ),
-            const SizedBox(height: 30),
-            BlocBuilder<ListInspectionBloc, ListInspectionState>(
-              builder: (context, state) {
-                return state.maybeWhen(
-                  orElse: () {
-                    return const Center(
-                      child: CircularProgressIndicator(
-                        backgroundColor: Colors.transparent,
-                        color: primaryColor,
-                      ),
-                    );
-                  },
-                  loaded: (data) {
-                    // Filter the data based on search query
-                    final filteredData = data.where((inspection) {
-                      final lowerCaseQuery = _searchQuery.toLowerCase();
-                      return inspection.animal.toLowerCase().contains(lowerCaseQuery) ||
-                          inspection.location.toLowerCase().contains(lowerCaseQuery) ||
-                          inspection.inspector.toLowerCase().contains(lowerCaseQuery);
-                    }).toList();
-
-                    // Sort the filtered data by date in descending order
-                    filteredData.sort((a, b) => DateTime.parse(b.date).compareTo(DateTime.parse(a.date)));
-
-                    if (filteredData.isEmpty) {
-                      return Container(
-                        alignment: Alignment.topCenter,
-                        width: MediaQuery.of(context).size.width * 0.5,
-                        height: 500,
-                        child: Center(
-                          child: Text(
-                            'No inspections found.',
-                            maxLines: 2,
-                            textAlign: TextAlign.center,
-                            style: blackTextStyle.copyWith(fontSize: 16, fontWeight: bold),
-                          ),
-                        ),
-                      );
-                    } else {
-                      return ListView.builder(
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemCount: filteredData.length,
-                        itemBuilder: (context, index) {
-                          final InspectionModel inspection = filteredData[index];
-                          return Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const SizedBox(height: 10),
-                              Text(
-                                DateTime.parse(inspection.date).formatDate(),
-                                style: blackTextStyle.copyWith(fontSize: 18, fontWeight: bold),
-                              ),
-                              ListCardWidget(
-                                color: secondaryColor,
-                                flag: '2',
-                                text1: inspection.animal,
-                                text2: inspection.location,
-                                text3: inspection.inspector,
-                                image: 'assets/domba.png',
-                                widget: InkWell(
-                                  onTap: () => Get.to(DetailAnimalInpectionPage(inspectionModel: inspection)),
-                                  child: Image.asset('assets/file.png'),
-                                ),
-                              ),
-                            ],
-                          );
-                        },
-                      );
-                    }
-                  },
-                );
-              },
-            )
-          ],
-        ),
-        bottomNavigationBar: const TabMenuWidget(menu: '2'),
-      ),
-    );
-  }
+  void _refresh() => context
+      .read<ListInspectionBloc>()
+      .add(const ListInspectionEvent.getInspection());
 
   @override
   void dispose() {
     _searchController.dispose();
     super.dispose();
+  }
+
+  bool _matches(InspectionModel i) {
+    if (_species != null && speciesFor(i.animal).name != _species) return false;
+    final q = _query.toLowerCase();
+    return q.isEmpty ||
+        i.animal.toLowerCase().contains(q) ||
+        i.location.toLowerCase().contains(q) ||
+        i.inspector.toLowerCase().contains(q);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      bottomNavigationBar: const TabMenuWidget(index: 1),
+      body: SafeArea(
+        child: RefreshIndicator(
+          onRefresh: () async => _refresh(),
+          child: ListView(
+            padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
+            children: [
+              Text('Riwayat', style: displayStyle(34)),
+              const SizedBox(height: 4),
+              Text('Semua catatan pemeriksaan, terbaru di atas.',
+                  style: mutedStyle.copyWith(fontSize: 14)),
+              const SizedBox(height: 16),
+              TextField(
+                controller: _searchController,
+                onChanged: (v) => setState(() => _query = v),
+                textInputAction: TextInputAction.search,
+                style: bodyStyle.copyWith(fontWeight: FontWeight.w600),
+                decoration: InputDecoration(
+                  hintText: 'Cari hewan, lokasi, atau pemeriksa',
+                  prefixIcon: const Icon(Icons.search_rounded),
+                  suffixIcon: _query.isEmpty
+                      ? null
+                      : IconButton(
+                          tooltip: 'Hapus pencarian',
+                          icon: const Icon(Icons.close_rounded),
+                          onPressed: () => setState(() {
+                            _searchController.clear();
+                            _query = '';
+                          }),
+                        ),
+                ),
+              ),
+              const SizedBox(height: 12),
+              SizedBox(
+                height: 48,
+                child: ListView(
+                  scrollDirection: Axis.horizontal,
+                  children: [
+                    _filterChip(null, 'Semua'),
+                    for (final s in speciesList) _filterChip(s.name, s.name),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 14),
+              BlocBuilder<ListInspectionBloc, ListInspectionState>(
+                builder: (context, state) => state.maybeWhen(
+                  loaded: (data) => _list(data),
+                  error: (m) => ErrorState(message: m, onRetry: _refresh),
+                  orElse: () => const LoadingList(),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _filterChip(String? species, String label) {
+    final selected = _species == species;
+    final color = species == null ? yellowColor : speciesFor(species).color;
+    return Padding(
+      padding: const EdgeInsets.only(right: 8, bottom: 4),
+      child: Semantics(
+        button: true,
+        selected: selected,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(99),
+          onTap: () => setState(() => _species = species),
+          child: Container(
+            padding: EdgeInsets.fromLTRB(species == null ? 16 : 6, 4, 14, 4),
+            decoration: BoxDecoration(
+              color: selected ? color : whiteColor,
+              borderRadius: BorderRadius.circular(99),
+              border: Border.all(color: inkColor, width: 2),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (species != null) ...[
+                  SpeciesSticker(animal: species, size: 30),
+                  const SizedBox(width: 6),
+                ],
+                Text(label,
+                    style: labelStyle.copyWith(
+                        fontSize: 13, fontWeight: FontWeight.w800)),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _list(List<InspectionModel> data) {
+    if (data.isEmpty) {
+      return const EmptyState(
+        title: 'Riwayat masih kosong',
+        message: 'Setiap pemeriksaan yang kamu simpan akan tercatat di sini.',
+      );
+    }
+    // Already sorted newest-first by the datasource.
+    final filtered = data.where(_matches).toList();
+    if (filtered.isEmpty) {
+      return EmptyState(
+        title: 'Tidak ada yang cocok',
+        message: 'Coba kata kunci lain atau pilih "Semua" hewan.',
+        action: StickerButton(
+          label: 'Reset filter',
+          color: whiteColor,
+          textColor: inkColor,
+          expand: false,
+          compact: true,
+          onPressed: () => setState(() {
+            _searchController.clear();
+            _query = '';
+            _species = null;
+          }),
+        ),
+      );
+    }
+
+    // Group under one date heading instead of repeating the date per card.
+    final groups = <String, List<InspectionModel>>{};
+    for (final i in filtered) {
+      groups.putIfAbsent(i.date, () => []).add(i);
+    }
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        for (final entry in groups.entries) ...[
+          Padding(
+            padding: const EdgeInsets.only(top: 6, bottom: 10),
+            child: Row(
+              children: [
+                Text(
+                  DateTime.tryParse(entry.key)?.formatDate() ?? entry.key,
+                  style: labelStyle.copyWith(fontWeight: FontWeight.w800),
+                ),
+                const SizedBox(width: 10),
+                const Expanded(child: Divider()),
+                const SizedBox(width: 10),
+                Text('${entry.value.length} cek', style: mutedStyle),
+              ],
+            ),
+          ),
+          for (final i in entry.value) InspectionCard(i, showDate: false),
+        ],
+      ],
+    );
   }
 }

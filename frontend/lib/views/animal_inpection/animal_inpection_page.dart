@@ -1,21 +1,22 @@
-// ignore_for_file: unused_import, use_build_context_synchronously, avoid_print
+import 'dart:typed_data';
 
-import 'dart:io';
-import 'dart:typed_data'; // Import for Uint8List
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 import 'package:vetpro/bloc/inspection/inspection_bloc.dart';
-import 'package:vetpro/bloc/inspection_invoice/inspection_invoice_bloc.dart';
 import 'package:vetpro/common/components/form.dart';
+import 'package:vetpro/common/components/sticker.dart';
 import 'package:vetpro/common/constants/colors.dart';
 import 'package:vetpro/common/constants/theme.dart';
+import 'package:vetpro/common/extensions/format_ext.dart';
+import 'package:vetpro/data/datasources/auth_local_datasource.dart';
 import 'package:vetpro/data/models/inspection_model.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:vetpro/views/animal_inpection/widgets/choose_animal_widget.dart';
-import 'package:intl/intl.dart'; // Import for date formatting
 
 class AnimalInpectionPage extends StatefulWidget {
-  const AnimalInpectionPage({super.key});
+  final String? initialAnimal;
+  const AnimalInpectionPage({super.key, this.initialAnimal});
 
   @override
   State<AnimalInpectionPage> createState() => _AnimalInpectionPageState();
@@ -23,9 +24,8 @@ class AnimalInpectionPage extends StatefulWidget {
 
 class _AnimalInpectionPageState extends State<AnimalInpectionPage> {
   final ImagePicker _picker = ImagePicker();
-  XFile? pickedFile;
-  File? tempFile;
   Uint8List? bytes;
+  DateTime _date = DateUtils.dateOnly(DateTime.now());
 
   final TextEditingController reviewController = TextEditingController();
   final TextEditingController medicalController = TextEditingController();
@@ -35,311 +35,282 @@ class _AnimalInpectionPageState extends State<AnimalInpectionPage> {
   final TextEditingController suggestionController = TextEditingController();
   final TextEditingController locationController = TextEditingController();
   final TextEditingController inspectorController = TextEditingController();
-  final TextEditingController createdAtController = TextEditingController();
+  late final TextEditingController dateController =
+      TextEditingController(text: _date.formatDate());
 
   final GlobalKey<ChooseAnimalWidgetState> _chooseAnimalKey = GlobalKey();
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  Future<void> getCamera() async {
-    try {
-      final pickedFile = await _picker.pickImage(
-        source: ImageSource.camera,
-        maxHeight: 800.0,
-        maxWidth: 460.0,
-        imageQuality: 100,
-      );
-      if (pickedFile != null) {
-        setState(() {
-          tempFile = File(pickedFile.path);
-          bytes = tempFile!.readAsBytesSync();
-        });
+  @override
+  void initState() {
+    super.initState();
+    // The person logged in is almost always the one inspecting.
+    AuthLocalDatasource().getName().then((n) {
+      if (mounted && inspectorController.text.isEmpty) {
+        inspectorController.text = n ?? '';
       }
-    } catch (e) {
-      debugPrint('Error picking image: $e');
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Failed to pick an image. Please try again.'),
-          backgroundColor: Colors.red,
-        ),
-      );
-    }
-  }
-
-  Future<void> _selectDate(BuildContext context) async {
-    final DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime(2000),
-      lastDate: DateTime(2101),
-    );
-    if (picked != null) {
-      setState(() {
-        createdAtController.text = DateFormat('yyyy-MM-dd').format(picked);
-      });
-    }
+    });
   }
 
   @override
   void dispose() {
-    reviewController.dispose();
-    medicalController.dispose();
-    cageController.dispose();
-    eatController.dispose();
-    scopeController.dispose();
-    suggestionController.dispose();
-    locationController.dispose();
-    inspectorController.dispose();
-    createdAtController.dispose();
+    for (final c in [
+      reviewController,
+      medicalController,
+      cageController,
+      eatController,
+      scopeController,
+      suggestionController,
+      locationController,
+      inspectorController,
+      dateController,
+    ]) {
+      c.dispose();
+    }
     super.dispose();
   }
 
-  bool _validateForm() {
-    if (_chooseAnimalKey.currentState?.selectedAnimal == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please select an animal.'),
-          backgroundColor: Colors.red,
-        ),
+  Future<void> getCamera() async {
+    try {
+      final picked = await _picker.pickImage(
+        source: ImageSource.camera,
+        maxHeight: 800.0,
+        maxWidth: 460.0,
       );
-      return false;
+      if (picked == null) return;
+      final data = await picked.readAsBytes();
+      if (mounted) setState(() => bytes = data);
+    } catch (e) {
+      debugPrint('Error picking image: $e');
+      _toast('Kamera belum bisa dibuka. Coba lagi, ya.');
     }
-    if (createdAtController.text.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please select a date.'),
-          backgroundColor: Colors.red,
-        ),
-      );
-      return false;
-    }
-    if (!_formKey.currentState!.validate()) {
-      return false;
-    }
-    return true;
   }
 
-  void _submitForm() {
-    if (_validateForm()) {
-      final selectedAnimal =
-          _chooseAnimalKey.currentState?.selectedAnimal == 'Lainnya'
-              ? _chooseAnimalKey.currentState?.otherAnimal
-              : _chooseAnimalKey.currentState?.selectedAnimal;
-
-      final dataModel = InspectionModel(
-        animal: selectedAnimal ?? '',
-        cageTreatment: cageController.text,
-        environmentalCare: scopeController.text,
-        feeding: eatController.text,
-        inspector: inspectorController.text,
-        location: locationController.text,
-        medicalTreatment: medicalController.text,
-        suggestion: suggestionController.text,
-        result: reviewController.text,
-        date: createdAtController.text,
-      );
-
-      context
-          .read<InspectionBloc>()
-          .add(InspectionEvent.addInspection(dataModel));
-      // context.read<InspectionInvoiceBloc>().add(
-      //   InspectionInvoiceEvent.addToListInvoice(dataModel, 'unpaid'),
-      // );
+  Future<void> _pickDate() async {
+    final picked = await showDatePicker(
+      context: context,
+      initialDate: _date,
+      firstDate: DateTime(2000),
+      lastDate: DateTime.now().add(const Duration(days: 365)),
+    );
+    if (picked != null) {
+      setState(() {
+        _date = picked;
+        dateController.text = picked.formatDate();
+      });
     }
+  }
+
+  void _toast(String message) => ScaffoldMessenger.of(context)
+      .showSnackBar(SnackBar(content: Text(message)));
+
+  void _submitForm() {
+    final animal = _chooseAnimalKey.currentState?.animalName;
+    if (animal == null || animal.isEmpty) {
+      _toast('Pilih dulu hewan yang diperiksa.');
+      return;
+    }
+    context.read<InspectionBloc>().add(InspectionEvent.addInspection(
+          InspectionModel(
+            animal: animal,
+            cageTreatment: cageController.text,
+            environmentalCare: scopeController.text,
+            feeding: eatController.text,
+            inspector: inspectorController.text,
+            location: locationController.text,
+            medicalTreatment: medicalController.text,
+            suggestion: suggestionController.text,
+            result: reviewController.text,
+            date: DateFormat('yyyy-MM-dd').format(_date),
+          ),
+        ));
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: secondaryColor,
-        elevation: 0,
-        centerTitle: true,
-        title: Text(
-          'Animal Inspection',
-          style: whiteTextStyle,
+      appBar: stickerAppBar(context, 'Pemeriksaan baru'),
+      // Not a lazy ListView: off-screen sections (like the species picker)
+      // must stay alive or their state is lost while scrolling.
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.fromLTRB(20, 4, 20, 24),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            FormSection(
+              title: 'Hewan apa yang diperiksa?',
+              icon: Icons.pets,
+              children: [
+                ChooseAnimalWidget(
+                  key: _chooseAnimalKey,
+                  initialAnimal: widget.initialAnimal,
+                ),
+              ],
+            ),
+            FormSection(
+              title: 'Kapan & di mana',
+              icon: Icons.place_rounded,
+              children: [
+                CustomFormField(
+                  title: 'Tanggal pemeriksaan',
+                  controller: dateController,
+                  readOnly: true,
+                  onTap: _pickDate,
+                  suffixIcon: const Icon(Icons.calendar_month_rounded),
+                ),
+                CustomFormField(
+                  title: 'Lokasi',
+                  hintText: 'mis. Kandang A',
+                  controller: locationController,
+                  textInputAction: TextInputAction.next,
+                ),
+                CustomFormField(
+                  title: 'Nama pemeriksa',
+                  controller: inspectorController,
+                  textInputAction: TextInputAction.next,
+                ),
+              ],
+            ),
+            FormSection(
+              title: 'Hasil pemeriksaan',
+              icon: Icons.monitor_heart_rounded,
+              children: [
+                CustomFormField(
+                  title: 'Hasil pemeriksaan hewan',
+                  hintText: 'Kondisi umum, gejala, suhu...',
+                  controller: reviewController,
+                  maxLine: 4,
+                ),
+                CustomFormField(
+                  title: 'Perawatan medis',
+                  hintText: 'Obat, dosis, tindakan',
+                  controller: medicalController,
+                  maxLine: 3,
+                ),
+              ],
+            ),
+            FormSection(
+              title: 'Perawatan harian',
+              icon: Icons.grass_rounded,
+              children: [
+                CustomFormField(
+                  title: 'Perawatan kandang',
+                  controller: cageController,
+                  maxLine: 2,
+                ),
+                CustomFormField(
+                  title: 'Pemberian makan',
+                  controller: eatController,
+                  maxLine: 2,
+                ),
+                CustomFormField(
+                  title: 'Perawatan lingkungan',
+                  controller: scopeController,
+                  maxLine: 2,
+                ),
+              ],
+            ),
+            FormSection(
+              title: 'Catatan & foto',
+              icon: Icons.photo_camera_rounded,
+              children: [
+                CustomFormField(
+                  title: 'Saran tambahan',
+                  controller: suggestionController,
+                  maxLine: 3,
+                ),
+                _PhotoField(bytes: bytes, onPick: getCamera),
+              ],
+            ),
+          ],
         ),
       ),
-      body: SingleChildScrollView(
-        child: Form(
-          key: _formKey,
-          child: Column(
-            children: [
-              Container(
-                padding: const EdgeInsets.symmetric(vertical: 20),
-                margin: const EdgeInsets.all(15),
-                decoration: BoxDecoration(
-                  color: const Color.fromARGB(255, 231, 229, 229),
-                  borderRadius: BorderRadius.circular(15),
-                ),
-                child: ListView(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  padding: const EdgeInsets.symmetric(horizontal: 25),
-                  children: [
-                    CustomFormField(
-                      controller: reviewController,
-                      onTap: (){print("object");},
-                      title: 'Hasil pemeriksaan hewan',
-                      fillColor: Colors.white,
-                      maxLine: 3,
-                    ),
-                    const SizedBox(height: 11),
-                    ChooseAnimalWidget(
-                      key: _chooseAnimalKey,
-                      title: 'Pilih Hewan',
-                    ),
-                    const SizedBox(height: 11),
-                    GestureDetector(
-                      onTap: () => _selectDate(context),
-                      child: AbsorbPointer(
-                        child: CustomFormField(
-                          controller: createdAtController,
-                          title: 'Tanggal pemeriksaan',
-                          fillColor: Colors.white,
-                          maxLine: 1,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 11),
-                    CustomFormField(
-                      controller: medicalController,
-                      title: 'Perawatan medis',
-                      fillColor: Colors.white,
-                      maxLine: 2,
-                    ),
-                    const SizedBox(height: 11),
-                    CustomFormField(
-                      controller: cageController,
-                      title: 'Perawatan kandang',
-                      fillColor: Colors.white,
-                      maxLine: 2,
-                    ),
-                    const SizedBox(height: 11),
-                    CustomFormField(
-                      controller: eatController,
-                      title: 'Pemberian makan',
-                      fillColor: Colors.white,
-                      maxLine: 2,
-                    ),
-                    const SizedBox(height: 11),
-                    CustomFormField(
-                      controller: scopeController,
-                      title: 'Perawatan lingkungan',
-                      fillColor: Colors.white,
-                      maxLine: 2,
-                    ),
-                    const SizedBox(height: 11),
-                    CustomFormField(
-                      controller: suggestionController,
-                      title: 'Saran tambahan',
-                      fillColor: Colors.white,
-                      maxLine: 2,
-                    ),
-                    const SizedBox(height: 11),
-                    CustomFormField(
-                      controller: locationController,
-                      title: 'Lokasi',
-                      fillColor: Colors.white,
-                      maxLine: 1,
-                    ),
-                    const SizedBox(height: 11),
-                    CustomFormField(
-                      controller: inspectorController,
-                      title: 'Nama Pemeriksa',
-                      fillColor: Colors.white,
-                      maxLine: 2,
-                    ),
-                    const SizedBox(height: 11),
-                    const Text(
-                      'Bukti Gambar',
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
-                    ),
-                    const SizedBox(height: 8),
-                    // Image display area
-                    Container(
-                      width: double.infinity,
-                      height: 250,
-                      decoration: BoxDecoration(
-                        color: greyColor.withOpacity(0.7),
-                        borderRadius: BorderRadius.circular(30),
-                        image: tempFile != null
-                            ? DecorationImage(
-                                image: FileImage(tempFile!),
-                                fit: BoxFit.cover,
-                              )
-                            : null,
-                      ),
-                      child: tempFile == null
-                          ? const Center(
-                              child: Icon(Icons.image,
-                                  color: whiteColor, size: 32),
-                            )
-                          : null,
-                    ),
-                    const SizedBox(height: 15),
-                    ElevatedButton(
-                      onPressed: getCamera,
-                      child: const Text("Add Photo"),
-                    ),
-                    const SizedBox(height: 30),
-                    BlocConsumer<InspectionBloc, InspectionState>(
-                      builder: (context, state) {
-                        return state.maybeWhen(
-                          orElse: () {
-                            return InkWell(
-                              onTap: _submitForm,
-                              child: Container(
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 15),
-                                alignment: Alignment.center,
-                                decoration: BoxDecoration(
-                                  color: primaryColor,
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                                child: Text(
-                                  'Submit',
-                                  style: whiteTextStyle,
-                                ),
-                              ),
-                            );
-                          },
-                          loading: () => const Center(
-                            child:
-                                CircularProgressIndicator(color: primaryColor),
-                          ),
-                        );
-                      },
-                      listener: (context, state) {
-                        state.maybeWhen(
-                          orElse: () {},
-                          loaded: (data) {
-                            Navigator.pop(context);
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                backgroundColor: greenColor,
-                                content: Text('Add Inspection Success'),
-                              ),
-                            );
-                          },
-                          error: (message) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                backgroundColor: secondaryColor,
-                                content: Text(message),
-                              ),
-                            );
-                          },
-                        );
-                      },
-                    ),
-                  ],
-                ),
-              ),
-            ],
+      bottomNavigationBar: SafeArea(
+        child: Container(
+          padding: const EdgeInsets.fromLTRB(20, 12, 20, 12),
+          decoration: const BoxDecoration(
+            color: backgroundColor,
+            border: Border(top: inkBorder),
+          ),
+          child: BlocConsumer<InspectionBloc, InspectionState>(
+            listener: (context, state) {
+              state.maybeWhen(
+                orElse: () {},
+                loaded: (data) {
+                  Navigator.pop(context);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                        content: Text('Pemeriksaan ${data.animal} tersimpan!')),
+                  );
+                },
+                error: (message) => _toast('Gagal menyimpan: $message'),
+              );
+            },
+            builder: (context, state) => StickerButton(
+              label: 'Simpan pemeriksaan',
+              icon: Icons.check_rounded,
+              loading:
+                  state.maybeWhen(loading: () => true, orElse: () => false),
+              onPressed: _submitForm,
+            ),
           ),
         ),
       ),
+    );
+  }
+}
+
+class _PhotoField extends StatelessWidget {
+  final Uint8List? bytes;
+  final VoidCallback onPick;
+  const _PhotoField({required this.bytes, required this.onPick});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text('Foto bukti', style: labelStyle),
+        const SizedBox(height: 6),
+        if (bytes == null)
+          Sticker(
+            onTap: onPick,
+            semanticLabel: 'Ambil foto',
+            color: tealSoftColor,
+            depth: 3,
+            padding: const EdgeInsets.symmetric(vertical: 22),
+            child: Column(
+              children: [
+                const Icon(Icons.add_a_photo_rounded,
+                    size: 32, color: inkColor),
+                const SizedBox(height: 6),
+                Text('Ambil foto', style: labelStyle),
+                Text('Opsional', style: mutedStyle),
+              ],
+            ),
+          )
+        else ...[
+          ClipRRect(
+            borderRadius: BorderRadius.circular(16),
+            child: DecoratedBox(
+              position: DecorationPosition.foreground,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(color: inkColor, width: 2),
+              ),
+              child: Image.memory(bytes!, height: 220, fit: BoxFit.cover),
+            ),
+          ),
+          const SizedBox(height: 10),
+          StickerButton(
+            label: 'Ganti foto',
+            icon: Icons.refresh_rounded,
+            color: whiteColor,
+            textColor: inkColor,
+            compact: true,
+            onPressed: onPick,
+          ),
+        ],
+      ],
     );
   }
 }

@@ -1,20 +1,18 @@
-// ignore_for_file: prefer_const_constructors
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 import 'package:vetpro/bloc/invoice/invoice_bloc.dart';
+import 'package:vetpro/common/components/record_card.dart';
+import 'package:vetpro/common/components/states.dart';
+import 'package:vetpro/common/components/sticker.dart';
+import 'package:vetpro/common/components/tab_menu_widget.dart';
+import 'package:vetpro/common/constants/colors.dart';
 import 'package:vetpro/common/constants/theme.dart';
+import 'package:vetpro/common/extensions/format_ext.dart';
 import 'package:vetpro/data/datasources/auth_local_datasource.dart';
 import 'package:vetpro/data/models/invoices_model.dart';
+import 'package:vetpro/views/invoice/add_invoice_page.dart';
 import 'package:vetpro/views/invoice/detail_invoice_page.dart';
-
-import '../../bloc/list_inspection/list_inspection_bloc.dart';
-import '../../common/components/list_card_widget.dart';
-import '../../common/components/tab_menu_widget.dart';
-import '../../common/constants/colors.dart';
-import 'add_invoice_page.dart';
 
 class InvoicePage extends StatefulWidget {
   const InvoicePage({super.key});
@@ -25,176 +23,158 @@ class InvoicePage extends StatefulWidget {
 
 class _InvoicePageState extends State<InvoicePage> {
   String role = '';
+
   @override
   void initState() {
-    context
-        .read<ListInspectionBloc>()
-        .add(const ListInspectionEvent.getInspection());
-    context.read<InvoiceBloc>().add(InvoiceEvent.fetchDataInvoiceEvent());
-    getRole();
     super.initState();
+    _refresh();
+    AuthLocalDatasource().getRole().then((r) {
+      if (mounted) setState(() => role = r ?? '');
+    });
   }
 
-  Future<void> getRole() async {
-    role = (await AuthLocalDatasource().getRole())!;
-    setState(() {});
-  }
+  void _refresh() => context
+      .read<InvoiceBloc>()
+      .add(const InvoiceEvent.fetchDataInvoiceEvent());
+
+  bool get _canCreate => role != 'admin';
+
+  void _create() =>
+      Get.to(() => const AddInvoicePage(), arguments: {'type': 'add'});
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        floatingActionButton: role == 'admin'
-            ? SizedBox.shrink()
-            : FloatingActionButton(
-                backgroundColor: Colors.green,
-                onPressed: () =>
-                    Get.to(const AddInvoicePage(), arguments: {'type': 'add'}),
-                child: const Icon(
-                  Icons.add,
-                  size: 50,
-                  color: Colors.white,
+    return Scaffold(
+      bottomNavigationBar: const TabMenuWidget(index: 3),
+      body: SafeArea(
+        child: RefreshIndicator(
+          onRefresh: () async => _refresh(),
+          child: ListView(
+            padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
+            children: [
+              Row(
+                children: [
+                  Expanded(child: Text('Tagihan', style: displayStyle(34))),
+                  if (_canCreate)
+                    StickerButton(
+                      label: 'Buat',
+                      icon: Icons.add_rounded,
+                      expand: false,
+                      compact: true,
+                      onPressed: _create,
+                    ),
+                ],
+              ),
+              const SizedBox(height: 18),
+              BlocBuilder<InvoiceBloc, InvoiceState>(
+                builder: (context, state) => state.maybeWhen(
+                  loaded: _sections,
+                  error: (m) => ErrorState(message: m, onRetry: _refresh),
+                  orElse: () => const LoadingList(),
                 ),
               ),
-        body: ListView(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 20,
+            ],
           ),
-          children: [
-            BlocBuilder<InvoiceBloc, InvoiceState>(
-              builder: (context, state) {
-                return state.maybeWhen(
-                  loaded: (data) {
-                    final dataUnpaid = data
-                        .where((invoice) => invoice.status == 'unpaid')
-                        .toList();
-                    final dataPaid = data
-                        .where((invoice) => invoice.status == 'paid')
-                        .toList();
-                    if (data.isEmpty) {
-                      return SizedBox.shrink();
-                    } else {
-                      final modifiableData = List<InvoiceModel>.from(dataPaid);
-                      final modifiableDataUnpaid =
-                          List<InvoiceModel>.from(dataUnpaid);
-                      modifiableData
-                          .sort((a, b) => b.createdAt!.compareTo(a.createdAt!));
-                      modifiableDataUnpaid
-                          .sort((a, b) => b.createdAt!.compareTo(a.createdAt!));
-
-                      return Column(
-                        children: [
-                          // UNPAID
-                          if (modifiableDataUnpaid.isNotEmpty) ...[
-                            Container(
-                              margin: const EdgeInsets.only(top: 20),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    'Unpaid',
-                                    style: primaryTextStyle.copyWith(
-                                      fontSize: 35,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  Image.asset('assets/logo2.png')
-                                ],
-                              ),
-                            ),
-                            _CardInvoice(modifiableDataUnpaid),
-                          ],
-
-                          // PAID
-                          if (modifiableData.isNotEmpty) ...[
-                            Container(
-                              margin: const EdgeInsets.only(top: 20),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    'Paid',
-                                    style: primaryTextStyle.copyWith(
-                                      fontSize: 35,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  modifiableDataUnpaid.isEmpty
-                                      ? Image.asset('assets/logo2.png')
-                                      : SizedBox.shrink(),
-                                ],
-                              ),
-                            ),
-                            _CardInvoice(modifiableData),
-                          ],
-                        ],
-                      );
-                    }
-                  },
-                  loading: () {
-                    return Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  },
-                  error: (message) => Center(
-                    child: Text(
-                      message,
-                      style: blackTextStyle.copyWith(
-                        fontSize: 16,
-                        fontWeight: bold,
-                      ),
-                    ),
-                  ),
-                  orElse: () {
-                    return const Center(
-                      child: CircularProgressIndicator(
-                        backgroundColor: Colors.transparent,
-                        color: primaryColor,
-                      ),
-                    );
-                  },
-                );
-              },
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-          ],
         ),
-        bottomNavigationBar: TabMenuWidget(menu: '4'),
       ),
     );
   }
 
-  ListView _CardInvoice(List<InvoiceModel> modifiableDataUnpaid) {
-    return ListView.builder(
-        shrinkWrap: true,
-        physics: const NeverScrollableScrollPhysics(),
-        itemCount: modifiableDataUnpaid.length,
-        itemBuilder: (context, index) {
-          final inspection = modifiableDataUnpaid[index];
-          return ListCardWidget(
-            color: getCardColor(inspection.status ?? 'unpaid'),
-            flag: '3',
-            text1: inspection.pemeriksa ?? '-',
-            text2: inspection.status ?? '-',
-            text3: DateFormat('dd MMMM yyyy')
-                .format(inspection.tanggal ?? DateTime.now()),
-            widget: InkWell(
-                onTap: () => Get.to(const DetailInvoicePage(),
-                    arguments: {'type': 'detail', 'id': inspection.id}),
-                child: Image.asset('assets/file.png')),
-          );
-        });
+  Widget _sections(List<InvoiceModel> data) {
+    if (data.isEmpty) {
+      return EmptyState(
+        title: 'Belum ada tagihan',
+        message:
+            'Buat tagihan setelah pemeriksaan selesai, lalu cetak PDF-nya.',
+        action: _canCreate
+            ? StickerButton(
+                label: 'Buat tagihan',
+                icon: Icons.add_rounded,
+                expand: false,
+                onPressed: _create,
+              )
+            : null,
+      );
+    }
+    List<InvoiceModel> byStatus(String status) => data
+        .where((i) => i.status == status)
+        .toList()
+      ..sort((a, b) =>
+          (b.createdAt ?? DateTime(0)).compareTo(a.createdAt ?? DateTime(0)));
+    final unpaid = byStatus('unpaid');
+    final paid = byStatus('paid');
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        if (unpaid.isNotEmpty) ...[
+          _header('Belum dibayar', unpaid),
+          for (final i in unpaid) InvoiceCard(i),
+          const SizedBox(height: 14),
+        ],
+        if (paid.isNotEmpty) ...[
+          _header('Lunas', paid),
+          for (final i in paid) InvoiceCard(i),
+        ],
+      ],
+    );
   }
 
-  Color getCardColor(String status) {
-    if (status == 'paid') {
-      return const Color.fromARGB(255, 125, 199, 107);
-    } else {
-      return const Color.fromARGB(255, 223, 220, 220); // Default color for unpaid
-    }
+  Widget _header(String title, List<InvoiceModel> items) {
+    final total = items.fold<int>(0, (sum, i) => sum + invoiceTotal(i));
+    return SectionHeader(
+      '$title (${items.length})',
+      trailing: total == 0
+          ? null
+          : Text(total.toRupiah(),
+              style: labelStyle.copyWith(fontWeight: FontWeight.w800)),
+    );
+  }
+}
+
+int invoiceTotal(InvoiceModel i) =>
+    (i.details ?? []).fold(0, (sum, d) => sum + parseAmount(d.total));
+
+class InvoiceCard extends StatelessWidget {
+  final InvoiceModel invoice;
+  const InvoiceCard(this.invoice, {super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final paid = invoice.status == 'paid';
+    final total = invoiceTotal(invoice);
+    return RecordCard(
+      leading: Container(
+        width: 54,
+        height: 54,
+        decoration: BoxDecoration(
+          color: paid ? mintColor : yellowColor,
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(color: inkColor, width: 2),
+        ),
+        child: Icon(paid ? Icons.task_alt_rounded : Icons.receipt_long_rounded,
+            color: inkColor, size: 26),
+      ),
+      title: 'Tagihan #${invoice.id ?? '-'}',
+      subtitle: [
+        if (invoice.tanggal != null) invoice.tanggal!.formatDate(),
+        invoice.pemeriksa ?? '',
+      ].where((s) => s.isNotEmpty).join(' · '),
+      meta: Row(
+        children: [
+          StatusPill(
+            label: paid ? 'Lunas' : 'Belum dibayar',
+            color: paid ? mintColor : yellowColor,
+          ),
+          const Spacer(),
+          if (total > 0)
+            Text(total.toRupiah(),
+                style: labelStyle.copyWith(
+                    fontSize: 15, fontWeight: FontWeight.w800)),
+        ],
+      ),
+      onTap: () => Get.to(() => const DetailInvoicePage(),
+          arguments: {'type': 'detail', 'id': invoice.id}),
+    );
   }
 }
